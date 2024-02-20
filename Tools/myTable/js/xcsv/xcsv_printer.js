@@ -9,18 +9,20 @@ class clsPrinter {
             tableClass: "table",
             tableStyle: "margin-bottom:0;",
             thsText: this.parent.XData.headers,
-            cellsText: this.parent.XData.data
+            thsID: this.parent.XNames.IDs.headers(),
+            cellsText: this.parent.XData.data,
+            cellsID: this.parent.XNames.IDs.cells(),
         })
     }
 
     AsCSV() {
         let ret = '';
-        ret += this.AsCSV_HeaderLine()
-        ret += this.AsCSV_RowsLine()
+        ret += this._AsCSV_HeaderLine()
+        ret += this._AsCSV_RowsLine()
         return ret
     }
 
-    AsCSV_HeaderLine() {
+    _AsCSV_HeaderLine() {
         let ll = this.parent.XReader.config["line-starter"]
         let l = this.parent.XReader.config["cell-seperator"]
         let n = this.parent.XReader.config["line-end"]
@@ -33,7 +35,7 @@ class clsPrinter {
         return ret
     }
     
-    AsCSV_RowsLine() {
+    _AsCSV_RowsLine() {
         let ll = this.parent.XReader.config["line-starter"]
         let l = this.parent.XReader.config["cell-seperator"]
         let n = this.parent.XReader.config["line-end"]

@@ -1,5 +1,6 @@
 const SVG = new clsSVG();
 const HMTL = new libHTMLText()
+const UIN = new clsUserInput(["id-main"]);
 var dataString = {
     "config":{},
     "headers": ["X", "Y", "Z"],
@@ -11,6 +12,9 @@ const XCSV = {
 };
 
 (function () {
+    // UserInput
+    window.addEventListener('mousedown', UIN.MouseDown)
+    window.addEventListener('mouseup', UIN.MouseUp)
     // UpDownloadConfig
     for (let key of Object.keys(LIB_UPLOAD_QWERTZ) ) {
         cFileReaders[key] = new FileReader()

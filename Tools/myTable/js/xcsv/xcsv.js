@@ -8,5 +8,9 @@ class clsXCSV {
             this.XData = new clsData(this, headers, data)
             this.XReader = new clsReader(this)
             this.XPrinter = new clsPrinter(this)
+
+            this.XActiveCell = new clsXCSV_Cell(this)
+            this.XNames = new clsXCSV_Names(this)
+            this.XClick = new clsXCSV_Clickhandler(this)
         }
     }
