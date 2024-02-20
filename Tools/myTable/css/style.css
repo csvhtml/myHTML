@@ -1,0 +1,7 @@
+body {
+    overflow: hidden;
+}
+
+input[type="file"]#nav-input{
+    display: none;
+  }
