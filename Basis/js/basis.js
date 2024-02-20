@@ -134,6 +134,17 @@ function IsEqual(a,b, max_iterations = 100) {
     return false
 }
 
+function IsListEqualSize(a,b, flag = false) {
+    if (typOf(a) == "list" && typOf(b) == "list") {
+        if (a.length == b.length) {
+            return IsListEqualSize(a[0],b[0], true)}
+        return false}
+    if (flag) {
+        if (typOf(a) == typOf(b)) {
+            return true}}
+    return false
+}
+
 
 Object.defineProperties(DOMTokenList.prototype, {
     addX: {
