@@ -32,7 +32,7 @@ Object.defineProperties(Array.prototype, {
 Object.defineProperties(Array.prototype, {
     removeAll: {
         value: function(element) {
-            let n = this.count(element)
+                let n = this.count(element)
                 for (let i = 0; i<n;i++) {
                     this.removeX(element)}
         }
