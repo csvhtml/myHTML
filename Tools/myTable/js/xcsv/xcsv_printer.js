@@ -12,4 +12,39 @@ class clsPrinter {
             cellsText: this.parent.XData.data
         })
     }
+
+    AsCSV() {
+        let ret = '';
+        ret += this.AsCSV_HeaderLine()
+        ret += this.AsCSV_RowsLine()
+        return ret
+    }
+
+    AsCSV_HeaderLine() {
+        let ll = this.parent.XReader.config["line-starter"]
+        let l = this.parent.XReader.config["cell-seperator"]
+        let n = this.parent.XReader.config["line-end"]
+
+        let ret = ll 
+        for (let header of this.parent.XData.headers) {
+            ret += header + l}
+        ret = ret.slice(0, -1*l.length) + n
+        
+        return ret
+    }
+    
+    AsCSV_RowsLine() {
+        let ll = this.parent.XReader.config["line-starter"]
+        let l = this.parent.XReader.config["cell-seperator"]
+        let n = this.parent.XReader.config["line-end"]
+
+        let ret = ""
+        for (let row of this.parent.XData.data) {
+            ret += ll
+            for (let cell of row) {
+                ret += cell + l}
+            ret = ret.slice(0, -1*l.length) + n}
+        
+        return ret
+    }
 }

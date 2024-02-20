@@ -17,19 +17,11 @@ const XCSV = {
     }
 
     XCSV["main"].XPrinter.Print()
-    // XCSV["main"].XReader.Parse(cFileReaders["nav-input"].result)
 })();
 
 
-function functionAfterUpload() {
-    console.log("Upload")
-}
 
 
-function functionAfterDownload() {
-    let Output = document.getElementById("nav-download-csv")
-    DownloadFile(Output.innerHTML)
-}
 
 
 
