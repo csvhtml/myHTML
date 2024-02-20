@@ -140,9 +140,26 @@ function IsListEqualSize(a,b, flag = false) {
             return IsListEqualSize(a[0],b[0], true)}
         return false}
     if (flag) {
-        if (typOf(a) == typOf(b)) {
-            return true}}
-    return false
+        if (typOf(a) == "list" || typOf(b) == "list") {
+            return false}
+        else {
+            return true}
+    }
+    else {
+        return false}
+}
+
+function IsListEqualDepth(a,b, flag = false) {
+    if (typOf(a) == "list" && typOf(b) == "list") {
+            return IsListEqualDepth(a[0],b[0], true)}
+    if (flag) {
+        if (typOf(a) == "list" || typOf(b) == "list") {
+            return false}
+        else {
+            return true}
+    }
+    else {
+        return false}
 }
 
 
