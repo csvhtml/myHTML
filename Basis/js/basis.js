@@ -162,6 +162,18 @@ function IsListEqualDepth(a,b, flag = false) {
         return false}
 }
 
+function ElementInArrayN(array, element) {
+    for (let i = 0; i < array.length; i++) {
+        if (typOf(array[i]) == "list") {
+            if (ElementInArrayN(array[i], element)) {
+                return true}
+        } 
+        else if (array[i] === element) {
+            return true;
+        }
+    }
+    return false; 
+}
 
 Object.defineProperties(DOMTokenList.prototype, {
     addX: {
