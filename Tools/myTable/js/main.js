@@ -1,7 +1,13 @@
 const SVG = new clsSVG();
 const HMTL = new libHTMLText()
+var dataString = {
+    "config":{},
+    "headers": ["X", "Y", "Z"],
+    "data": [[1,2,3], ["a", "b", "c"],[1,2,3], ["a", "b", "c"]]
+};
+
 const XCSV = {
-    "main": new clsXCSV("id-main", {})
+    "main": new clsXCSV("id-main", {headers:dataString["headers"], data:dataString["data"]})
 };
 
 (function () {
@@ -11,6 +17,7 @@ const XCSV = {
     }
 
     XCSV["main"].XPrinter.Print()
+    // XCSV["main"].XReader.Parse(cFileReaders["nav-input"].result)
 })();
 
 
@@ -23,3 +30,6 @@ function functionAfterDownload() {
     let Output = document.getElementById("nav-download-csv")
     DownloadFile(Output.innerHTML)
 }
+
+
+

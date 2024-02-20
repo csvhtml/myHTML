@@ -16,6 +16,11 @@ class clsData {
         this.len = data.length
 
     }
+
+    InitData(headers, data) {
+        this.headers = headers
+        this.data = data
+    }
     _constructor_assert( headers, data) {
         assert(IsListEqualDepth(headers, [1,1]))
         assert(IsListEqualDepth(data, [[1,1],[1,1]]))

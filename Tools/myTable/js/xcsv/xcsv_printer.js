@@ -8,8 +8,8 @@ class clsPrinter {
             tableID: "id-table-" + this.parent.egoDivID,
             tableClass: "table",
             tableStyle: "margin-bottom:0;",
-            thsText: this.parent.Xdata.headers,
-            cellsText: this.parent.Xdata.data
+            thsText: this.parent.XData.headers,
+            cellsText: this.parent.XData.data
         })
     }
 }
