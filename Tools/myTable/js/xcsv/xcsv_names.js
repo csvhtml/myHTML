@@ -149,7 +149,14 @@ class clsXCSV_Names_ID {
         let ret = []
         for (let header of this.parent.XData.headers) {
             ret.push(this._header(header))}
+        return ret
+    }
 
+    rows() {
+        let ret = []; let r = 0
+        for (let row of this.parent.XData.data) {
+            ret.push(this._row(String(r)))
+            r +=1}
         return ret
     }
 
@@ -168,6 +175,12 @@ class clsXCSV_Names_ID {
         return ret
     }
 
+    RowfromCell (divID) {
+        let X = CLSXCSV_NAMES["id"]["cell"]
+        let r = RetStringBetween(divID, X["r"], X["c"])
+        return this._row(r)
+    }
+
     _header(header) {
         let X = CLSXCSV_NAMES["id"]["header"]
         return this._egoprefix() + X["prefix"] + header + X["postfix"]
@@ -176,6 +189,11 @@ class clsXCSV_Names_ID {
     _cell(r,c,header) {
         let X = CLSXCSV_NAMES["id"]["cell"]
         return this._egoprefix() + X["r"] + r + X["c"] + c + X["h"] + header 
+    }
+
+    _row(r) {
+        let X = CLSXCSV_NAMES["id"]["row"]
+        return this._egoprefix() + X["prefix"] + r + X["postfix"]
     }
 
     _egoprefix() {

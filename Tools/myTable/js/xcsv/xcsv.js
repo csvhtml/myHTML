@@ -12,5 +12,6 @@ class clsXCSV {
             this.XActiveCell = new clsXCSV_Cell(this)
             this.XNames = new clsXCSV_Names(this)
             this.XClick = new clsXCSV_Clickhandler(this)
+            this.XFocus = new clsXCSV_Focushandler(this)
         }
     }

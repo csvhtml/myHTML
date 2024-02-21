@@ -17,10 +17,20 @@ class clsXCSV_Clickhandler {
     }
 
     _Header(divID) {
-        let a = 1
+        this.parent.XFocus.set(divID)
     }
 
     _Cell(divID) {
-        let a = 1
+        let rowID = this.parent.XNames.IDs.RowfromCell(divID)
+        if (this._RowAlreadyInFocus(rowID)) {
+            this.parent.XFocus.unset()
+            this.parent.XFocus.set(divID)} 
+        else {
+            this.parent.XFocus.unset()
+            this.parent.XFocus.set(rowID)}  
+    }
+
+    _RowAlreadyInFocus(divID) {
+        return (this.parent.XFocus.currentFocus() == divID)
     }
 }

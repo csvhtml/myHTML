@@ -18,6 +18,10 @@ const CLSXCSV_NAMES = {
             "c":'C:',
             "h":'H:',
         },
+        "row":{
+            "prefix":'row-',
+            "postfix": ''
+        }
     }
 }
 
