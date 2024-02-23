@@ -1,0 +1,23 @@
+.out {
+    width: 100pt;
+    height: 100pt;
+    border: 1pt solid black;
+    float: left;
+    text-align: center;
+    line-height: 100pt;
+}
+
+.section {
+    width: 100%;
+    height: 100pt;
+    float: left;
+    text-align: center;
+    line-height: 100pt;
+}
+
+textarea {
+    resize: none;
+    overflow: hidden;
+    min-height: 50px;
+    max-height: 500px;
+}
