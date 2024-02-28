@@ -3,6 +3,14 @@ class libEdit {
         this.name = name
         this.innerHTMLs = {}  // in case of Close, then the original state is resored
         this.lasttime = new Date().getTime()
+
+        this._constructor_init()
+    }
+
+    _constructor_init() {
+        let divs = document.getElementsByClassName("myEdit")
+        for (let div of divs) {
+            div.setAttribute('onclick', this.name + '.Edit(this)')}
     }
 
     Edit(div) {
@@ -24,6 +32,7 @@ class libEdit {
         let value = document.getElementById("id-textarea-" + divID).value
         // document.getElementById(divID).innerHTML = this._value_to_html(value)
         document.getElementById(divID).innerHTML = Edit_Save(divID, value)
+        delete this.innerHTMLs[divID]
         this._SetModeRead(document.getElementById(divID))}
 
     CloseAll()  {
