@@ -15,12 +15,14 @@ function Click() {
 
 function Edit_Edit(div) {
     if (XCSV["main"].XNames.IDs.IsCell(div.id)) {
-        _Edit_MinHeight(div.id)}
-
+        let row = document.getElementById(_Edit_RowID(div.id))
+        row.style.height = (row.getBoundingClientRect()["height"]+40)+"px"
+        // _Edit_MinHeight(div.id)
+    }
 }
 
 function Edit_Textarea(div) {
-    let value_modified = div.innerHTML
+    let value_modified = convertToMarkup(div.innerHTML)
     return value_modified
 }
 
@@ -28,7 +30,7 @@ function Edit_Save(divID, value) {
     if (XCSV["main"].XNames.IDs.IsCell(divID)) {
         //data
         let RC = XCSV["main"].XNames.IDs.RC_fromID(divID)
-        XCSV["main"].XData.data[row][col] = value
+        XCSV["main"].XData.data[RC[0]][RC[1]] = value
         //style
         _Edit_MinHeight_Undo(divID)
     }
@@ -37,7 +39,7 @@ function Edit_Save(divID, value) {
         let h = XCSV["main"].XNames.IDs.H_fromHeaderID(divID)
         XCSV["main"].XData.headers[h] = value
     }
-        let value_modified = value
+        let value_modified = parseMarkup(value)
         return value_modified
 }
 
@@ -59,3 +61,21 @@ function _Edit_MinHeight_Undo(divID) {
     let row = document.getElementById(_Edit_RowID(divID))
         row.style.height = ""
 }
+
+
+
+
+function parseMarkup(markupText) {
+    var linkRegex = /\[([^\]]+)\|([^\]]+)\]/g;
+    var htmlText = markupText.replace(linkRegex, '<a href="$2" target="#">$1</a>');
+    htmlText = htmlText.replace(new RegExp('\n', "g") , '<br>')
+    return htmlText;
+    }
+
+function convertToMarkup(htmlText) {
+    htmlText = htmlText.replace('target="#"', '')
+    var anchorRegex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1[^>]*?>(.*?)<\/a>/g;
+    var markupText = htmlText.replace(anchorRegex, '[$3|$2]');
+    var markupText2 = markupText.replace(new RegExp('<br>', "g") , '\n')
+    return markupText2;
+    }

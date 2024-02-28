@@ -338,9 +338,7 @@ class clsData {
         for (let i = 0; i < this.data.length; i++) {
             this.data[i].splice(col,1)
         }
-
     }
-
 
     xData(cols = []) {
         if (cols.length == 0) {
