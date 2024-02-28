@@ -64,9 +64,12 @@ function _Edit_MinHeight_Undo(divID) {
 
 
 
-
+// used in xcsv_reader
 function parseMarkup(markupText) {
-    var linkRegex = /\[([^\]]+)\|([^\]]+)\]/g;
+    if (typOf(markupText) != 'str') {
+        return markupText}
+    // var linkRegex = /\[([^\]]+)\|([^\]]+)\]/g;
+    var linkRegex = /\[([^\]]+)::([^\]]+)\]/g;
     var htmlText = markupText.replace(linkRegex, '<a href="$2" target="#">$1</a>');
     htmlText = htmlText.replace(new RegExp('\n', "g") , '<br>')
     return htmlText;
@@ -75,7 +78,8 @@ function parseMarkup(markupText) {
 function convertToMarkup(htmlText) {
     htmlText = htmlText.replace('target="#"', '')
     var anchorRegex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1[^>]*?>(.*?)<\/a>/g;
-    var markupText = htmlText.replace(anchorRegex, '[$3|$2]');
+    // var markupText = htmlText.replace(anchorRegex, '[$3|$2]');
+    var markupText = htmlText.replace(anchorRegex, '[$3::$2]');
     var markupText2 = markupText.replace(new RegExp('<br>', "g") , '\n')
     return markupText2;
     }

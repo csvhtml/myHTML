@@ -12,9 +12,20 @@ class clsPrinter {
             thsID: this.parent.XNames.IDs.headers(),
             thsStyle: "position: relative",
             rowsID: this.parent.XNames.IDs.rows(),
-            cellsText: this.parent.XData.data,
+            // cellsText: this.parent.XData.data,
+            cellsText: this.DataAsHTML(),
             cellsID: this.parent.XNames.IDs.cells(),
         })
+    }
+
+    DataAsHTML() {
+        let ret = []
+        for (let row of this.parent.XData.data) {
+            let tmp = []
+            for (let cell of row) {
+                tmp.push(parseMarkup(cell))}
+            ret.push(tmp)}
+        return ret
     }
 
     AsCSV() {
