@@ -12,9 +12,53 @@ const CLS_CSV_CELLHANDLERSAVE_BUTTON_AID = "clsCSV-Cell-SaveButon"
 class clsXCSV_Cell {
     constructor(parent) {
             this.parent = parent
-            this.CellDiv = null
+            this.egoID = null
         }
+
+        Edit(divID) {
+            this._ApplyEditMode_CreateTextArea(divID)
+            // this._ApplyEditMode_SaveButton(divID)
+        }
+
+        Edit_CreateTextArea(divID) {
+            this._RemoveTextArea()
     
+            // this.Set(divID);
+            
+            let input = this._TextArea()
+            // ; input.rows = "5"
+            // input.value = this.ActiveCellValue();
+            input.value = this.CellDiv.innerHTML
+            this.CellDiv.innerHTML = ""
+            this.CellDiv.append(input);
+            this._InputFiled_AutoHeight();
+    }
+
+    _RemoveTextArea() {
+        let oldinput  = document.getElementById(CLS_CSV_CELLHANDLER_TEXTAREA_DIVID);
+        if (oldinput != undefined) {
+            oldinput.remove();}
+    }
+
+    _TextArea() {
+        let input = document.createElement('textarea'); 
+        input.cols = "50"
+        // ; input.rows = "5"
+        input.id = CLS_CSV_CELLHANDLER_TEXTAREA_DIVID
+        input.classList.add("form-control")
+        return input
+    }
+
+    _InputFiled_AutoHeight() {
+        if (this.CellDiv != null) {
+            this.CellDiv.style.height = (this.CellDiv.scrollHeight)+"px";
+        }
+    }
+}
+    
+class clsXCSV_Cell_old {
+        constructor(parent) {}
+
     Set(divID) {
         this.xSet(divID)}
 

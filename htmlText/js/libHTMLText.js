@@ -25,12 +25,16 @@ class libHTMLText {
         cellsID = [["", ""], ["", ""]], cellsClass = [["", ""], ["", ""]], cellsStyle = [["", ""], ["", ""]]
     }) {
         let defaultArray_1D = function (arr, n) {
+            if (typOf(arr) == 'str') {
+                return Array(n).fill(arr)}
             if (IsEqual(arr, ["", ""])) {
                 return Array(n).fill("")} 
             else {
                 return arr}}
 
         let defaultArray_2D = function (arr, r, c) {
+            if (typOf(arr) == 'str') {
+                return Array(r).fill(Array(c).fill(arr))}
             if (IsEqual(arr, [["", ""], ["", ""]])) {
                 return Array(r).fill(Array(c).fill(""))} 
             else {
@@ -63,13 +67,13 @@ class libHTMLText {
         let lenC = cfg["thsText"].length
         let lenR = cfg["cellsText"].length
         assert(cfg["thsID"].length == lenC, cfg["thsID"].length)
-        assert(cfg["thsClass"].length == lenC, cfg["thsClass"].length)
+        assert(cfg["thsClass"].length == lenC, cfg["thsClass"].length || typOf(cfg["cellsClass"]) == 'str')
         assert(cfg["thsStyle"].length == lenC, cfg["thsStyle"].length)
         assert(cfg["rowsID"].length == lenR, cfg["rowsID"].length)
-        assert(cfg["rowsClass"].length == lenR, cfg["rowsClass"].length)
+        assert(cfg["rowsClass"].length == lenR, cfg["rowsClass"].length || typOf(cfg["cellsClass"]) == 'str')
         assert(cfg["rowsStyle"].length == lenR, cfg["rowsStyle"].length)
         assert(IsListEqualSize(cfg["cellsID"],cfg["cellsText"]))
-        assert(IsListEqualSize(cfg["cellsClass"],cfg["cellsText"]))
+        assert(IsListEqualSize(cfg["cellsClass"],cfg["cellsText"]) || typOf(cfg["cellsClass"]) == 'str')
         assert(IsListEqualSize(cfg["cellsStyle"],cfg["cellsText"]))
         return true
     }

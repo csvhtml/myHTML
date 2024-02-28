@@ -1,6 +1,8 @@
-const SVG = new clsSVG();
+// const CSVG = new clsSVG();  // MOHI: fix. the clsSVG class automatically creates svg icons. If referenced multipel time, itmes are multiple times created. libEdit also defines a SVG
 const HMTL = new libHTMLText()
 const UIN = new clsUserInput(["id-main"]);
+const EDIT = new libEdit('EDIT');
+
 var dataString = {
     "config":{},
     "headers": ["X", "Y", "Z"],
@@ -21,6 +23,7 @@ const XCSV = {
     }
 
     XCSV["main"].XPrinter.Print()
+    // EDIT.Init()
 })();
 
 

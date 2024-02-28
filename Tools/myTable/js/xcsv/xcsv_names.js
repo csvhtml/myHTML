@@ -175,11 +175,12 @@ class clsXCSV_Names_ID {
         return ret
     }
 
-    RowfromCell (divID) {
+    RowfromCellID (divID) {
+        if (this.IsRow(divID)) {
+            return divID}
         let X = CLSXCSV_NAMES["id"]["cell"]
         let r = RetStringBetween(divID, X["r"], X["c"])
-        return this._row(r)
-    }
+        return this._row(r)}
 
     _header(header) {
         let X = CLSXCSV_NAMES["id"]["header"]
@@ -210,5 +211,20 @@ class clsXCSV_Names_ID {
         if (ElementInArrayN(this.cells(),cellID)) {
             return true}
         return false
+    }
+
+    IsRow(ID) {
+        if (this.rows().includes(ID)) {
+            return true}
+        return false
+    }
+
+    RC_fromID(divID) {
+        if (!this.IsCell(divID)) {assert(false)}
+
+        let X = CLSXCSV_NAMES["id"]["cell"]
+        let r = Number(RetStringBetween(divID, X["r"], X["c"]))
+        let c = Number(RetStringBetween(divID, X["c"], X["h"]))
+        return [r, c]
     }
 }

@@ -1,16 +1,23 @@
+const CSVG = new clsSVG();
+
 class libEdit {
     constructor(name) {
         this.name = name
         this.innerHTMLs = {}  // in case of Close, then the original state is resored
         this.lasttime = new Date().getTime()
-
-        this._constructor_init()
+        this.Init()
     }
 
-    _constructor_init() {
+    Init() {
         let divs = document.getElementsByClassName("myEdit")
         for (let div of divs) {
-            div.setAttribute('onclick', this.name + '.Edit(this)')}
+            div.setAttribute('onclick', this.name + '.Edit(this)')}}
+
+    Inti_Z() {
+        let divs = document.getElementsByClassName("myEdit")
+        for (let div of divs) {
+            if (div.hasAttribute("onclick")) {
+            div.removeAttribute("onclick")}}
     }
 
     Edit(div) {
@@ -25,6 +32,7 @@ class libEdit {
         this._AppendButton(div, "x", size)}
 
     _Edit_Prepare(div) {
+        Edit_Edit(div)
         this._SetModeEdit(div)
         this.innerHTMLs[div.id] = div.innerHTML}
 
@@ -45,6 +53,7 @@ class libEdit {
         RemoveDIV("id-a-" + divID)
         this._SetModeRead(document.getElementById(divID))
         document.getElementById(divID).innerHTML = this.innerHTMLs[divID]
+        Edit_Close(divID)
         delete this.innerHTMLs[divID]}
     
     _IsModeEdit(div) {
@@ -64,7 +73,7 @@ class libEdit {
     _InnerHTML_To_Textarea(div, size = "normal") {
         let textarea = TextArea({
             id: "id-textarea-" + div.id,
-            value: Edit_Edit(div),
+            value: Edit_Textarea(div),
             cols: 1,
             rows: 1    
         })

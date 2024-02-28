@@ -21,10 +21,15 @@ class clsData {
         this.headers = headers
         this.data = data
     }
-    _constructor_assert( headers, data) {
+    _constructor_assert(headers, data) {
         assert(IsListEqualDepth(headers, [1,1]))
         assert(IsListEqualDepth(data, [[1,1],[1,1]]))
     }
+
+    SetValueRC(row, col, value) {
+        this.data[row][col] = value}
+
+    //----------------------------------------------------------------------------------
 
     Init(headers, data, delimiter) {
         this.xInit_Headers(headers)
