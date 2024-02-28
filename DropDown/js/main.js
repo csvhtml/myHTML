@@ -1,38 +1,8 @@
-const LOGG = true
-// const LOGG = false
-
-// ################################################################
-// Base classes                                                   #
-// ################################################################
-const cLOG = new clsLog()
-
-const DD = DropDownsOnPage()
-
-
-class clsDummy {
-    constructor({TargetDivID = ""}  ) {
-        this.TargetDivID = TargetDivID
-    }
-
-    Add_innerHTML(text) {
-        let div = document.getElementById(this.TargetDivID).innerHTML += text
-    }
-}
+const DD = new libDropDowns();
 
 (function () {
 
 })();
-
-
-const PAGE = {
-    "DUMMY": new clsDummy({TargetDivID: "MyCSV"})
-}
-
-
-// ################################################################
-// Dummy function                                                 #
-// ################################################################
-
 
 
 function AddBlueBox()  {
@@ -65,9 +35,8 @@ function AddRedBox()  {
     parentDiv.appendChild(blueBox);
 }
 
-function AddButtonText()  {
-    document.getElementById("MyCSV").innerHTML += " Button Function "
-
+function AddButtonText(text)  {
+    document.getElementById("MyCSV").innerHTML += text
 
 }
 

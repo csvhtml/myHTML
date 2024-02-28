@@ -9,8 +9,6 @@ class clsXCSV_Selectionhandler {
         document.getElementById(divID).classList.add("xcsv-focus","table-info")
     }
 
-
-
     unset() {
         if (this.EgoID != "") {
             EDIT.Inti_Z()
@@ -26,6 +24,12 @@ class clsXCSV_Selectionhandler {
 
     currentSelection() {
         return this.EgoID
+    }
+    
+    Row() {
+        if (this.parent.XNames.IDs.IsRow(this.currentSelection())) {
+            return this.parent.XNames.IDs.R_fromRowID(this.currentSelection())}
+        return -1
     }
 
 }

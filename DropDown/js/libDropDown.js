@@ -1,8 +1,28 @@
 // ################################################################
 // class                                                          #
 // ################################################################
+// this class is not inteded to have any callable functions. It's loaded one time and attached DropDowns on th Page
 
-class libDropDown {
+class libDropDowns {
+    constructor() {
+        this.Item = this.constuctor_init()
+    }
+
+    constuctor_init() {
+        let ret = {}
+        for (let key of Object.keys(LIB_DROPDOWN_QWERTZ) ) {
+            ret[key] = new libDropDownSinge(
+                LIB_DROPDOWN_QWERTZ[key],
+                document.getElementById(key))
+        
+            ret[key].InnerHTML_AddDropDown()
+        }
+        return ret
+    }
+}
+
+
+class libDropDownSinge {
     constructor(header = "", items = [], egoDiv = null) {
         this.egoDIV = null                
         this.header = ""                   // header of DropDown. Text that you see and clock on
@@ -33,17 +53,17 @@ class libDropDown {
             this.egoDIV = egoDiv
             this.header = this.egoDIV.innerHTML
 
-            if (IsString(items)) {
+            if (typOf(items) == "str") {
                 this.IsButton = true
                 this.functions = items
             } else {
                 // DropDowns
                 for (let item of items) {
                     // drop down entry with function being called
-                    if (IsObject(item)) { 
+                    if (typOf(item) == "dict") { 
                         this.constructor_pushFunctionItem(item)} 
                     // drop down entry with no function
-                    if (IsString(item)) {
+                    if (typOf(item) == "str") {
                         this.constructor_pushItem(item)
                     }
                 }

@@ -2,8 +2,8 @@
 // Drop Down and Button Configuration                             #
 // ################################################################
 const LIB_DROPDOWN_QWERTZ = {
-    // Buttons
-    "id-of-a-Button": "AddButtonText()" ,
+    // Buttons (possible, but actually beter to define this inside the index.html)
+    "id-of-a-Button": 'AddButtonText("  Button Text  1")' ,
     
     // DropDowns
     "id-of-a-div-anywhere-on-page":[
@@ -23,22 +23,9 @@ const LIB_DROPDOWN_QWERTZ = {
     "id-dropdown-anywhere":[
         "The drop down can be anywhere on the page",
         "not only in the navbar",
-        {"Call a object function": "PAGE['DUMMY'].Add_innerHTML('yippie!')"   // "" must be outer quotes, '' must be inner quotes
+        {"Call a object function": "AddButtonText('  Button Text  1')"   // "" must be outer quotes, '' must be inner quotes in a dict.
         },
     ],
 }
-
-function DropDownsOnPage() {
-    let ret = {}
-    for (let key of Object.keys(LIB_DROPDOWN_QWERTZ) ) {
-        ret[key] = new libDropDown(
-            LIB_DROPDOWN_QWERTZ[key],
-            document.getElementById(key))
-    
-        ret[key].InnerHTML_AddDropDown()
-    }
-    return ret
-}
-
 
 
