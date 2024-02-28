@@ -13,8 +13,6 @@ class clsData {
         this.parent = parent
         this.headers = headers
         this.data = data
-        this.len = data.length
-
     }
 
     InitData(headers, data) {
@@ -26,8 +24,54 @@ class clsData {
         assert(IsListEqualDepth(data, [[1,1],[1,1]]))
     }
 
-    SetValueRC(row, col, value) {
-        this.data[row][col] = value}
+    // SetValueRC(row, col, value) {
+    //     this.data[row][col] = value}
+
+    // AddRow(atPosition = -1, newRow = []) {
+    AddRow(newRow = []) {
+        let atPosition = this.parent.XSelection.Row()       // -1 in case no row is selected
+        this.xAddRow(atPosition, newRow)}
+
+    xAddRow(atPosition = -1, newRow = []) {
+            this._xAddRow_assert(atPosition, newRow)
+        
+            let targetPosition = this._targetPosition(atPosition)
+            let targetRow = this._DefaultRow(targetPosition, newRow)
+            this.data.splice(targetPosition, 0, targetRow)               
+            this._UpdateNumberCol()
+        }
+
+    _targetPosition(atPosition) {
+        if (atPosition == -1) {
+            return this.data.length}
+        return atPosition}
+
+        _xAddRow_assert(atPosition, newRow) {
+            assert(atPosition > -2, "atPosition index below -1")
+            assert(atPosition < this.data.length+1, "atPosition above data length")
+            assert(newRow.length == this.headers.length || newRow.length == 0, "values length not equal to data length")}
+
+        _DefaultRow(n = 0, newRow) {    
+            if (newRow.length > 0) {
+                return newRow}   
+            let ret = []      
+            for (let col of this.headers) {
+                ret.push(this._DefaultVal(col))}
+            return ret}
+
+        _DefaultVal(col, n = 0) {
+            if (col == "No.") {
+                return String(n+1)}
+            return ".."}
+
+        _UpdateNumberCol() {
+            if (this.headers.indexOf("No") >-1) {
+                let colIdx = this.headers.indexOf("No")
+                for (let i = 0; i < this.data.length; i++) {
+                    this.data[i][colIdx] = String(i+1)}
+            }
+        }
+        
 
     //----------------------------------------------------------------------------------
 
@@ -37,8 +81,7 @@ class clsData {
             this.xInit_Data(data, delimiter)}
     }
 
-    AddRow(atPosition = -1, newRow = []) {
-        this.xAddRow(atPosition, newRow)}
+
 
     AddCol(header = "", atPosition = -1, values = []) {
         this.xAddCol(header, atPosition, values)}
@@ -92,26 +135,9 @@ class clsData {
             ret.push(this._DefaultVal(header, i))}
     }
 
-    DefaultRow(atPosition = -1) {
-        let no = 0
-        let ret = []
-        if (atPosition = -1) {
-            no = 0}
-        
-        for (let col of this.headers) {
-            ret.push(this._DefaultVal(col))
-        }
-        return ret
-    }
 
-    _DefaultVal(col, n = 0) {
-        if (this._ColIsNumber(col)) {
-            return String(n+1)}
-        if (this._ColIsFilter(col)) {
-            return "[]"}
-        return ".."
-    }
-    
+
+
     _ColIsNumber(col) {
         if (CLSCSV_GETTER["colTypeIdentifier"]["number"].indexOf(col)>-1) {
             return true}
@@ -219,26 +245,9 @@ class clsData {
     }
 
 
-    xAddRow(atPosition = -1, newRow = []) {
-        this._xAddRow_assert(atPosition, newRow)
 
-        if (newRow.length == 0) {
-            newRow = this.DefaultRow(atPosition)}
 
-        if (atPosition == -1) {
-            this.data.push(newRow)} 
-        else {
-            this.data.splice(atPosition, 0, newRow)}
-            
-        this.len += 1
-        this._UpdateNumberCol()
-    }
-    _xAddRow_assert(atPosition, newRow) {
-        assert(atPosition > -2, "atPosition index below -1")
-        assert(atPosition < this.len+1, "atPosition above data length")
-        if (newRow.length > 0) {
-            assert(newRow.length == this.headers.length, "values length not equal to data length")}
-    }
+
 
     AddRowDict(atPosition = -1, newRowDict = {}) {
         assert(atPosition > -2, "atPosition index below -1")
@@ -511,14 +520,7 @@ class clsData {
     //     return false
     // }
 
-    _UpdateNumberCol() {
-        if (this._HasReservedCol("No.") && CLS_DATA_1X1_AUTOFILL_COL_NO) {
-            let colIdx = this._ReservedCol_Idx("No.")
-            for (let i = 0;i<this.len;i++) {
-                this.data[i][colIdx] = String(i+1)
-            }
-        }
-    }
+
 
     _HasReservedCol(colName) {
         for (let idx of Object.keys(CLS_DATA_1X1_RESERVED_COLS)) {

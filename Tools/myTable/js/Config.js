@@ -1,3 +1,11 @@
+// DropDown Config
+const LIB_DROPDOWN_QWERTZ = {
+    // Buttons (possible, but actually beter to define this inside the index.html)
+    "nav-Edit": [
+        {"Add Row": "XCSV['main'].AddRow()"},     // "" must be outer quotes, '' must be inner quotes in a dict.
+    ],
+}
+
 
 // UpDownloadConfig
 const cFileReaders = {}; 

@@ -1,3 +1,4 @@
+const DD = new libDropDowns();
 // const CSVG = new clsSVG();  // MOHI: fix. the clsSVG class automatically creates svg icons. If referenced multipel time, itmes are multiple times created. libEdit also defines a SVG
 const HMTL = new libHTMLText()
 const UIN = new clsUserInput(["id-main"]);

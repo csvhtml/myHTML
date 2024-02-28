@@ -18,25 +18,26 @@ class clsXCSV_Clickhandler {
 
     _HeaderCell(divID) {
         if (this._AlreadyInFocus(divID)) {
-            // do something
-        } 
+            this.parent.XSelection.unset()
+            this.parent.XSelection.set(divID)
+            this.parent.XSelection.edit(divID)} 
         else {
-            this.parent.XFocus.unset()
-            this.parent.XFocus.set(divID)} 
+            this.parent.XSelection.unset()
+            this.parent.XSelection.set(divID)} 
     }
 
     _Cell(divID) {
         let rowID = this.parent.XNames.IDs.RowfromCellID(divID)
         if (this._AlreadyInFocus(rowID)) {
-            this.parent.XFocus.unset()
-            this.parent.XFocus.set(divID)
-            this.parent.XFocus.edit(divID)}
+            this.parent.XSelection.unset()
+            this.parent.XSelection.set(divID)
+            this.parent.XSelection.edit(divID)}
         else {
-            this.parent.XFocus.unset()
-            this.parent.XFocus.set(rowID)}  
+            this.parent.XSelection.unset()
+            this.parent.XSelection.set(rowID)}  
     }
 
     _AlreadyInFocus(divID) {
-        return (this.parent.XFocus.currentSelection() == divID)
+        return (this.parent.XSelection.currentSelection() == divID)
     }
 }

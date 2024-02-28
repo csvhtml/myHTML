@@ -14,7 +14,9 @@ function Click() {
 
 
 function Edit_Edit(div) {
-    _Edit_MinHeight(div.id)
+    if (XCSV["main"].XNames.IDs.IsCell(div.id)) {
+        _Edit_MinHeight(div.id)}
+
 }
 
 function Edit_Textarea(div) {
@@ -23,13 +25,20 @@ function Edit_Textarea(div) {
 }
 
 function Edit_Save(divID, value) {
-    //data
-    let RC = XCSV["main"].XNames.IDs.RC_fromID(divID)
-    XCSV["main"].XData.SetValueRC(RC[0], RC[1], value)
-    //style
-    _Edit_MinHeight_Undo(divID)
-    let value_modified = value
-    return value_modified
+    if (XCSV["main"].XNames.IDs.IsCell(divID)) {
+        //data
+        let RC = XCSV["main"].XNames.IDs.RC_fromID(divID)
+        XCSV["main"].XData.data[row][col] = value
+        //style
+        _Edit_MinHeight_Undo(divID)
+    }
+
+    if (XCSV["main"].XNames.IDs.IsHeader(divID)) {
+        let h = XCSV["main"].XNames.IDs.H_fromHeaderID(divID)
+        XCSV["main"].XData.headers[h] = value
+    }
+        let value_modified = value
+        return value_modified
 }
 
 function Edit_Close(divID) {

@@ -227,4 +227,19 @@ class clsXCSV_Names_ID {
         let c = Number(RetStringBetween(divID, X["c"], X["h"]))
         return [r, c]
     }
+
+    R_fromRowID(divID) {
+        if (!this.IsRow(divID)) {assert(false)}
+
+        let X = CLSXCSV_NAMES["id"]["row"]
+        return Number(RetStringBetween(divID, X["prefix"], X["postfix"]))  
+    }
+
+    H_fromHeaderID(divID) {
+        if (!this.IsHeader(divID)) {assert(false)}
+
+        let X = CLSXCSV_NAMES["id"]["header"]
+        let headerName = RetStringBetween(divID, X["prefix"], X["postfix"])
+        return Number(this.parent.XData.headers.indexOf(headerName))  
+    }
 }

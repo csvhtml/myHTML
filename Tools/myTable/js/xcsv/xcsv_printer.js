@@ -10,6 +10,7 @@ class clsPrinter {
             tableStyle: "margin-bottom:0;",
             thsText: this.parent.XData.headers,
             thsID: this.parent.XNames.IDs.headers(),
+            thsStyle: "position: relative",
             rowsID: this.parent.XNames.IDs.rows(),
             cellsText: this.parent.XData.data,
             cellsID: this.parent.XNames.IDs.cells(),

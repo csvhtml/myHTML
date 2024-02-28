@@ -13,16 +13,11 @@ class clsXCSV {
             this.XActiveCell = new clsXCSV_Cell(this)
             this.XNames = new clsXCSV_Names(this)
             this.XClick = new clsXCSV_Clickhandler(this)
-            this.XFocus = new clsXCSV_Selectionhandler(this)
+            this.XSelection = new clsXCSV_Selectionhandler(this)
+        }
+
+        AddRow() {
+            this.XData.AddRow()
+            this.XPrinter.Print()
         }
     }
-
-
-    // let zz = RetStringBetween(div.id, "[", "]") 
-    // if (zz != "") {
-    //     let X = XCSV[zz]
-    //     let r = parent.XNames.RowfromCellID(divID)
-    //     let c = parent.XNames.ColfromCellID(divID)
-    //     let currentValue = document.getElementById("id-textarea").value
-    //     X.XData.data[r][c] = currentValue
-    //     X.XPrinter.Print()
