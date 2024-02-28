@@ -1,39 +1,3 @@
-.out {
-    width: 100pt;
-    height: 100pt;
-    border: 1pt solid black;
-    float: left;
-    text-align: center;
-    line-height: 100pt;
-}
-
-.out2 {
-    width: 100pt;
-    height: 40pt;
-    border: 1pt solid black;
-    float: left;
-    text-align: center;
-    line-height: 40pt;
-    position: relative;
-}
-
-.out3 {
-    width: 100pt;
-    height: 20pt;
-    border: 1pt solid black;
-    float: left;
-    text-align: center;
-    line-height: 20pt;
-}
-
-.section {
-    width: 100%;
-    height: 100pt;
-    float: left;
-    text-align: center;
-    line-height: 100pt;
-}
-
 textarea {
     resize: none;
     overflow: hidden;
@@ -48,36 +12,16 @@ textarea {
     float: left;
 }
 
-.xsvg-link.xsvg-right-save {
+.xsvg-link.xsvg-right {
     /* // parent must have css: position: relative; */
     position: absolute;   
+    right: 0px;
+}
+
+.xsvg-link.top-0 {
     top: 0px;
-    right: 0px;
 }
 
-.xsvg-link.xsvg-right-x {
-    /* // parent must have css: position: relative; */
-    position: absolute;   
+.xsvg-link.top-30 {
     top: 30px;
-    right: 0px;
 }
-
-/* from bootraps/scss/_form_control
-    .form-control {
-        display: block;
-        width: 100%;
-        padding: $input-padding-y $input-padding-x;
-        font-family: $input-font-family;
-        font-weight: $input-font-weight;
-        line-height: $input-line-height; -> 1.5
-        color: $input-color;
-        background-color: $input-bg;
-        background-clip: padding-box;
-        border: $input-border-width solid $input-border-color;
-        appearance: none; // Fix appearance for date inputs in Safari 
-        
-AND 
-
-textarea.form-control {
-    min-height: calc(1.5em + 0.75rem + 2px);   -> leads to approx 38px
-}*/

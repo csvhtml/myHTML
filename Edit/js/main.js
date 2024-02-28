@@ -4,10 +4,4 @@ const CSVG = new clsSVG();
 (function () {
 
 })();
-
-
-
-
-
-
-
+ 

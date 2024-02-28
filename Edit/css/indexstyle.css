@@ -1,0 +1,26 @@
+.out {
+    width: 100pt;
+    height: 100pt;
+    border: 1pt solid black;
+    float: left;
+    text-align: center;
+    line-height: 100pt;
+}
+
+.out2 {
+    width: 100pt;
+    height: 40pt;
+    border: 1pt solid black;
+    float: left;
+    text-align: center;
+    line-height: 40pt;
+    position: relative;
+}
+
+.section {
+    width: 100%;
+    height: 100pt;
+    float: left;
+    text-align: center;
+    line-height: 100pt;
+}
