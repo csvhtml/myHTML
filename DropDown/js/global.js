@@ -5,6 +5,11 @@
 function DropDown_ToggleDisplay(divID, pair = ["block", "none"]) {
     let x = document.getElementById(divID).style.display
     document.getElementById(divID).style.display = toggle(x, pair)
+    if (document.getElementById(divID).style.display == "block") {
+        _DropDown_ZIndex()
+    } else {
+        _DropDown_ZIndex(true)
+    }
   }
 
 function DropDown_ToggleVal(divID, pair) {
@@ -34,4 +39,18 @@ function DropDown_ToggleValANDClick(divID, pairVal, pairFunction) {
 
 function DropDown_Hide(divID) {
     document.getElementById(divID).style.display = 'none';
+}
+
+function _DropDown_ZIndex(undo = false) {
+    let tds = document.getElementsByTagName("td")
+    let ths = document.getElementsByTagName("th")
+    for (let txs of [tds, ths]) {
+        for (let tx of txs) {
+            if (undo) {
+                tx.style.position = "" 
+            } else {
+                tx.style.position = "static"
+            }
+        }
+    }
 }

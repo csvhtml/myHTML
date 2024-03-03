@@ -6,10 +6,40 @@ CLS_DATA_1X1_RESERVED_COLS ={ // in case key is negative, then index is not spec
 CLS_DATA_1X1_AUTOFILL_COL_NO = true
 DELIMITER = ";"
 
+class clsDataItems {
+    constructor(parent, ItemLists = ["Link"]) {
+        function _dictDataItems(ItemLists) {
+            let ret = {}
+            for (let items of ItemLists) {
+                ret[items] = new clsData(parent, ["Name", "Description", "Status", "Tags"], [["","","",""], ["","","",""]])}
+            return ret
+        }
+        this.parent = parent
+        this.self = _dictDataItems(ItemLists)
+    }
+
+    CreateItemLists() {
+        for (key of Object.keys(this.self)) {
+            this.CreateItemList(key)}
+    }
+
+    CreateItemList(key) {
+        for (let row of this.parent.xData.data) {
+            for (let val of row) {
+                this.AddItemsToListFromCellvalue(val, key)}}
+    }
+
+    AddItemsToListFromCellValue(val) {
+        // if ("[LINK:xxxxx]" im val) {
+
+        // }
+    } 
+}
+
+
 class clsData {
     constructor(parent, headers, data) {
         this._constructor_assert(headers, data)
-
         this.parent = parent
         this.headers = headers
         this.data = data

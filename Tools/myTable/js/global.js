@@ -27,6 +27,7 @@ function Edit_Textarea(div) {
 }
 
 function Edit_Save(divID, value) {
+    if (value == "") {value = ".."}
     if (XCSV["main"].XNames.IDs.IsCell(divID)) {
         //data
         let RC = XCSV["main"].XNames.IDs.RC_fromID(divID)

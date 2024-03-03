@@ -1,7 +1,39 @@
-body {
-    /* overflow: hidden; */
-}
-
 input[type="file"]#nav-input{
     display: none;
+  }
+
+
+  /* Sticky Table and 90% table area */
+  body {
+    padding-top: 40px;  /* Height of the navbar */
+  }
+
+  #navbar {
+    position:fixed;
+    top:0;
+    left:0;
+    width: 100%;
+  }
+
+  /* Uncomment for Sticky Table */
+
+  th, tr.myheader td {
+    font-weight: bold;
+    background-color: lightgray !important;
+    position: sticky;
+    top: 4px;  
+  }
+
+  
+  table {
+    border:0;
+  }
+
+  tr {
+    border-collapse: collapse;
+  }
+
+  td {
+    border-top: 1px solid grey;
+    border-bottom: 1px solid gray;
   }

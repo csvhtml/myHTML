@@ -40,7 +40,7 @@ class libEdit {
         let value = document.getElementById("id-textarea-" + divID).value
         // document.getElementById(divID).innerHTML = this._value_to_html(value)
         document.getElementById(divID).innerHTML = Edit_Save(divID, value)
-        delete this.innerHTMLs[divID]
+        this._Delete_this_innerHTMLs_item(divID)
         this._SetModeRead(document.getElementById(divID))}
 
     CloseAll()  {
@@ -54,7 +54,12 @@ class libEdit {
         this._SetModeRead(document.getElementById(divID))
         document.getElementById(divID).innerHTML = this.innerHTMLs[divID]
         Edit_Close(divID)
-        delete this.innerHTMLs[divID]}
+        this._Delete_this_innerHTMLs_item(divID)}
+
+    _Delete_this_innerHTMLs_item(divID) {
+        delete this.innerHTMLs[divID]
+        // add global function here if necessary
+    }
     
     _IsModeEdit(div) {
         if (div.classList.contains('x-edit')) {

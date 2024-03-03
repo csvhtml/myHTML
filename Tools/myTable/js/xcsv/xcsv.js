@@ -7,6 +7,7 @@ class clsXCSV {
             // this.name = name
             this.egoDivID = egoDivID
             this.XData = new clsData(this, headers, data)
+            this.XDataItems = new clsDataItems(this, ["Link"])
             this.XReader = new clsReader(this)
             this.XPrinter = new clsPrinter(this)
 
