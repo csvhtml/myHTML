@@ -3,7 +3,17 @@ class clsPrinter {
         this.parent = parent
     }
 
-    Print() {
+    Print(key="data") {
+        if (key == "data") {
+            this._Print()}
+        else {
+            this._PrintConfig(key)
+        }
+        
+        
+    }
+
+    _Print() {
         document.getElementById(this.parent.egoDivID).innerHTML = HMTL.Table({
             tableID: "id-table-" + this.parent.egoDivID,
             tableClass: "table",
@@ -14,6 +24,23 @@ class clsPrinter {
             // cellsText: this.parent.XData.data,
             cellsText: this.DataAsHTML(),
             cellsID: this.parent.XNames.IDs.cells(),
+        })
+    }
+
+    _PrintConfig(key) {
+        this.parent.XSelection.unset()
+        document.getElementById(this.parent.egoDivID).innerHTML = HMTL.Table({
+            tableID: "id-table-" + this.parent.egoDivID,
+            tableClass: "table",
+            tableStyle: "margin-bottom:0;",
+            thsText: this.parent.XDataItems.self["Link"].headers,
+            cellsText: this.parent.XDataItems.self["Link"].data,
+
+            // thsText: this.parent.XNames.ConfigIDs["Link"].XData.headers,
+            thsID: this.parent.XNames.ConfigIDs["Link"].headers(),
+            rowsID: this.parent.XNames.ConfigIDs["Link"].rows(),
+            
+            cellsID: this.parent.XNames.ConfigIDs["Link"].cells(),
         })
     }
 

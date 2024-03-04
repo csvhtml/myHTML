@@ -4,6 +4,10 @@ const LIB_DROPDOWN_QWERTZ = {
     "nav-Edit": [
         {"Add Row": "XCSV['main'].AddRow()"},     // "" must be outer quotes, '' must be inner quotes in a dict.
     ],
+     "nav-List": [
+        {"Data": "XCSV['main'].XPrinter.Print()"},     //
+        {"Links": "XCSV['main'].XPrinter.Print('Link')"}, 
+    ],
 }
 
 

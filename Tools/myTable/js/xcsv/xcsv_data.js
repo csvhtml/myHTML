@@ -11,7 +11,8 @@ class clsDataItems {
         function _dictDataItems(ItemLists) {
             let ret = {}
             for (let items of ItemLists) {
-                ret[items] = new clsData(parent, ["Name", "Description", "Status", "Tags"], [["","","",""], ["","","",""]])}
+                ret[items] = new clsData(parent, ["Name", "Description", "Status", "Tags"], [["","","",""]])
+                }
             return ret
         }
         this.parent = parent
@@ -19,21 +20,36 @@ class clsDataItems {
     }
 
     CreateItemLists() {
-        for (key of Object.keys(this.self)) {
+        for (let key of Object.keys(this.self)) {
             this.CreateItemList(key)}
     }
 
     CreateItemList(key) {
-        for (let row of this.parent.xData.data) {
+        let items = []
+        for (let row of this.parent.XData.data) {
             for (let val of row) {
-                this.AddItemsToListFromCellvalue(val, key)}}
+                items = PatternsFound3(val,["[" + key, ":", "]"])
+                if (items.length > 0) {
+                    this.AddItemsToListFromCellValue(key, items)}}}  // key information actually redundant
     }
 
-    AddItemsToListFromCellValue(val) {
-        // if ("[LINK:xxxxx]" im val) {
-
-        // }
+    AddItemsToListFromCellValue(key, items) {
+        let val = ""
+        for (let item of items) {
+            val = RetStringBetween(item, "[" + key + ":", "]")
+            if (this._IsItemInList(key, val)) {
+                // do nothing
+            } else {
+                this.self[key].AddRow([val,"","",""])
+            }
+        }
     } 
+
+    _IsItemInList(key, item) {
+        if (this.self[key].ColAsList("Name").indexOf(item) > -1) {
+            return true}
+        return false
+    }
 }
 
 
@@ -101,8 +117,28 @@ class clsData {
                     this.data[i][colIdx] = String(i+1)}
             }
         }
-        
+    
+    ColAsList(colName) {
+        assert (typOf(colName) == "str")
+        assert(this.headers.indexOf(colName)>-1)
+        let ret = []
 
+        let idx = this.headers.indexOf(colName)
+        for (let row of this.data) {
+            ret.push(_byVal(row[idx]))}
+        return ret
+    }
+
+    // ColAsList(colName) {
+    //     assert(typeof colName === 'string', colName + " is not of type string")
+    //     assert(this.headers.indexOf(colName)>-1, colName + " not in headers")
+    //     let ret = []
+    //     let idx = this.headers.indexOf(colName)
+    //     for (let i = 0; i<this.len;i++) {
+    //         ret.push(_byVal(this.data[i][idx]))
+    //     }
+    //     return ret
+    // }
     //----------------------------------------------------------------------------------
 
     Init(headers, data, delimiter) {
@@ -131,16 +167,6 @@ class clsData {
     Data(cols = []) {
         return this.xData(cols)
     }
-
-    ColAsList(col) {
-        let idx = this.headers.indexOf(col)
-        let ret = []
-        for (let row of data) {
-            ret.push(_byVal(row[idx]))
-        }
-        return ret
-    }
-
 
     ColValues(col, sep = ",", sort = true) {
         //     A            |   	B
@@ -464,16 +490,7 @@ class clsData {
         return true
     }
 
-    ColAsList(colName) {
-        assert(typeof colName === 'string', colName + " is not of type string")
-        assert(this.headers.indexOf(colName)>-1, colName + " not in headers")
-        let ret = []
-        let idx = this.headers.indexOf(colName)
-        for (let i = 0; i<this.len;i++) {
-            ret.push(_byVal(this.data[i][idx]))
-        }
-        return ret
-    }
+
 
     RenameCol(old, neww) {
         assert(this.headers.includes(old), old + " is not in headers")

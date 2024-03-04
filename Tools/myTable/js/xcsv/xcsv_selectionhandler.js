@@ -13,6 +13,7 @@ class clsXCSV_Selectionhandler {
         if (this.EgoID != "") {
             EDIT.Inti_Z()
             document.getElementById(this.EgoID).classList.remove("xcsv-focus", "table-info", "myEdit")
+            this.EgoID = ""
         }
     }
 

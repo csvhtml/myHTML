@@ -99,6 +99,30 @@ function ChangeLastChar(inputString, newChar) {
   }
 
 
+  function PatternsFound3(text, p3 = ["[", ":", "]"]) {
+    let ret = []; let tmp = ""
+    let startIndex = 0; let pIndex = [-1, -1, -1]
+    
+    // find p indexes
+    while (startIndex < text.length) {
+        pIndex[0] = text.indexOf(p3[0], startIndex)
+        if (pIndex[0] == -1) {return ret}
+        for (i = 1; i < p3.length; i++) {
+            pIndex[i] = text.indexOf(p3[i], pIndex[i-1])
+            if (pIndex[i] == -1) {return ret}
+        }
+  
+    // Extract the pattern and push it into the occurrences array
+    tmp = text.slice(pIndex[0], pIndex[pIndex.length-1] + 1);
+    ret.push(tmp);
+  
+    startIndex = pIndex[pIndex.length-1] + 1;
+    }
+  
+    return ret;
+  }
+
+
 // ################################################################
 // test                                                           #
 // ################################################################
@@ -109,6 +133,14 @@ function test_TextFunctions() {
     test_Basis_myReplace() 
 
     return 0 // 32 assertions in this file (and should all be catched)
+}
+
+function test_PatternsFound3() {
+    let inp = "hallo [Link:nach Hause] an die Welt und auch [Lin:zurueck]. "
+
+    let result = PatternsFound3(inp, ["[Link", ":", "]"])
+
+    console.log(result)
 }
 
 

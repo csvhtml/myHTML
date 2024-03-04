@@ -34,136 +34,70 @@ const LAYOUT_CLASSNAME = {
 class clsXCSV_Names {
     constructor(parent) {
         this.parent = parent
-        this.IDs = new clsXCSV_Names_ID(parent)
-    }
-
-    headerID(header) {
-        let ret = '[' + this.EgoDivID+ '] '
-        ret += LAYOUT_ID['HeaderPrefix'] + header + LAYOUT_ID['HeaderPostfix']
-        return ret
-    }
-
-    headersID(headers) {
-        let ret = []
-        for (let h of headers) {
-            ret.push(this.headerID(h))
-        }
-        return ret
-    }
-
-    header(from_headerID) {
-        return RetStringBetween(from_headerID,LAYOUT_ID['HeaderPrefix'],LAYOUT_ID['HeaderPostfix'])
-    }
-
-    headerClasses(header) {
-        return [LAYOUT_CLASSNAME['ColPrefix'] + header]
-    }
-
-    headersClasses(headers) {
-        let ret = []
-        for (let h of headers) {
-            ret.push(this.headerClasses(h))
-        }
-        return ret
-    }
-
-    headerWidth(header) {
-        let w = "15"
-        if (header == "No.") {w = "4"}
-        if (header == "Name") {w = "15"}
-        if (header == "Description") {w = "38"}
-        if (header == "Type") {w = "5"}
-        if (header == "Tags") {w = "8"}
-
-        return w
+        this.IDs = new clsXCSV_Names_ID(parent, this.parent.XData)
+        this.ConfigIDs = {
+            "Link": new clsXCSV_Names_ID(parent, this.parent.XDataItems.self["Link"])
         }
 
-    headersWidth(headers) {
-            let ret = []
-            for (let h of headers) {
-                ret.push(this.headerWidth(h))
-            }
-            return ret
-        }
-    
-    RowID(RowIndexStr) {
-        let ret = '[' + this.EgoDivID+ '] '
-        ret += LAYOUT_ID['RowPrefix'] + RowIndexStr + LAYOUT_ID['RowPostfix']
-        return ret
     }
 
-    RowIDs(RowsCount) {
-        let ret = []
-        for (let i = 0; i < RowsCount; i++) {
-            ret.push(this.RowID(String(i)))
-        }
-        return ret
+    IsHeader (divID) {
+        if (this.IDs.IsHeader(divID)) {
+            return true}
+        if (this.ConfigIDs["Link"].IsHeader(divID)) {
+            return true}
+        return false
     }
 
-    row(from_rowID) {
-        return RetStringBetween(from_rowID,LAYOUT_ID['RowPrefix'],LAYOUT_ID['RowsPostfix'])
+    IsRow (divID) {
+        if (this.IDs.IsRow(divID)) {
+            return true}
+        if (this.ConfigIDs["Link"].IsRow(divID)) {
+            return true}
+        return false
     }
 
-    CellColsClasses (headers, RowsCount) {
-        let ret = []
-        let tmp = []
-        for (let j = 0; j < RowsCount; j++) {
-            tmp = []
-            for (let h of headers) {
-                tmp.push(this.CellClasses(h))
-            }
-            ret.push(tmp)
-        }
-        return ret
+    IsCell (divID) {
+        if (this.IDs.IsCell(divID)) {
+            return true}
+        if (this.ConfigIDs["Link"].IsCell(divID)) {
+            return true}
+        return false
     }
 
-    // all cells of a certain col get the following classes
-    CellClasses (header) {
-        // return [LAYOUT_CLASSNAME['Table'], LAYOUT_CLASSNAME['Cell'], LAYOUT_CLASSNAME['ColPrefix'] + header]
-        return [this.CellClass_Table(), this.CellClass_Cell(), this.CellClass_Col(header)]
+    RowfromCellID(divID) {
+        if (this.IsRow(divID)) {
+            return divID}
+        let X = CLSXCSV_NAMES["id"]["cell"]
+        let r = RetStringBetween(divID, X["r"], X["c"])
+        return this._row(r)}
     }
-
-    // class to identify a cell as being a cell
-    CellClass_Cell () {
-        return LAYOUT_CLASSNAME['Cell']
-        }
-    
-    // class to identify a cell as part of a table
-    CellClass_Table () {
-        return LAYOUT_CLASSNAME['Table']
-        }
-
-    // class to identify a cell as part of a certain colum
-    CellClass_Col (header) {
-        return LAYOUT_CLASSNAME['ColPrefix'] + header
-    }
-
-}
 
 class clsXCSV_Names_ID {
-    constructor(parent) {
+    constructor(parent, XData) {
         this.parent = parent
+        this.XData = XData
     }
 
     headers() {
         let ret = []
-        for (let header of this.parent.XData.headers) {
+        for (let header of this.XData.headers) {
             ret.push(this._header(header))}
         return ret
     }
 
     rows() {
         let ret = []; let r = 0
-        for (let row of this.parent.XData.data) {
+        for (let row of this.XData.data) {
             ret.push(this._row(String(r)))
             r +=1}
         return ret
     }
 
     cells() {
-        let headers = this.parent.XData.headers
+        let headers = this.XData.headers
         let ret = []; let tmp = []; let r = 0; let c = 0
-        for (let row of this.parent.XData.data) {
+        for (let row of this.XData.data) {
             tmp = []
             c = 0
             for (let cell of row) {
@@ -240,6 +174,6 @@ class clsXCSV_Names_ID {
 
         let X = CLSXCSV_NAMES["id"]["header"]
         let headerName = RetStringBetween(divID, X["prefix"], X["postfix"])
-        return Number(this.parent.XData.headers.indexOf(headerName))  
+        return Number(this.XData.headers.indexOf(headerName))  
     }
 }

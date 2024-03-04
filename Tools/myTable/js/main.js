@@ -7,7 +7,7 @@ const EDIT = new libEdit('EDIT');
 var dataString = {
     "config":{},
     "headers": ["X", "Y", "Z"],
-    "data": [[1,2,3], ["a", "b", "c"],[1,2,3], ["a", "b", "c"]]
+    "data": [["1","2","3"], ["a", "b", "c"],["1","2","3"], ["a", "b", "c"]]
 };
 
 const XCSV = {

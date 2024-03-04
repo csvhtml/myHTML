@@ -32,8 +32,11 @@ function Edit_Save(divID, value) {
         //data
         let RC = XCSV["main"].XNames.IDs.RC_fromID(divID)
         XCSV["main"].XData.data[RC[0]][RC[1]] = value
+        // dataconfig
+        XCSV["main"].XDataItems.CreateItemLists()
         //style
         _Edit_MinHeight_Undo(divID)
+
     }
 
     if (XCSV["main"].XNames.IDs.IsHeader(divID)) {
