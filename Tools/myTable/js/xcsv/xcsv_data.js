@@ -21,7 +21,22 @@ class clsDataItems {
 
     CreateItemLists() {
         for (let key of Object.keys(this.self)) {
-            this.CreateItemList(key)}
+            if (key == "Link") {
+                this.CreateItemList_Link(key) 
+            } else {
+                this.CreateItemList(key)
+            }
+        }
+            
+    }
+
+    CreateItemList_Link(key) {
+        let items = []
+        for (let row of this.parent.XData.data) {
+            for (let val of row) {
+                items = PatternsFound3(val,["[", "::", "]"])
+                if (items.length > 0) {
+                    this.AddItemsToListFromCellValue(key, items)}}}  // key information actually redundant
     }
 
     CreateItemList(key) {
