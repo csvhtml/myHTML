@@ -3,7 +3,7 @@ class clsXCSV_Clickhandler {
             this.parent = parent
         }
 
-    process(div) {
+    ClickEvent(div) {
         let divID = ReturnParentUntilID(div).id
 
         // if (this.parent.XNames.IDs.IsHeader(divID)){

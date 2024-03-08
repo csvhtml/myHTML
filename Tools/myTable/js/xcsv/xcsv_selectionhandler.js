@@ -7,14 +7,26 @@ class clsXCSV_Selectionhandler {
     set(divID) {
         this.EgoID = divID
         document.getElementById(divID).classList.add("xcsv-focus","table-info")
+        
+        let X = this.parent.XNames.IDs
+        if (X.IsRow(divID)) {
+            infoblock("Selectied Row: " + String(this.parent.XNames.IDs.R_fromRowID(this.EgoID))); return}
+        if (X.IsCell(divID)) {
+            infoblock("Selectied Cell: " + String(this.parent.XNames.IDs.RC_fromID(this.EgoID))); return}
+        if (X.IsHeader(divID)) {
+            infoblock("Selectied Heaer: " + this.parent.XData.headers[this.parent.XNames.IDs.H_fromHeaderID(this.EgoID)]); return}
+        
     }
 
     unset() {
         if (this.EgoID != "") {
-            EDIT.Inti_Z()
-            document.getElementById(this.EgoID).classList.remove("xcsv-focus", "table-info", "myEdit")
-            this.EgoID = ""
+            if (document.getElementById(this.EgoID)) {
+                EDIT.Init_Undo()
+                document.getElementById(this.EgoID).classList.remove("xcsv-focus", "table-info", "myEdit")
+            }
         }
+        this.EgoID = ""
+        infoblock(this.EgoID)
     }
 
     edit(divID) {

@@ -13,11 +13,13 @@ class libEdit {
         for (let div of divs) {
             div.setAttribute('onclick', this.name + '.Edit(this)')}}
 
-    Inti_Z() {
+    Init_Undo() {
         let divs = document.getElementsByClassName("myEdit")
         for (let div of divs) {
             if (div.hasAttribute("onclick")) {
             div.removeAttribute("onclick")}}
+            this.EgoID = ""
+            infoblock(this.EgoID)
     }
 
     Edit(div) {

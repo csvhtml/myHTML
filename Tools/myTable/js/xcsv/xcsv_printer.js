@@ -9,8 +9,8 @@ class clsPrinter {
         else {
             this._PrintConfig(key)
         }
-        
-        
+
+        this.parent.XSelection.unset()        
     }
 
     _Print() {
@@ -33,8 +33,8 @@ class clsPrinter {
             tableID: "id-table-" + this.parent.egoDivID,
             tableClass: "table",
             tableStyle: "margin-bottom:0;",
-            thsText: this.parent.XDataItems.self["Link"].headers,
-            cellsText: this.parent.XDataItems.self["Link"].data,
+            thsText: this.parent.XConfigItems["Link"].headers,
+            cellsText: this.parent.XConfigItems["Link"].data,
 
             // thsText: this.parent.XNames.ConfigIDs["Link"].XData.headers,
             thsID: this.parent.XNames.ConfigIDs["Link"].headers(),

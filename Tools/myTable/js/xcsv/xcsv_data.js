@@ -6,17 +6,12 @@ CLS_DATA_1X1_RESERVED_COLS ={ // in case key is negative, then index is not spec
 CLS_DATA_1X1_AUTOFILL_COL_NO = true
 DELIMITER = ";"
 
-class clsDataItems {
-    constructor(parent, ItemLists = ["Link"]) {
-        function _dictDataItems(ItemLists) {
-            let ret = {}
-            for (let items of ItemLists) {
-                ret[items] = new clsData(parent, ["Name", "Description", "Status", "Tags"], [["","","",""]])
-                }
-            return ret
-        }
+class clsDataCollection {
+    constructor(parent, ItemLists = ["Link"], ItemsType = "XWorkingItems") {
         this.parent = parent
-        this.self = _dictDataItems(ItemLists)
+        for (let items of ItemLists) {
+            this[items] = new clsData(parent, items, ["Name", "Description", "Status", "Tags"], [["","","",""]], ItemsType)  // can be addressed via this.Link
+            }
     }
 
     CreateItemLists() {
@@ -26,8 +21,7 @@ class clsDataItems {
             } else {
                 this.CreateItemList(key)
             }
-        }
-            
+        }    
     }
 
     CreateItemList_Link(key) {
@@ -69,27 +63,45 @@ class clsDataItems {
 
 
 class clsData {
-    constructor(parent, headers, data) {
+    constructor(parent, name, headers, data, ItemsType = "XWorkingItems", IsClone = false) {
         this._constructor_assert(headers, data)
         this.parent = parent
+        this.name = name
         this.headers = headers
         this.data = data
+        this.config = {
+            "ItemsType": ItemsType,  // "XWorkingItems" or "XConfigItems"
+            // "IsWorkingItems" : IsWorkingItems,
+            // "IsConfigItems" : IsConfigItems,
+            "IsClone" : IsClone,
+        }
     }
 
-    InitData(headers, data) {
-        this.headers = headers
-        this.data = data
-    }
     _constructor_assert(headers, data) {
         assert(IsListEqualDepth(headers, [1,1]))
         assert(IsListEqualDepth(data, [[1,1],[1,1]]))
     }
 
-    // SetValueRC(row, col, value) {
-    //     this.data[row][col] = value}
+    InitData(headers, data) {
+        if (this.config["IsClone"]) {
+            this.parent[this.config["ItemsType"]][this.name].InitData(headers, data)
 
-    // AddRow(atPosition = -1, newRow = []) {
+            // if (this.config["IsConfigItems"]) {
+            //     this.parent.XConfigItems[this.name].InitData(headers, data)}
+            // if (this.config["IsWorkingItems"]) {
+            //     this.parent.XWorkingItems[this.name].InitData(headers, data)}
+        }
+        this.headers = headers
+        this.data = data
+    }
+
     AddRow(newRow = []) {
+        // if (this.config["IsClone"]) {
+        //     if (this.config["IsConfigItems"]) {
+        //         this.parent.XConfigItems[this.name].AddRow(newRow)}
+        //     if (this.config["IsWorkingItems"]) {
+        //         this.parent.XWorkingItems[this.name].AddRow(newRow)}
+        // }
         let atPosition = this.parent.XSelection.Row()       // -1 in case no row is selected
         this.xAddRow(atPosition, newRow)}
 

@@ -9,7 +9,7 @@ function DownloadCSV() {
 
 function Click() {
     let div = cUSERINPUT_EVENT["event"].srcElement
-    XCSV["main"].XClick.process(div)
+    XCSV["main"].XClick.ClickEvent(div)
 }
 
 
@@ -33,7 +33,7 @@ function Edit_Save(divID, value) {
         let RC = XCSV["main"].XNames.IDs.RC_fromID(divID)
         XCSV["main"].XData.data[RC[0]][RC[1]] = value
         // dataconfig
-        XCSV["main"].XDataItems.CreateItemLists()
+        XCSV["main"].XConfigItems.CreateItemLists()
         //style
         _Edit_MinHeight_Undo(divID)
 

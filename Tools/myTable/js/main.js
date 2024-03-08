@@ -4,14 +4,9 @@ const HMTL = new libHTMLText()
 const UIN = new clsUserInput(["id-main"]);
 const EDIT = new libEdit('EDIT');
 
-var dataString = {
-    "config":{},
-    "headers": ["X", "Y", "Z"],
-    "data": [["1","2","3"], ["a", "b", "c"],["1","2","3"], ["a", "b", "c"]]
-};
 
 const XCSV = {
-    "main": new clsXCSV("id-main", {headers:dataString["headers"], data:dataString["data"]})
+    "main": new clsXCSV("id-main", {})
 };
 
 (function () {
@@ -26,6 +21,10 @@ const XCSV = {
     XCSV["main"].XPrinter.Print()
     // EDIT.Init()
 })();
+
+function infoblock(text) {
+    document.getElementById("id-infoblock").innerHTML = text
+}
 
 
 

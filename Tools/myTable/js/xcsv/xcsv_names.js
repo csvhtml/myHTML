@@ -36,7 +36,7 @@ class clsXCSV_Names {
         this.parent = parent
         this.IDs = new clsXCSV_Names_ID(parent, this.parent.XData)
         this.ConfigIDs = {
-            "Link": new clsXCSV_Names_ID(parent, this.parent.XDataItems.self["Link"])
+            "Link": new clsXCSV_Names_ID(parent, this.parent.XConfigItems["Link"])
         }
 
     }
