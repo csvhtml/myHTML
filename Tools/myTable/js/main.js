@@ -19,11 +19,15 @@ const XCSV = {
     }
 
     XCSV["main"].XPrinter.Print()
+
+    infoblock("New file", "l")
+    // infoblock("Working Items", "m")
+    infoblock("Holy guacamole!")
     // EDIT.Init()
 })();
 
-function infoblock(text) {
-    document.getElementById("id-infoblock").innerHTML = text
+function infoblock(text, o = "r") {
+    document.getElementById("id-infoblock-" + o).innerHTML = text
 }
 
 

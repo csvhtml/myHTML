@@ -10,11 +10,11 @@ class clsXCSV_Selectionhandler {
         
         let X = this.parent.XNames.IDs
         if (X.IsRow(divID)) {
-            infoblock("Selectied Row: " + String(this.parent.XNames.IDs.R_fromRowID(this.EgoID))); return}
+            infoblock("Selected Row: " + String(this.parent.XNames.IDs.R_fromRowID(this.EgoID))); return}
         if (X.IsCell(divID)) {
-            infoblock("Selectied Cell: " + String(this.parent.XNames.IDs.RC_fromID(this.EgoID))); return}
+            infoblock("Selected Cell: " + String(this.parent.XNames.IDs.RC_fromID(this.EgoID))); return}
         if (X.IsHeader(divID)) {
-            infoblock("Selectied Heaer: " + this.parent.XData.headers[this.parent.XNames.IDs.H_fromHeaderID(this.EgoID)]); return}
+            infoblock("Selected Header: " + this.parent.XData.headers[this.parent.XNames.IDs.H_fromHeaderID(this.EgoID)]); return}
         
     }
 

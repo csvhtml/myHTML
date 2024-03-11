@@ -1,6 +1,7 @@
 function ParseFromFileReader() {
     let text = cFileReaders["nav-input"].result
     XCSV["main"].XReader.ReadXCSV(text)
+    infoblock(FileNameFromPath(cFileReaders_File["nav-input"].value) ,"l")
 }
 
 function DownloadCSV() {
@@ -69,16 +70,21 @@ function _Edit_MinHeight_Undo(divID) {
 
 
 // used in xcsv_reader
+// markup -> html
 function parseMarkup(markupText) {
     if (typOf(markupText) != 'str') {
         return markupText}
+
+    // [xxx::yyy] -> <a href="yyy">xxx </a>
     // var linkRegex = /\[([^\]]+)\|([^\]]+)\]/g;
     var linkRegex = /\[([^\]]+)::([^\]]+)\]/g;
     var htmlText = markupText.replace(linkRegex, '<a href="$2" target="#">$1</a>');
+    // \n -> <br>
     htmlText = htmlText.replace(new RegExp('\n', "g") , '<br>')
     return htmlText;
     }
 
+// html -> markup
 function convertToMarkup(htmlText) {
     htmlText = htmlText.replace('target="#"', '')
     var anchorRegex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1[^>]*?>(.*?)<\/a>/g;

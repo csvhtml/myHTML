@@ -5,12 +5,14 @@ class clsPrinter {
 
     Print(key="data") {
         if (key == "data") {
-            this._Print()}
+            this._Print()
+            infoblock("Working Items", "m")}
         else {
             this._PrintConfig(key)
+            infoblock("Config Items: " + key, "m")
         }
-
-        this.parent.XSelection.unset()        
+        this.parent.XSelection.unset()
+        
     }
 
     _Print() {

@@ -15,7 +15,8 @@ class clsDataCollection {
     }
 
     CreateItemLists() {
-        for (let key of Object.keys(this.self)) {
+        for (let key of Object.keys(this)) {
+            if (key == "parent") {continue}
             if (key == "Link") {
                 this.CreateItemList_Link(key) 
             } else {
@@ -30,32 +31,47 @@ class clsDataCollection {
             for (let val of row) {
                 items = PatternsFound3(val,["[", "::", "]"])
                 if (items.length > 0) {
-                    this.AddItemsToListFromCellValue(key, items)}}}  // key information actually redundant
+                    this.AddLinksToCpnfigList(items)}}}  // key information actually redundant
     }
 
     CreateItemList(key) {
-        let items = []
-        for (let row of this.parent.XData.data) {
-            for (let val of row) {
-                items = PatternsFound3(val,["[" + key, ":", "]"])
-                if (items.length > 0) {
-                    this.AddItemsToListFromCellValue(key, items)}}}  // key information actually redundant
+        // let items = []
+        // for (let row of this.parent.XData.data) {
+        //     for (let val of row) {
+        //         items = PatternsFound3(val,["[" + key, ":", "]"])
+        //         if (items.length > 0) {
+        //             this.AddItemsToListFromCellValue(key, items)}}}  // key information actually redundant
     }
 
-    AddItemsToListFromCellValue(key, items) {
-        let val = ""
+    // AddItemsToListFromCellValue(key, items) {
+    //     let val = ""
+    //     for (let item of items) {
+    //         val = RetStringBetween(item, "[" + key + ":", "]")
+    //         if (this._IsItemInList(key, val)) {
+    //             // do nothing
+    //         } else {
+    //             this[key].AddRow([val,"","",""])
+    //         }
+    //     }
+    // } 
+
+    AddLinksToCpnfigList(items) {
+        let key = "Link"
+        let name = ""; let descp = ""; let ref = "";let status = "", tags = ""
         for (let item of items) {
-            val = RetStringBetween(item, "[" + key + ":", "]")
-            if (this._IsItemInList(key, val)) {
+            name = RetStringBetween(item, "[", "::")
+            descp = "ref: "+  item + "\n" + "link: " + RetStringBetween(item, "::", "]") 
+            status = ""; tags = ""
+            if (this._IsItemInList(key, name)) {
                 // do nothing
             } else {
-                this.self[key].AddRow([val,"","",""])
+                this[key].AddRow([name, descp, status, tags])
             }
         }
     } 
 
     _IsItemInList(key, item) {
-        if (this.self[key].ColAsList("Name").indexOf(item) > -1) {
+        if (this[key].ColAsList("Name").indexOf(item) > -1) {
             return true}
         return false
     }

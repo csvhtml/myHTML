@@ -13,6 +13,7 @@ const LIB_DROPDOWN_QWERTZ = {
 
 // UpDownloadConfig
 const cFileReaders = {}; 
+const cFileReaders_File = {};
 const LIB_UPLOAD_QWERTZ = {
     // "nav-input": "functionAfterUpload()" ,
     "nav-input": 'ParseFromFileReader()'
