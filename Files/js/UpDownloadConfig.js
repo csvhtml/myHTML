@@ -1,6 +1,7 @@
 // the stuff here actually is onyly needed for the Upload function
 
 const cFileReaders = {}; 
+const cFileReaders_File = {};
 const LIB_UPLOAD_QWERTZ = {
     "TestInput": "TestFunction()" ,
 };

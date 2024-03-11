@@ -5,6 +5,7 @@ function UploadFile (event)  {
 
     cFileReaders[event.srcElement.id].addEventListener("loadend", funktion(event.srcElement.id)); 
     let divFile = document.getElementById(event.srcElement.id);
+    cFileReaders_File[event.srcElement.id] = divFile
     cFileReaders[event.srcElement.id].readAsText(divFile.files[0]); 
 }
 

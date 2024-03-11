@@ -27,7 +27,7 @@ class libEdit {
 
         this._Edit_Prepare(div)
         let size = "normal"
-        if (div.getBoundingClientRect()["height"] < 60) { 
+        if (div.getBoundingClientRect()["height"] < 40) { 
             size = "small"}
         this._InnerHTML_To_Textarea(div, size)
         this._AppendButton(div, "save", size)
