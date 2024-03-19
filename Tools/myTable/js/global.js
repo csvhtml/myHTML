@@ -1,11 +1,14 @@
 function ParseFromFileReader() {
     let text = cFileReaders["nav-input"].result
-    XCSV["main"].XReader.ReadXCSV(text)
+    // XCSV["main"].XReader.ReadXCSV(text)
+    XCSV["main"].XcsvHandler.Read(text)
+    XCSV["main"].XPrinter.Print()
     infoblock(FileNameFromPath(cFileReaders_File["nav-input"].value) ,"l")
 }
 
 function DownloadCSV() {
-    DownloadFile(XCSV["main"].XPrinter.AsCSV())
+    // DownloadFile(XCSV["main"].XPrinter.AsCSV())
+    DownloadFile(XCSV["main"].XCSV.DataAsCSV())
 }
 
 function Click() {
@@ -34,7 +37,7 @@ function Edit_Save(divID, value) {
         let RC = XCSV["main"].XNames.IDs.RC_fromID(divID)
         XCSV["main"].XData.data[RC[0]][RC[1]] = value
         // dataconfig
-        XCSV["main"].XConfigItems.CreateItemLists()
+        XCSV["main"].XConfigItems.CreateConfigItems()
         //style
         _Edit_MinHeight_Undo(divID)
 

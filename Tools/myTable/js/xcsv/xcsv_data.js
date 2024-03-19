@@ -1,118 +1,62 @@
-// Reserved colls with certain functionality automaticaly applied
-CLS_DATA_1X1_RESERVED_COLS ={ // in case key is negative, then index is not specified
-    0: "No."
-}
-
-CLS_DATA_1X1_AUTOFILL_COL_NO = true
-DELIMITER = ";"
-
-class clsDataCollection {
-    constructor(parent, ItemLists = ["Link"], ItemsType = "XWorkingItems") {
-        this.parent = parent
-        for (let items of ItemLists) {
-            this[items] = new clsData(parent, items, ["Name", "Description", "Status", "Tags"], [["","","",""]], ItemsType)  // can be addressed via this.Link
-            }
-    }
-
-    CreateItemLists() {
-        for (let key of Object.keys(this)) {
-            if (key == "parent") {continue}
-            if (key == "Link") {
-                this.CreateItemList_Link(key) 
-            } else {
-                this.CreateItemList(key)
-            }
-        }    
-    }
-
-    CreateItemList_Link(key) {
-        let items = []
-        for (let row of this.parent.XData.data) {
-            for (let val of row) {
-                items = PatternsFound3(val,["[", "::", "]"])
-                if (items.length > 0) {
-                    this.AddLinksToCpnfigList(items)}}}  // key information actually redundant
-    }
-
-    CreateItemList(key) {
-        // let items = []
-        // for (let row of this.parent.XData.data) {
-        //     for (let val of row) {
-        //         items = PatternsFound3(val,["[" + key, ":", "]"])
-        //         if (items.length > 0) {
-        //             this.AddItemsToListFromCellValue(key, items)}}}  // key information actually redundant
-    }
-
-    // AddItemsToListFromCellValue(key, items) {
-    //     let val = ""
-    //     for (let item of items) {
-    //         val = RetStringBetween(item, "[" + key + ":", "]")
-    //         if (this._IsItemInList(key, val)) {
-    //             // do nothing
-    //         } else {
-    //             this[key].AddRow([val,"","",""])
-    //         }
-    //     }
-    // } 
-
-    AddLinksToCpnfigList(items) {
-        let key = "Link"
-        let name = ""; let descp = ""; let ref = "";let status = "", tags = ""
-        for (let item of items) {
-            name = RetStringBetween(item, "[", "::")
-            descp = "ref: "+  item + "\n" + "link: " + RetStringBetween(item, "::", "]") 
-            status = ""; tags = ""
-            if (this._IsItemInList(key, name)) {
-                // do nothing
-            } else {
-                this[key].AddRow([name, descp, status, tags])
-            }
-        }
-    } 
-
-    _IsItemInList(key, item) {
-        if (this[key].ColAsList("Name").indexOf(item) > -1) {
-            return true}
-        return false
-    }
-}
-
-
 class clsData {
-    constructor(parent, name, headers, data, ItemsType = "XWorkingItems", IsClone = false) {
-        this._constructor_assert(headers, data)
+    constructor(parent, name, ItemsType = "XWorkingItems", IsRef = false) {
         this.parent = parent
-        this.name = name
-        this.headers = headers
-        this.data = data
+        this.name = StringAssertAndReturn(name)
+        this.headers = null
+        this.data = null
+        this.functions = {
+            "Is": new clsDataIs(this)
+        }
         this.config = {
             "ItemsType": ItemsType,  // "XWorkingItems" or "XConfigItems"
-            // "IsWorkingItems" : IsWorkingItems,
-            // "IsConfigItems" : IsConfigItems,
-            "IsClone" : IsClone,
+            "IsReference" : IsRef,
         }
     }
 
-    _constructor_assert(headers, data) {
-        assert(IsListEqualDepth(headers, [1,1]))
-        assert(IsListEqualDepth(data, [[1,1],[1,1]]))
+    Init(headers, data) {
+        this.parent.XAssert.HeadersData(headers, data)
+
+        this.InitHeaders(headers)
+        this._InitData(data)
     }
 
-    InitData(headers, data) {
-        if (this.config["IsClone"]) {
-            this.parent[this.config["ItemsType"]][this.name].InitData(headers, data)
+    InitHeaders(headers) {
+        this.parent.XAssert.HeaderIs1D(headers)
 
-            // if (this.config["IsConfigItems"]) {
-            //     this.parent.XConfigItems[this.name].InitData(headers, data)}
-            // if (this.config["IsWorkingItems"]) {
-            //     this.parent.XWorkingItems[this.name].InitData(headers, data)}
+        if (this.config["IsReference"]) {
+            this.parent[this.config["ItemsType"]][this.name].InitHeaders(headers)
+            this._BondIfReference()
+        } else 
+        {
+            this.headers = headers
         }
-        this.headers = headers
-        this.data = data
+    }
+
+    _InitData(data) {
+        this.parent.XAssert.DataIs2D(data)
+
+        if (this.config["IsReference"]) {
+            this.parent[this.config["ItemsType"]][this.name]._InitData(data)
+            this._BondIfReference()
+        } else 
+        {
+            this.data = data
+        }
+    }
+
+    _BondIfReference() {
+        if (this.config["IsReference"]) {
+            this.headers = this.parent[this.config["ItemsType"]][this.name].headers
+            this.data = this.parent[this.config["ItemsType"]][this.name].data
+        }
+
     }
 
     AddRow(newRow = []) {
-        // if (this.config["IsClone"]) {
+        if (this.functions.Is.Empty()) {
+
+        }
+        // if (this.config["IsReference"]) {
         //     if (this.config["IsConfigItems"]) {
         //         this.parent.XConfigItems[this.name].AddRow(newRow)}
         //     if (this.config["IsWorkingItems"]) {
@@ -184,7 +128,7 @@ class clsData {
     // }
     //----------------------------------------------------------------------------------
 
-    Init(headers, data, delimiter) {
+    Init_old(headers, data, delimiter) {
         this.xInit_Headers(headers)
         if (this.headers.length >0) {
             this.xInit_Data(data, delimiter)}

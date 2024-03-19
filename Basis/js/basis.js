@@ -25,6 +25,12 @@ function assert(condition, message) {
     }
 }
 
+function StringAssertAndReturn(a) {
+    if (typOf(a) == "str") {
+        return a}
+    throw new Error("Not a string");
+}
+
 
 // ################################################################
 // Useful functions                                               #
@@ -82,6 +88,10 @@ function typOf(variable) {
         return 'int'}
     if (typeof variable === 'boolean') {
         return 'bool'}
+    if (variable == undefined) {
+        return 'undefined'}
+    if (variable == null) {
+        return 'null'}
     assert(false, String(variable))
 }
 

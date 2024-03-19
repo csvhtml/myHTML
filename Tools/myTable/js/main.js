@@ -1,3 +1,8 @@
+// Bug: When creating a link item in a new file and then opening a new file, then the created Link will be still be part of the 
+//     opend file list
+// Bug: [Text:: www.someurl.de will results in local file named someurl.de (that doesnt exist)
+// Refactor: xcsv_dataCollection to dynamically define new config items
+
 const DD = new libDropDowns();
 // const CSVG = new clsSVG();  // MOHI: fix. the clsSVG class automatically creates svg icons. If referenced multipel time, itmes are multiple times created. libEdit also defines a SVG
 const HMTL = new libHTMLText()
@@ -6,7 +11,7 @@ const EDIT = new libEdit('EDIT');
 
 
 const XCSV = {
-    "main": new clsXCSV("id-main", {})
+    "main": new clsXCSV("id-main")
 };
 
 (function () {
@@ -17,8 +22,9 @@ const XCSV = {
     for (let key of Object.keys(LIB_UPLOAD_QWERTZ) ) {
         cFileReaders[key] = new FileReader()
     }
-
+    XCSV["main"].XcsvHandler.Read(myTrim(XCSV_DATA["WorkingItems"]["X"]))
     XCSV["main"].XPrinter.Print()
+                
 
     infoblock("New file", "l")
     // infoblock("Working Items", "m")

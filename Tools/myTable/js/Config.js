@@ -1,3 +1,7 @@
+// #################################################
+// Product Config                                  *
+// #################################################
+
 // DropDown Config
 const LIB_DROPDOWN_QWERTZ = {
     // Buttons (possible, but actually beter to define this inside the index.html)
@@ -9,6 +13,30 @@ const LIB_DROPDOWN_QWERTZ = {
         {"Links": "XCSV['main'].XPrinter.Print('Link')"}, 
     ],
 }
+
+const XCSV_DATA = {
+    "WorkingItems": {
+        "X": "\
+            ||A|B|C\n\
+            ||1|2|3\n\
+            ||Hallo|Welt|dort\n\
+            "
+    },
+    "ConfigItems": {
+        "Link": "\
+            ||Name|Description\n\
+            || | \n\
+            "
+    }
+}
+
+
+
+
+
+// #################################################
+// System  Config                                  *
+// #################################################
 
 
 // UpDownloadConfig
@@ -42,7 +70,6 @@ const CLSXCSV_NAMES = {
 const cUSERINPUT_EVENT = {}     // const dict, to pretect it from accidently being overwritten
 const LIB_USERINPUT = {
     "Tipp": "",
-
     "id-main": {
         "Click" : 'Click()'
         // "Hover": "outHover(); outHoverID()",

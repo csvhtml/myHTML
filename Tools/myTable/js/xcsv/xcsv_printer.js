@@ -56,38 +56,4 @@ class clsPrinter {
         return ret
     }
 
-    AsCSV() {
-        let ret = '';
-        ret += this._AsCSV_HeaderLine()
-        ret += this._AsCSV_RowsLine()
-        return ret
-    }
-
-    _AsCSV_HeaderLine() {
-        let ll = this.parent.XReader.config["line-starter"]
-        let l = this.parent.XReader.config["cell-seperator"]
-        let n = this.parent.XReader.config["line-end"]
-
-        let ret = ll 
-        for (let header of this.parent.XData.headers) {
-            ret += header + l}
-        ret = ret.slice(0, -1*l.length) + n
-        
-        return ret
-    }
-    
-    _AsCSV_RowsLine() {
-        let ll = this.parent.XReader.config["line-starter"]
-        let l = this.parent.XReader.config["cell-seperator"]
-        let n = this.parent.XReader.config["line-end"]
-
-        let ret = ""
-        for (let row of this.parent.XData.data) {
-            ret += ll
-            for (let cell of row) {
-                ret += cell + l}
-            ret = ret.slice(0, -1*l.length) + n}
-        
-        return ret
-    }
 }
