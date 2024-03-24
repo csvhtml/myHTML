@@ -3,14 +3,15 @@
 // ################################################################
 
 class clsXCSV {
-        constructor(egoDivID) {     
+        constructor(egoDivID, config) {     
             this.egoDivID = StringAssertAndReturn(egoDivID)
+            this.config = config
             
             this.XAssert = new clsXCSV_assert(this)
-            this.XcsvHandler = new clsCSVHandler(this)
-            this.XData = new clsData(this, "X", "XWorkingItems", true)   
-            this.XWorkingItems = new clsDataCollection(this, "XWorkingItems", XCSV_DATA["WorkingItems"])
-            this.XConfigItems = new clsDataCollection(this, "XConfigItems", XCSV_DATA["ConfigItems"])
+            this.XcsvHandler = new clsCSVHandler(this) 
+            this.XWorkingItems = new clsDataCollection(this, "XWorkingItems")
+            this.XConfigItems = new clsDataCollection(this, "XConfigItems")
+            this.XData = new clsData(this, this.config["WorkingItems"].key(0), "XWorkingItems", true)  
             
             this.XPrinter = new clsPrinter(this)
 

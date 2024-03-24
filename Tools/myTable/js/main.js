@@ -1,6 +1,5 @@
-// Bug: When creating a link item in a new file and then opening a new file, then the created Link will be still be part of the 
-//     opend file list
-// Bug: [Text:: www.someurl.de will results in local file named someurl.de (that doesnt exist)
+// Bug: [Text:: www.someurl.de] will results in local file named someurl.de (that doesnt exist)
+// Feature: [X], [/], [!]  shall be interpreted as svg icons/symbols for red, green yellow
 // Refactor: xcsv_dataCollection to dynamically define new config items
 
 const DD = new libDropDowns();
@@ -11,7 +10,7 @@ const EDIT = new libEdit('EDIT');
 
 
 const XCSV = {
-    "main": new clsXCSV("id-main")
+    "main": new clsXCSV("id-main", XCSV_DATA)
 };
 
 (function () {

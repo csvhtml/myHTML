@@ -1,17 +1,45 @@
-function test_clsData_Init(myTest) {
+function test_clsData(myTest) {
     let fname = arguments.callee.name;
-    let foo = new clsXCSV("div-id")
+    let ted = new clsXCSV("div-id", XCSV_DATA)
 
-    myTest.Assertion(foo, {}, fname)
-    myTest.Assertion(foo.XData, {}, fname)
+    // new 
+    myTest.Assertion(ted, {}, fname)
+    myTest.Assertion(ted.XData, {}, fname)
 
-    let bar = function (a,b,c,d) {
-        foo.XData.Init(a,b,c,d)}
+    // Init
+    let foo = function (a,b,c,d) {ted.XData.Init(a,b,c,d)}
+    myTest.Assertion(foo, {}, fname, "Undefined headers")
+    myTest.Assertion(foo, {"a":["A"]}, fname, "Undefined data")
+    myTest.Assertion(foo, {"a":["A"], "b":["A"]}, fname, "DataIs2D failed")
+    myTest.Assertion(foo, {"a":["A"], "b":[["A", "b"]]}, fname, "HeadersData failed")
+    myTest.NoAssertion(foo, {"a":["A", "B"], "b":[["1", "11"], ["2", "22"]]}, fname)
 
-    myTest.Assertion(bar, {}, fname, "Undefined headers")
-    myTest.Assertion(bar, {"a":["A"]}, fname, "Undefined data")
-    myTest.Assertion(bar, {"a":["A"], "b":["A"]}, fname, "DataIs2D failed")
-    myTest.Assertion(bar, {"a":["A"], "b":[["A", "b"]]}, fname, "HeadersData failed")
+    ted = new clsXCSV("div-id", XCSV_DATA)
+    myTest.Equal(ted.XData.headers, null)
+    myTest.Equal(ted.XData.data, null)
+    myTest.Equal(ted.XWorkingItems[XCSV_DATA["WorkingItems"].key(0)].headers, null)
+    myTest.Equal(ted.XWorkingItems[XCSV_DATA["WorkingItems"].key(0)].data, null)
+    ted.XData.Init(["A", "B"], [["1", "11"], ["2", "22"]])
+    myTest.Equal(ted.XData.headers, ["A", "B"])
+    myTest.Equal(ted.XData.data, [["1", "11"], ["2", "22"]])
+    myTest.Equal(ted.XWorkingItems[XCSV_DATA["WorkingItems"].key(0)].headers, ["A", "B"])
+    myTest.Equal(ted.XWorkingItems[XCSV_DATA["WorkingItems"].key(0)].data, [["1", "11"], ["2", "22"]])
+    
+    //Clear
+    ted = new clsXCSV("div-id", XCSV_DATA)
+    ted.XData.Init(["A", "B"], [["1", "11"], ["2", "22"]])
+    ted.XData.Clear()
+    myTest.Equal(ted.XData.headers, ["A", "B"])
+    myTest.Equal(ted.XData.data, [["", ""], ["", ""]])
+    myTest.Equal(ted.XWorkingItems[XCSV_DATA["WorkingItems"].key(0)].headers, ["A", "B"])
+    myTest.Equal(ted.XWorkingItems[XCSV_DATA["WorkingItems"].key(0)].data, [["", ""], ["", ""]])
 
-    myTest.NoAssertion(bar, {"a":["A", "B"], "b":[["1", "11"], ["2", "22"]]}, fname)
+    //RowsDelete
+    ted = new clsXCSV("div-id", XCSV_DATA)
+    ted.XData.Init(["A", "B"], [["1", "11"], ["2", "22"]])
+    ted.XData.RowsDelete()
+    myTest.Equal(ted.XData.headers, ["A", "B"])
+    myTest.Equal(ted.XData.data, [["", ""]])
+    myTest.Equal(ted.XWorkingItems[XCSV_DATA["WorkingItems"].key(0)].headers, ["A", "B"])
+    myTest.Equal(ted.XWorkingItems[XCSV_DATA["WorkingItems"].key(0)].data, [["", ""]])
 }

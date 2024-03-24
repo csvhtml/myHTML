@@ -7,7 +7,7 @@ class clsTest {
 
     PrintResult() {
         let runs = this.passed + this.failed
-        let strA = String(runs) + "tests run. " + String(this.failed) + " failed!"
+        let strA = String(runs) + " tests run. " + String(this.failed) + " failed!"
         let n = 0; let count = 0
         for (let casse of this.cases) {
             n += 1

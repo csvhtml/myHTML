@@ -14,6 +14,7 @@ const LIB_DROPDOWN_QWERTZ = {
     ],
 }
 
+// also includes the Config (= dict structure of "WorkingItems" and CofigItems)
 const XCSV_DATA = {
     "WorkingItems": {
         "X": "\

@@ -20,6 +20,29 @@ class clsData {
         this._InitData(data)
     }
 
+    Clear() {
+        this._loop(function() {return ""})
+    }
+
+    RowsDelete() {
+        if (this.config["IsReference"]) {
+            this.parent[this.config["ItemsType"]][this.name].data = [[]]
+            this._BondIfReference()}
+        else {
+            this.data = [[]]}
+        
+        for (let h of this.headers) {
+            this.data[0].push("")
+        }
+    }
+
+    _loop(func) {
+        for (let i = 0; i < this.data.length; i++) {
+            for (let j = 0; j < this.data[i].length; j++) {
+                this.data[i][j] = func(this.data[i][j]);}
+          }
+    }
+
     InitHeaders(headers) {
         this.parent.XAssert.HeaderIs1D(headers)
 

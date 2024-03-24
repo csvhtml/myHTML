@@ -88,10 +88,11 @@ function typOf(variable) {
         return 'int'}
     if (typeof variable === 'boolean') {
         return 'bool'}
-    if (variable == undefined) {
-        return 'undefined'}
     if (variable == null) {
         return 'null'}
+    if (variable == undefined) {
+        return 'undefined'}
+
     assert(false, String(variable))
 }
 
@@ -141,6 +142,17 @@ function IsEqual(a,b, max_iterations = 100) {
         }
         return true
     }
+
+    if (typOf(a) == "null") {
+        if (typOf(b) == "null") {
+            return true}
+    }
+
+    if (typOf(a) == "undefined") {
+        if (typOf(b) == "undefined") {
+            return true}
+    }
+
     return false
 }
 
@@ -202,6 +214,20 @@ Object.defineProperties(DOMTokenList.prototype, {
             }
         }
 });
+
+Object.defineProperties(Object.prototype, {
+    key: {
+        value: function(n) {
+            let count = 0
+            for (var key in this) {
+                if (count == n) {
+                    return key;}
+                count += 1
+              }
+              return null;
+            }  
+    } 
+}); 
 
 // ################################################################
 // Usefull DOM functions                                          #

@@ -1,12 +1,21 @@
 class clsDataCollection {
-    constructor(parent, ItemsType = "XWorkingItems", Config) {
-        assert (["XWorkingItems", "XConfigItems"].indexOf(ItemsType) >-1)
-        
+    constructor(parent, ItemsType = "XWorkingItems") {
         this.parent = parent
+        assert (["XWorkingItems", "XConfigItems"].indexOf(ItemsType) >-1)
+
+        let Config = {}
+        if (ItemsType == "XWorkingItems") {
+            Config = this.parent.config["WorkingItems"]}
+        if (ItemsType == "XConfigItems") {
+            Config = this.parent.config["ConfigItems"]}
+        
+        
         for (let key of Object.keys(Config)) {
-            let hd = this.parent.XcsvHandler._HeadersAndDataFromText(myTrim(Config[key]))
             this[key] = new clsData(parent, key, ItemsType)
-            this[key].Init(hd[0], hd[1])
+            if (ItemsType == "XConfigItems") {
+                let hd = this.parent.XcsvHandler._HeadersAndDataFromText(myTrim(Config[key]))
+                this[key].Init(hd[0], hd[1])
+            }
         }
     }
 
@@ -15,6 +24,7 @@ class clsDataCollection {
             if (key == "parent") {continue}
 
             if (key == "Link") {
+                this[key].RowsDelete()
                 this.CreateItemList_Link(key)}
         }    
     }
