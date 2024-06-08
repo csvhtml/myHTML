@@ -40,13 +40,65 @@ const CLS_SVG_REPLACE = {
     </svg>'
 }
 
+dictSVG = {
+    'pdf-img': '<svg id="pdf-img" width="100" height="125" viewBox="0 0 80 100" fill="none"> \
+            <path d="M 10 0 \
+            L 70 0 Q 80 0 80 10 \
+            L 80 90 Q 80 100 70 100 \
+            L 10 100 Q 0 100 0 90 \
+            L 0 10 Q 0 0 10 0" fill="#E2574C"></path> \
+            <path d="M 45 0 \
+            L 70 0 Q 80 0 80 10 \
+            L 80 35 \
+            Z" fill="white"></path> \
+            <path d="M 45 0 \
+            L 80 35 \
+            L 55 35 Q 45 35 45 25 \
+            Z" fill="#B53629"></path> \
+            <text x="8" y="25" fill="white" font-size="20">pdf</text> \
+            <text x="5" y="80" fill="black" font-size="10"></text> \
+            </svg>',
+    'pdf-icon': '<svg id="pdf-icon" width="16" height="20" viewBox="0 0 16 20" fill="none"> \
+        <path d="M 2 0 \
+        L 14 0 Q 16 0 16 2 \
+        L 16 18 Q 16 20 14 20 \
+        L 2 20 Q 0 20 0 18 \
+        L 0 2 Q 0 0 2 0" fill="#E2574C"></path> \
+        <text x="1" y="12" fill="white" font-size="9">pdf</text> \
+        </svg>'
+        }
+
 class clsSVG {
 /**
  * Insert Creates SVG icons based on SVG class
  */
     constructor() {
-        this.CreateSVGs_FromDivClasses()
+        // this.CreateSVGs_FromDivClasses()
     }
+
+
+
+
+    Get_SVG(key, idpostfix, height = null, width = null, subtext = "") {
+        let svg = ""; let re = ""; let place = ""
+        if (key in dictSVG) {
+            svg = dictSVG[key]
+            svg = svg.replace('" width', '-' + idpostfix + '" width')
+            if (height != null) {
+                re = 'height="' + RetStringBetween(svg, 'height="', '"') + '"'
+                place = 'height="' + height + '"'
+                svg = svg.replace(re, place)}
+            if (width != null) {
+                re = 'width="' + RetStringBetween(svg, 'width="', '"') + '"'
+                place = 'width="' + width + '"'
+                svg = svg.replace(re, place)}
+            if (subtext != "") {
+                re = 'font-size="10">' + RetStringBetween(svg, 'font-size="10">', '</text>') + '</text>'
+                place = 'font-size="10">' + subtext + '</text>'
+                svg = svg.replace(re, place)}
+        }
+        return svg
+    } 
 
     CreateSVGs_FromDivClasses() {
         var Cls_SVG_ValidTags = Object.keys(CLS_SVG_REPLACE)
@@ -77,4 +129,93 @@ class clsSVG {
             div.innerHTML = CLS_SVG_REPLACE[CLS_SVG_VALID_NAMES[SVGName]] + div.innerHTML
         }
     }
+}
+
+// ######################################################
+// MarkDown Functions                                   #
+// ######################################################
+
+function MyMarkDowntoSVG(markupText) {
+    if (typOf(markupText) != 'str') {return markupText}
+    
+    htmlText = markupText
+    patterns = _MyMarkDowntoSVG_Patterns(markupText)
+    for (pattern of patterns) {
+        replaceText = _MyMarkDowntoSVG_Replacement(pattern)
+        htmlText = htmlText.replace(pattern, replaceText)
+    }
+
+    return htmlText;
+    }
+
+    function _MyMarkDowntoSVG_Replacement(pattern) {
+        SVG = new clsSVG()
+        let typ = _MyMarkDowntoSVG_PatternsType(pattern)
+        let filetyp = _MyMarkDowntoSVG_PatternsFileType(pattern)
+        var p = RetStringBetween(pattern, "::", "]")
+
+        let ret
+        ret = _MyMarkDowntoSVG_Replacement2(typ, filetyp, p)
+        return ret
+    }   
+        function _MyMarkDowntoSVG_Replacement2(typ, filetyp, p2) {
+            subtext = FileNameFromPath(RetStringBetween(p2, "::", "]"))
+            subtext = RetStringBetween(subtext, "", ".pdf")
+            if (typ == 'img') {
+                subtext = ShortenDotDotDot(subtext)}
+            let key = filetyp + '-' + typ
+            svg = SVG.Get_SVG(key, subtext, null, null, subtext)
+            
+            let ret = ""
+            if (typ == 'img') {
+                ret = '<a href="' + p2 + '" target="#">' + svg + '</a>'}
+            if (typ == 'icon') {
+                ret = svg + ' <a href="' + p2 + '" target="#">' + subtext + '</a>'}
+            return ret
+        }
+
+    function _MyMarkDowntoSVG_Patterns(markupText) {
+        patsIMG = PatternsFound(markupText, ["[(img)", "::", "]"])  
+        patsICON = PatternsFound(markupText, ["[(icon)", "::", "]"])  
+        return patsIMG.concat(patsICON)
+    }
+
+    function _MyMarkDowntoSVG_PatternsType(pattern) {
+        if (pattern.includes('[(img)')) {
+            return 'img'}
+        if (pattern.includes('[(icon)')) {
+            return 'icon'}
+        assert(false)
+    }
+
+    function _MyMarkDowntoSVG_PatternsFileType(pattern) {
+        if (pattern.includes(')pdf::')) {
+            return 'pdf'}
+        assert(false)
+    }
+
+// svg -> markup
+function SVGtoMyMarkdown(htmlText) {
+    let ret = htmlText
+    svgs = DOMElementsFromString(htmlText, 'svg')
+    for (let svg of svgs) {
+        ret = _SVGtoMyMarkdown_Loop(ret, svg)}
+    
+    ret = HTMLtoMyMarkdown(ret)
+
+    return ret
+    }
+
+function  _SVGtoMyMarkdown_Loop(htmlText, svg) {
+        let svgText = svg.outerHTML
+    
+        if (svg.id.includes('pdf-img')) {
+            htmlText = htmlText.replace(svgText, '(img)pdf') }
+        if (svg.id.includes('pdf-icon')) {
+            htmlText = htmlText.replace(svgText + ' ', '')
+            let linkName = RetStringBetween(svg.id, 'pdf-icon-', '')
+            if (linkName.length > 3) {
+                htmlText = htmlText.replace('>' + linkName + '</a>', '>(icon)pdf</a>')}
+        }
+        return htmlText
 }

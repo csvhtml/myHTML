@@ -13,3 +13,14 @@ function IsUndefined(variable) {
 function IsNotUndefined(variable) {
     return !IsUndefined(variable)
   }
+
+function IsBetween(number, a, b, incl = true) {
+  if (incl) {
+    if (number >=a && number <=b) {
+      return true}
+  } else {
+    if (number >a && number <b) {
+      return true}
+  }
+  return false
+}

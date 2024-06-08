@@ -1,4 +1,55 @@
 // ################################################################
+// Sub Basisi js files                                            #
+// ################################################################
+
+var scriptFiles_Basis = [
+    'js/basisDIV.js', 
+    'js/basisIs.js', 
+    'js/basisSVG.js', 
+    'js/basisTextFunctions.js', 
+    'js/basisTextPatterns.js', 
+    'js/listProperties.js'
+]
+
+// ################################################################
+// ja loading                                                     #
+// ################################################################
+
+function LOAD_Basis(callback) {
+    for (skript of scriptFiles_Basis.slice(0, -1)) {
+            loadScript(skript);}
+        lastScript(scriptFiles_Basis.slice(-1)[0], callback);
+}
+
+function loadScript(url) {
+    let script = returnScript(url)
+    document.head.appendChild(script);
+}
+
+function lastScript(url, callback) {
+    let script = returnScript(url)
+    if (typeof callback === 'function') {
+        script.onload = function() {
+            callback();
+        };
+    }
+    document.head.appendChild(script);
+}
+
+function returnScript(url) {
+    let script = document.createElement('script');
+    script.async = false;
+    script.type = 'text/javascript';
+    script.src = url
+    return script
+}
+
+
+// ################################################################
+// Basis                                                          #
+// ################################################################
+
+// ################################################################
 // Log                                                            #
 // ################################################################
 
@@ -24,13 +75,6 @@ function assert(condition, message) {
         throw new Error(message || "Assertion failed");
     }
 }
-
-function StringAssertAndReturn(a) {
-    if (typOf(a) == "str") {
-        return a}
-    throw new Error("Not a string");
-}
-
 
 // ################################################################
 // Useful functions                                               #
@@ -229,6 +273,20 @@ Object.defineProperties(Object.prototype, {
     } 
 }); 
 
+Object.defineProperties(String.prototype, {
+    count: {
+        value: function(n) {
+            let count = 0;
+            for (let i = 0; i < this.length; i++) {
+                if (this[i] === n) {
+                    count++;
+                }
+            }
+            return count;
+        }
+    } 
+}); 
+
 // ################################################################
 // Usefull DOM functions                                          #
 // ################################################################
@@ -298,6 +356,14 @@ function DivIsDescendantOf (element, targetID, iterations = 10) {
     }
     assert(false)
 }
+
+function DOMElementsFromString(htmlString, tag = 'div') {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    const svgElements = doc.querySelectorAll(tag);
+    return Array.from(svgElements);
+}
+
 
 
 // ################################################################
