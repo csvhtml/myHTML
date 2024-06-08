@@ -23,7 +23,8 @@
 
 <script>
     (function () {
-        LOAD_Basis(function() {main()})
+        LOAD_Basis()
+        lastScript('pseudo/pseudo.js', function() {main()});
     })();
 </script>
 

@@ -12,13 +12,12 @@ var scriptFiles_Basis = [
 ]
 
 // ################################################################
-// ja loading                                                     #
+// JS loading                                                     #
 // ################################################################
 
 function LOAD_Basis(callback) {
-    for (skript of scriptFiles_Basis.slice(0, -1)) {
+    for (skript of scriptFiles_Basis) {
             loadScript(skript);}
-        lastScript(scriptFiles_Basis.slice(-1)[0], callback);
 }
 
 function loadScript(url) {
@@ -44,10 +43,6 @@ function returnScript(url) {
     return script
 }
 
-
-// ################################################################
-// Basis                                                          #
-// ################################################################
 
 // ################################################################
 // Log                                                            #
