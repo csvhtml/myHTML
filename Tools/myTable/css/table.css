@@ -1,0 +1,67 @@
+/* Base table styling */
+table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+    table-layout: auto;
+}
+
+/* Table header styling */
+th, td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    word-wrap: break-word;
+}
+
+/* Table header specific styling */
+th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+/* Table row hover effect */
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Table caption styling */
+caption {
+    caption-side: bottom;
+    padding: 10px;
+    font-style: italic;
+    color: #777;
+}
+
+th:first-child {
+    border-top-left-radius: 8px;
+}
+
+th:last-child {
+    border-top-right-radius: 8px;
+}
+
+td:first-child {
+    border-bottom-left-radius: 8px;
+}
+
+td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+
+  /* Uncomment for Sticky Table */
+
+  th {
+    font-weight: bold;
+    background-color: lightgray !important;
+    position: sticky;
+    top: 54px;  
+    z-index: 2;
+  }
