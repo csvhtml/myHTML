@@ -1,7 +1,12 @@
+// ###################################################
+// asserts the init parameters (egoDivID and config) 
+// makes assert functions available (central handling)
+// ###################################################
+
 class clsXCSV_assert {
     constructor(parent) {
         this.parent = parent
-
+        this.name()
         this.config()
     }
 
@@ -19,6 +24,10 @@ class clsXCSV_assert {
     DataIs2D(data) {
         assert(IsNotUndefined(data), "Undefined data")
         assert(IsListEqualDepth(data, [[1,1],[1,1]]), "DataIs2D failed")
+    }
+
+    name() {
+        assert(typOf(this.parent.egoDivID) == "str")
     }
 
     config() {

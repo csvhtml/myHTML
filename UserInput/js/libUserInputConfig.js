@@ -1,10 +1,11 @@
-const cUSERINPUT_EVENT = {}     // const dict, to pretect it from accidently being overwritten
+ // const dict, to protect it from accidently being overwritten
+const cUSERINPUT_EVENT = {}    
 
 const LIB_USERINPUT = {
     "Tipp": "outTipp()",
 
     "id-section-1": {
-        "Click" : "outClick()",
+        "Click" : "outClick()", 
         "Hover": "outHover(); outHoverID()",
         "HoverLeave": "outLeave()",
     },

@@ -6,16 +6,13 @@ class clsXCSV_Clickhandler {
     ClickEvent(div) {
         let divID = ReturnParentUntilID(div).id
 
-        // if (this.parent.XNames.IDs.IsHeader(divID)){
         if (this.parent.XNames.IsHeader(divID)){
             this._HeaderCell(divID)
             return}
 
-        // if (this.parent.XNames.IDs.IsCell(divID)){
         if (this.parent.XNames.IsCell(divID)){
             this._Cell(divID)
             return}
-
     }
 
     _HeaderCell(divID) {

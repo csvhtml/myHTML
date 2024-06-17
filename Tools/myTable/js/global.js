@@ -1,14 +1,19 @@
 function ParseFromFileReader() {
     let text = cFileReaders["nav-input"].result
     // XCSV["main"].XReader.ReadXCSV(text)
-    XCSV["main"].XcsvHandler.Read(text)
-    XCSV["main"].XPrinter.Print()
+    XCSV["main"].XFormat.Read(text)
+    XCSV["main"].XHTML.Print()
     infoblock(FileNameFromPath(cFileReaders_File["nav-input"].value) ,"l")
 }
 
 function DownloadCSV() {
-    // DownloadFile(XCSV["main"].XPrinter.AsCSV())
-    DownloadFile(XCSV["main"].XCSV.DataAsCSV())
+    // DownloadFile(XCSV["main"].XHTML.AsCSV())
+    DownloadFile(XCSV["main"].XFormat.DataAsCSV())
+}
+
+function DownloadHTML() {
+    // DownloadFile(XCSV["main"].XHTML.AsCSV())
+    DownloadFile(XCSV["main"].XHTML.DataAsHTML())
 }
 
 function Click() {
@@ -16,17 +21,25 @@ function Click() {
     XCSV["main"].XClick.ClickEvent(div)
 }
 
+// ####################################################################################
+// from Edit gloabl                                                                   #
+// ####################################################################################
 
-function Edit_Edit(div) {
+// whenn the div (that was clicked) is inside a cell
+// the row height is extended
+// and the cell value as markdown is returned
+function Gloabl_Edit_Textarea(div) {
+    /**
+    * This function is called before a div textarea is created
+    * It returns a value (related to div.innerHTML) which is then put as value to the textarea
+    */
     if (XCSV["main"].XNames.IDs.IsCell(div.id)) {
         let row = document.getElementById(_Edit_RowID(div.id))
-        row.style.height = (row.getBoundingClientRect()["height"]+40)+"px"
-        // _Edit_MinHeight(div.id)
-    }
-}
-
-function Edit_Textarea(div) {
-    let value_modified = convertToMarkup(div.innerHTML)
+        row.style.height = (row.getBoundingClientRect()["height"]+40)+"px"}
+    
+    let value_modified = div.innerHTML
+    value_modified = SVGtoMyMarkdown(value_modified)
+    value_modified = HTMLtoMyMarkdown(value_modified)
     return value_modified
 }
 
@@ -47,7 +60,10 @@ function Edit_Save(divID, value) {
         let h = XCSV["main"].XNames.IDs.H_fromHeaderID(divID)
         XCSV["main"].XData.headers[h] = value
     }
-        let value_modified = parseMarkup(value)
+        let value_modified = value
+        value_modified = MyMarkDowntoHTML(value_modified, ignore1 = ["[("])
+        value_modified = MyMarkDowntoSVG(value_modified)
+        
         return value_modified
 }
 
@@ -73,26 +89,3 @@ function _Edit_MinHeight_Undo(divID) {
 
 
 // used in xcsv_reader
-// markup -> html
-function parseMarkup(markupText) {
-    if (typOf(markupText) != 'str') {
-        return markupText}
-
-    // [xxx::yyy] -> <a href="yyy">xxx </a>
-    // var linkRegex = /\[([^\]]+)\|([^\]]+)\]/g;
-    var linkRegex = /\[([^\]]+)::([^\]]+)\]/g;
-    var htmlText = markupText.replace(linkRegex, '<a href="$2" target="#">$1</a>');
-    // \n -> <br>
-    htmlText = htmlText.replace(new RegExp('\n', "g") , '<br>')
-    return htmlText;
-    }
-
-// html -> markup
-function convertToMarkup(htmlText) {
-    htmlText = htmlText.replace('target="#"', '')
-    var anchorRegex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1[^>]*?>(.*?)<\/a>/g;
-    // var markupText = htmlText.replace(anchorRegex, '[$3|$2]');
-    var markupText = htmlText.replace(anchorRegex, '[$3::$2]');
-    var markupText2 = markupText.replace(new RegExp('<br>', "g") , '\n')
-    return markupText2;
-    }

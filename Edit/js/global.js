@@ -1,12 +1,13 @@
-function Edit_Edit(div) {
-    // This function is called before a div textarea is created
-    // it returns intentionally nothing
-}
+// function Edit_Edit(div) {
+//     // This function is called before a div textarea is created
+//     // it returns intentionally nothing
+// }
 
-function Edit_Textarea(div) {
-    // This function is called whenever a div textarea is created
-    // It returns a value which is then put as value to the textarea
-    // let value_modified = div.innerHTML + " Hallo"   // for testing
+function Gloabl_Edit_Textarea(div) {    
+    /**
+    * This function is called before a div textarea is created
+    * It returns a value (related to div.innerHTML) which is then put as value to the textarea
+    */
     let value_modified = div.innerHTML
     return value_modified
 }

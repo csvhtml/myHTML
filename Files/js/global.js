@@ -9,7 +9,7 @@ function UploadFile (event)  {
     cFileReaders[event.srcElement.id].readAsText(divFile.files[0]); 
 }
 
-function DownloadFile(text = "a", filename = " .csv") {
+function DownloadFile(text = "a", filename = ".csv") {
     var pom = document.createElement('a');
     pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
     pom.setAttribute('download', filename);

@@ -1,3 +1,3 @@
-function main() {
-    document.getElementById("id-textarea").appendChild(TextArea({}))
-}
+(function () {
+    test_basisjs()
+})();

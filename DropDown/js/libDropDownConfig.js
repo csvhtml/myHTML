@@ -1,8 +1,8 @@
-// ################################################################
-// Drop Down and Button Configuration                             #
-// ################################################################
+// Hint 1: "" must be outer quotes, '' must be inner quotes. Rule when using a dict.
+// Hint 2: // Buttons with function calls can be also defined here, 
+//         but better pratcice is to define them via index.html)
 const LIB_DROPDOWN_QWERTZ = {
-    // Buttons (possible, but actually beter to define this inside the index.html)
+    // Buttons
     "id-of-a-Button": 'AddButtonText("  Button Text  1")' ,
     
     // DropDowns
@@ -23,7 +23,7 @@ const LIB_DROPDOWN_QWERTZ = {
     "id-dropdown-anywhere":[
         "The drop down can be anywhere on the page",
         "not only in the navbar",
-        {"Call a object function": "AddButtonText('  Button Text  1')"   // "" must be outer quotes, '' must be inner quotes in a dict.
+        {"Call a object function": "AddButtonText('  Button Text  1')"   
         },
     ],
 }

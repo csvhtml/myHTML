@@ -1,4 +1,4 @@
-class clsCSVHandler {
+class clsFormat {
     constructor(parent, config) {
         this.parent = parent
         this.config = {
@@ -10,14 +10,27 @@ class clsCSVHandler {
     }
 
     Read(text) {
-        this.ReadXCSV(text)
-    }
+        /**
+         * Reads in a text file and saves its data to the parent
+         */
+        this.xRead(text)}
 
     DataAsCSV() {
+        /**
+         * Parses the data of the parent as a text file
+         */
         let ret = '';
         ret += this._AsCSV_HeaderLine()
         ret += this._AsCSV_RowsLine()
-        return ret
+        return ret}
+    
+    xRead(text) {
+        if (text == undefined) {
+            return}
+        let files = text.split(this.config["file-seperator"])
+        let headers_data = this._HeadersAndDataFromText(files[0])
+
+        this.parent.XData.Init(headers_data[0], headers_data[1])
     }
 
     _AsCSV_HeaderLine() {
@@ -48,17 +61,6 @@ class clsCSVHandler {
         return ret
     }
 
-
-    ReadXCSV(text) {
-        if (text == undefined) {
-            return}
-        let files = text.split(this.config["file-seperator"])
-        let headers_data = this._HeadersAndDataFromText(files[0])
-
-        this.parent.XData.Init(headers_data[0], headers_data[1])
-        // this.parent.XPrinter.Print()
-    }
-
     _HeadersAndDataFromText(textfile) {
         let lines = textfile.split(this.config["line-starter"]); lines.removeAll("")
         for (let i = 0; i< lines.length; i++) {
@@ -71,5 +73,4 @@ class clsCSVHandler {
     
         return [headers, data]
     }
-
 }

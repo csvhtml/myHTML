@@ -1,3 +1,20 @@
+// ##################################################################################################
+// This class is not inteded to have any callable functions.                                        #
+// When initialized, the target div-ID are provided as parameters where click events are active     #
+// i. e. on the rest of the html page, User Input has no functionality                              #
+//                                                                                                  #
+// In main, an EventListener must be set on the window object for                                   #
+// - mousedown, mouse up to trigger 'Click'                                                         #
+// - keyUp to trigger 'Tipp'                                                                        #
+// - mouseenter and mouseleave to handle 'Hover' and 'HoverLeave'.                                  #
+// - These can not be set on the window object and must be set on the individual div items          #                                          #
+//                                                                                                  #
+// In the config, it is defined which global function to be called in case of                       #
+//  Click, Tipp, Hover or HoverLeave was triggered. Mouse Events are defined per target div-ID      #
+//                                                                                                  #
+// ##################################################################################################
+
+
 class clsUserInput {
     constructor(DivIDs) {
         this.EgoIDs = DivIDs
@@ -6,7 +23,7 @@ class clsUserInput {
     }
 
 // ################################################################
-// User Events                                                    #
+// User Events                                                    #g
 // ################################################################
 
     MouseDown = (event) => {
@@ -22,6 +39,10 @@ class clsUserInput {
         }
     } 
 
+    KeyUp = (event) => {
+        this.Trigger(event, "Tipp")
+    }
+
     MouseEnter = (event) => {
         this.Trigger(event, "Hover")
     }
@@ -30,9 +51,6 @@ class clsUserInput {
         this.Trigger(event, "HoverLeave")
     }
 
-    KeyUp = (event) => {
-        this.Trigger(event, "Tipp")
-    }
     
     Trigger(event, typ) {
         if (event.type == 'keyup') {

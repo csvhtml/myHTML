@@ -1,4 +1,4 @@
-const CSVG = new clsSVG();
+const CSVG = new clsSVG();CSVG.CreateSVGs_FromDivClasses()
 
 class libEdit {
     constructor(name) {
@@ -34,7 +34,7 @@ class libEdit {
         this._AppendButton(div, "x", size)}
 
     _Edit_Prepare(div) {
-        Edit_Edit(div)
+        // Edit_Edit(div)
         this._SetModeEdit(div)
         this.innerHTMLs[div.id] = div.innerHTML}
 
@@ -78,9 +78,10 @@ class libEdit {
             div.classList.add('x-edit')}}
 
     _InnerHTML_To_Textarea(div, size = "normal") {
+        let CellvalueAsMarkdown = Gloabl_Edit_Textarea(div)
         let textarea = TextArea({
             id: "id-textarea-" + div.id,
-            value: Edit_Textarea(div),
+            value: CellvalueAsMarkdown,
             cols: 1,
             rows: 1    
         })

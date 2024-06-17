@@ -15,7 +15,7 @@ function test_clsData(myTest) {
     myTest.NoAssertion(foo, {"a":["A", "B"], "b":[["1", "11"], ["2", "22"]]}, fname)
 
     ted = new clsXCSV("div-id", XCSV_DATA)
-    myTest.Equal(ted.XData.headers, null)
+    myTest.Equal(ted.XData.headers, null, fname)
     myTest.Equal(ted.XData.data, null)
     myTest.Equal(ted.XWorkingItems[XCSV_DATA["WorkingItems"].key(0)].headers, null)
     myTest.Equal(ted.XWorkingItems[XCSV_DATA["WorkingItems"].key(0)].data, null)

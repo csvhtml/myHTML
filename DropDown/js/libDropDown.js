@@ -1,7 +1,8 @@
-// ################################################################
-// class                                                          #
-// ################################################################
-// this class is not inteded to have any callable functions. It's loaded one time and attached DropDowns on th Page
+// ###########################################################################################
+// This class is not inteded to have any callable functions.                                 #
+// When initialized, it attaches DropDowns on th Page based on div classes and config        #
+//                                                                                           #
+// ###########################################################################################
 
 class libDropDowns {
     constructor() {

@@ -24,3 +24,7 @@ function IsBetween(number, a, b, incl = true) {
   }
   return false
 }
+
+function IsEmptyList(variable) {
+    return Array.isArray(variable) && variable.length == 0;
+}

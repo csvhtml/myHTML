@@ -13,7 +13,7 @@ class clsDataCollection {
         for (let key of Object.keys(Config)) {
             this[key] = new clsData(parent, key, ItemsType)
             if (ItemsType == "XConfigItems") {
-                let hd = this.parent.XcsvHandler._HeadersAndDataFromText(myTrim(Config[key]))
+                let hd = this.parent.XFormat._HeadersAndDataFromText(myTrim(Config[key]))
                 this[key].Init(hd[0], hd[1])
             }
         }
@@ -33,7 +33,7 @@ class clsDataCollection {
         let items = []
         for (let row of this.parent.XData.data) {
             for (let val of row) {
-                items = PatternsFound3(val,["[", "::", "]"])
+                items = PatternsFound(val,["[", "::", "]"])
                 if (items.length > 0) {
                     this.AddLinksToConfigList(items)}}}  // key information actually redundant
     }

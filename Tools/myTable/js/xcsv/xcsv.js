@@ -1,28 +1,27 @@
 // ################################################################
-// class XCSV                                                      #
+// class XCSV                                                     #
 // ################################################################
 
 class clsXCSV {
         constructor(egoDivID, config) {     
-            this.egoDivID = StringAssertAndReturn(egoDivID)
+            this.egoDivID = egoDivID
             this.config = config
-            
-            this.XAssert = new clsXCSV_assert(this)
-            this.XcsvHandler = new clsCSVHandler(this) 
-            this.XWorkingItems = new clsDataCollection(this, "XWorkingItems")
-            this.XConfigItems = new clsDataCollection(this, "XConfigItems")
-            this.XData = new clsData(this, this.config["WorkingItems"].key(0), "XWorkingItems", true)  
-            
-            this.XPrinter = new clsPrinter(this)
+            this.XAssert = new clsXCSV_assert(this)  // OK
 
-            this.XActiveCell = new clsXCSV_Cell(this)
-            this.XNames = new clsXCSV_Names(this)
-            this.XClick = new clsXCSV_Clickhandler(this)
-            this.XSelection = new clsXCSV_Selectionhandler(this)
+            this.XFormat = new clsFormat(this)  // OK
+            this.XWorkingItems = new clsDataCollection(this, "XWorkingItems")  // Skip
+            this.XConfigItems = new clsDataCollection(this, "XConfigItems")  // Skip
+            this.XData = new clsData(this, this.config["WorkingItems"].key(0), "XWorkingItems", true)   // OPEN -> Test
+            
+            this.XHTML = new clsHTML(this)  // OK
+
+            this.XNames = new clsXCSV_Names(this)  // OK
+            this.XClick = new clsXCSV_Clickhandler(this)  // OK
+            this.XSelection = new clsXCSV_Selectionhandler(this)  // OK
         }
 
         AddRow() {
             this.XData.AddRow()
-            this.XPrinter.Print()
+            this.XHTML.Print()
         }
     }

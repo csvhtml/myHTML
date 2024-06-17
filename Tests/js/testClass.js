@@ -8,19 +8,45 @@ class clsTest {
     PrintResult() {
         let runs = this.passed + this.failed
         let strA = String(runs) + " tests run. " + String(this.failed) + " failed!"
-        let n = 0; let count = 0
-        for (let casse of this.cases) {
-            n += 1
-            if (casse[1] == "failed") {
-                count += 1
-                strA += "\n" + String(count) + ") Test Case " + String(n) + ": " + String(casse)
+        let no = 0
+        let case_no = 1; let count = 0; let lastCaseName = ""
+        for (let testcase of this.cases) {
+            case_no +=1
+            if (testcase[0] != lastCaseName) {case_no = 1}
+
+            if (testcase[1] == "failed") {
+                no += 1
+                strA += "\n" + String(no) + ") Test Case " + String(case_no) + "/" + String(this._ReturnNumberofCases(testcase[0])) + ": " + String(testcase)
             }
+            lastCaseName = testcase[0]
         }
         console.log(strA)
     }
 
+    _ReturnNumberofCases(fname) {
+        let ret = 0
+        for (let casse of this.cases)
+            if (casse[0] == fname) {
+                ret +=1}
+        return ret
+    }
+
     Equal(a,b, fname) {
         if (IsEqual(a,b)) {
+            this._passed(fname)}
+        else {
+            this._failed(fname)}
+    }
+
+    IsFalse(a, fname) {
+        if (IsEqual(a,false)) {
+            this._passed(fname)}
+        else {
+            this._failed(fname)}
+    }
+
+    IsTrue(a, fname) {
+        if (IsEqual(a,true)) {
             this._passed(fname)}
         else {
             this._failed(fname)}
@@ -148,4 +174,12 @@ function test_failed(fname) {
         console.log('Failed ' + fname)
     }
     return -1
+}
+
+
+function new_test_line(fname, divID) {
+    document.getElementById(divID).append(document.createElement('br'))
+    document.getElementById(divID).append(document.createElement('br'))
+    document.getElementById(divID).append(Bold(fname))
+    document.getElementById(divID).append(document.createElement('br'))
 }
