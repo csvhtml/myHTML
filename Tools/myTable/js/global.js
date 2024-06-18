@@ -13,7 +13,7 @@ function DownloadCSV() {
 
 function DownloadHTML() {
     // DownloadFile(XCSV["main"].XHTML.AsCSV())
-    DownloadFile(XCSV["main"].XHTML.DataAsHTML())
+    DownloadFile(XCSV["main"].XHTML.DataAsHTML(CSS_HTMLEXPORT))
 }
 
 function Click() {
