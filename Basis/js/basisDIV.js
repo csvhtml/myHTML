@@ -14,7 +14,7 @@ function TextArea({
     id = "", 
     cols = 50, 
     rows = 5, 
-    classList = ["form-control"],
+    classList = [],
     value = ""
 }) {
     let input = document.createElement('textarea'); 

@@ -48,7 +48,7 @@ function test_basisjs_TextArea(myTest) {
         id: "id-textarea", 
         cols: 50, 
         rows: 5, 
-        classList: ["form-control"],
+        classList: [],
         value: "Test Value xyz"
     }
 
