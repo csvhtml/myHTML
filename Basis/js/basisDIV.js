@@ -30,8 +30,6 @@ function TextArea({
     return input
 }
 
-//MOHI
-
 function Bold(text) {
     let b = document.createElement('b');
     b.textContent = text;

@@ -68,4 +68,8 @@ function test_basisjs_Is(myTest) {
     myTest.IsFalse(IsEmptyList(v2),fname)
     myTest.IsTrue(IsEmptyList(v3),fname)
 
+    myTest.IsFalse(IsString1(1),fname)
+    myTest.IsFalse(IsString1(""),fname)
+    myTest.IsTrue(IsString1("a"),fname)
+
 }

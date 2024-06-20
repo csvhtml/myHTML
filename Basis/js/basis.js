@@ -21,7 +21,10 @@ class clsLog {
 
 function assert(condition, message) {
     if (!condition) {
-        throw new Error(message || "Assertion failed");
+        if (IsString1(message)) {
+            throw new Error(message);
+        } else {
+            throw new Error}
     }
 }
 

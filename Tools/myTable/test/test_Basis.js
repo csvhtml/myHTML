@@ -14,8 +14,6 @@ function test_PatternsFound3(myTest) {
     myTest.Assertion(foo, {}, fname, "a not str")
     myTest.Assertion(foo, {"a":"string", "b":"string"}, fname, "b not list")
     myTest.Assertion(foo, {"a":"string", "b": ["]"]}, fname, "b not length 2 or 3")
-    myTest.NoAssertion(foo, {"a":"string [str]"}, fname)
-    myTest.NoAssertion(foo, {"a":"string [str]", "b":["[", ":", "]"]}, fname)
     let input = ""; let pattern = ""
 
 

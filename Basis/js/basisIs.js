@@ -28,3 +28,7 @@ function IsBetween(number, a, b, incl = true) {
 function IsEmptyList(variable) {
     return Array.isArray(variable) && variable.length == 0;
 }
+
+function IsString1(variable) {
+  return IsString(variable) && variable.length > 0
+}

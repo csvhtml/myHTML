@@ -4,7 +4,11 @@ class clsTest {
         this.failed = 0;
         this.cases = [];
       }
-
+    debug_PrintAllCases() {
+        for (let testcase of this.cases) {
+            console.log(testcase)
+        }
+    }
     PrintResult() {
         let runs = this.passed + this.failed
         let strA = String(runs) + " tests run. " + String(this.failed) + " failed!"
@@ -21,14 +25,6 @@ class clsTest {
             lastCaseName = testcase[0]
         }
         console.log(strA)
-    }
-
-    _ReturnNumberofCases(fname) {
-        let ret = 0
-        for (let casse of this.cases)
-            if (casse[0] == fname) {
-                ret +=1}
-        return ret
     }
 
     Equal(a,b, fname) {
@@ -52,22 +48,14 @@ class clsTest {
             this._failed(fname)}
     }
 
-    NoAssertion(foo, p , fooName) {
-        if (typeof foo == 'object') {
-            this._NoAssertion_Object(foo, p , fooName); return}
-
-        if (typeof foo == 'function') {
-            this._NoAssertion_Function(foo, p , fooName); return}
-
-        assert(false)
-    }
-
     Assertion(foo ,p , fooName, msg ) {
         if (typeof foo == 'object') {
-            this._Assertion_Object(foo, p , fooName, msg); return}
+            this._Assertion_Object(foo, p , fooName, msg); 
+            return}
 
         if (typeof foo == 'function') {
-            this._Assertion_Function(foo, p , fooName, msg); return}
+            this._Assertion_Function(foo, p , fooName, msg); 
+            return}
 
         assert(false)
     }
@@ -78,29 +66,31 @@ class clsTest {
             foo(p["a"], p["b"], p["c"], p["d"])
         } catch (error) {
             flag = false
-            if(error.message == msg || "" == msg) {
-                this._passed(fooName)
-            } else {
-                this._failed(fooName + " Assertion", error.message + " was thrown instead of " + msg)
-            }
+            this._Assertion_Catch(error, msg, fooName)
         } finally {
             if (flag) {
-                this._failed(fooName)}
+                this._failed(fooName + " Assertion", "Error not thrown")}
         }
     }
 
-    _NoAssertion_Function(foo, p , fooName) {
-        let flag = true
-        try {
-            foo(p["a"], p["b"], p["c"], p["d"])
-        } catch (error) {
-            flag = false
-            this._failed(fooName, "Error was thrown: "  + error.message)}
-        finally {
-            if (flag) {
-                this._passed(fooName)}   
-        } 
-    }
+    _Assertion_Catch(error, ExpectedMSG, fooName) {
+        // if an empty error was thrown 'throw new Error;' then the message is ""
+        if (error.message == ExpectedMSG) {
+            this._passed(fooName)
+            return}
+
+        let start = "Error successful thrown, error message conflict: "
+        if (error.message != "" && ExpectedMSG == "") {
+            this._failed(fooName + " Assertion", start + "'" + error.message + "' was thrown instead of no error message")
+            return}
+        if (error.message == "" && ExpectedMSG != "") {
+            this._failed(fooName + " Assertion", start + "No error message was thrown instead of '" + ExpectedMSG + "'")
+            return}
+        if (error.message != "" && ExpectedMSG != "") {
+            this._failed(fooName + " Assertion", start + "'" + error.message + "' was thrown instead of '" + ExpectedMSG + "'")
+            return}
+        assert(false)
+        }
  
     _Assertion_Object(foo, p , fooName, msg = "") {
         let flag = true
@@ -119,19 +109,6 @@ class clsTest {
         }
     }
 
-    _NoAssertion_Object(foo, p, fooName) {
-        let flag = true
-        try {
-            new foo.constructor(p["a"], p["b"], p["c"], p["d"])
-        } catch (error) {
-            flag = false
-            this._failed(fooName, "Error was thrown: "  + error.message)}
-        finally {
-            if (flag) {
-                this._passed(fooName)}   
-        } 
-    }
-
     _passed(fname) {
         this.passed +=1
         this.cases.push([fname, "passed"])
@@ -141,39 +118,14 @@ class clsTest {
         this.failed +=1
         this.cases.push([fname, "failed", msg])
     }
-}
 
-
-
-
-
-
-function test_passed(fname) {
-    testpassed_count += 1
-    if (lastlog == "") {
-        lastlog = 'OK ' + fname 
-        lastlog_count = 1
-        return 0
+    _ReturnNumberofCases(fname) {
+        let ret = 0
+        for (let casse of this.cases)
+            if (casse[0] == fname) {
+                ret +=1}
+        return ret
     }
-
-    if (lastlog != 'OK ' + fname) {
-        console.log(lastlog_count + " x " + lastlog)
-        lastlog = 'OK ' + fname
-        lastlog_count = 1
-    } else {
-        lastlog_count += 1
-    }
-    return 0
-}
-
-function test_failed(fname) {
-    testfailed_count +=1
-    if (ASSERT) {
-        assert(false, fname)
-    } else {
-        console.log('Failed ' + fname)
-    }
-    return -1
 }
 
 

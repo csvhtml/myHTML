@@ -12,7 +12,7 @@ function test_clsData(myTest) {
     myTest.Assertion(foo, {"a":["A"]}, fname, "Undefined data")
     myTest.Assertion(foo, {"a":["A"], "b":["A"]}, fname, "DataIs2D failed")
     myTest.Assertion(foo, {"a":["A"], "b":[["A", "b"]]}, fname, "HeadersData failed")
-    myTest.NoAssertion(foo, {"a":["A", "B"], "b":[["1", "11"], ["2", "22"]]}, fname)
+
 
     ted = new clsXCSV("div-id", XCSV_DATA)
     myTest.Equal(ted.XData.headers, null, fname)

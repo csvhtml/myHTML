@@ -21,7 +21,10 @@ class clsLog {
 
 function assert(condition, message) {
     if (!condition) {
-        throw new Error(message || "Assertion failed");
+        if (IsString1(message)) {
+            throw new Error(message);
+        } else {
+            throw new Error}
     }
 }
 
@@ -476,8 +479,6 @@ function TextArea({
     return input
 }
 
-//MOHI
-
 function Bold(text) {
     let b = document.createElement('b');
     b.textContent = text;
@@ -562,6 +563,10 @@ function IsBetween(number, a, b, incl = true) {
 
 function IsEmptyList(variable) {
     return Array.isArray(variable) && variable.length == 0;
+}
+
+function IsString1(variable) {
+  return IsString(variable) && variable.length > 0
 }
 const CLS_SVG_APPLYFORTAGS = ["div", "a", "label"]
 const CLS_SVG_VALID_NAMES = {
