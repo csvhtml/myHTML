@@ -9,29 +9,47 @@ function test_TestCase_Equal(myTest) {
 
 function test_TestCase_Assert(myTest) {
     let fname = arguments.callee.name;
-    
-    let foo = function () {ErrorFu() }
-    myTest.Assertion(foo, {}, fname)                        //passed 
-    myTest.Assertion(foo, {}, fname, "wrong error message") // failed error.message == "" && ExpectedMSG != ""
-    foo = function () {ErrorWithMessageFu()}
-    myTest.Assertion(foo, {}, fname)                        // failed error.message != "" && ExpectedMSG == ""
-    myTest.Assertion(foo, {}, fname, "wrong error message") // failed else (both are != "")
-    foo = function () {NoError()}
-    myTest.Assertion(foo, {}, fname)                            // failed triggered at "finally"
-    myTest.Assertion(foo, {}, fname, "expected error message")  // failed triggered at "finally", msg irrelevant
 
-    // MOHI 
-    // Assertion with objects
+    let foo = function (a,b,c,d) {ErrorFu(a,b,c,d) }
+    myTest.Assertion(foo, {}, fname)                                                        // passed. (empty) Error was seen
+    myTest.Assertion(foo, {"a": false}, fname)                                              // failed. Error was not seen
+    myTest.Assertion(foo, {"a": false}, fname, "msg")                                       // failed. Error was not seen. msg irrelevant
+    myTest.Assertion(foo, {"a": true}, fname, "some message espected")                      // failed. Error was seen, but no message was thrown
+    myTest.Assertion(foo, {"a": true, "b": "some message"}, fname)                          // failed. Error was seen, but no message was expected
+    myTest.Assertion(foo, {"a": true, "b": "same message"}, fname, "other message")         // failed. Error was seen, but wrong message
+    myTest.Assertion(foo, {"a": true, "b": "same message"}, fname, "same message")          // passed. Error was seen with correct message
+
+    // objects
+    // must first create obj without error. Then constructor ia again tested during test
+    let obj = new cls123(false)
+    myTest.Assertion(obj, {}, fname)                                                        // passed. (empty) Error was seen
+    myTest.Assertion(obj, {"a": false}, fname)                                              // failed. Error was not seen
+    myTest.Assertion(obj, {"a": false}, fname, "msg")                                       // failed. Error was not seen. msg irrelevant
+    myTest.Assertion(obj, {"a": true}, fname, "some message espected")                      // failed. Error was seen, but no message was thrown
+    myTest.Assertion(obj, {"a": true, "b": "some message"}, fname)                          // failed. Error was seen, but no message was expected
+    myTest.Assertion(obj, {"a": true, "b": "same message"}, fname, "other message")         // failed. Error was seen, but wrong message
+    myTest.Assertion(obj, {"a": true, "b": "same message"}, fname, "same message")          // passed. Error was seen with correct message
+
 }
 
-function NoError() {
-    return 0;
-}
+function ErrorFu(variable = true, msg = "") {
+        if (variable) {
+            if (msg == "") {
+                throw new Error;}
+            if (msg != "") {
+                throw new Error(msg);}
+            assert(false)
+        }
+    }
 
-function ErrorFu() {
-    throw new Error;
-}
-
-function ErrorWithMessageFu() {
-    throw new Error("corect error message");
+class cls123 {
+    constructor(variable = true, msg = "") {
+        if (variable) {
+            if (msg == "") {
+                throw new Error;}
+            if (msg != "") {
+                throw new Error(msg);}
+            assert(false)
+        }
+    }
 }

@@ -4,11 +4,13 @@ class clsTest {
         this.failed = 0;
         this.cases = [];
       }
+
     debug_PrintAllCases() {
         for (let testcase of this.cases) {
             console.log(testcase)
         }
     }
+    
     PrintResult() {
         let runs = this.passed + this.failed
         let strA = String(runs) + " tests run. " + String(this.failed) + " failed!"
@@ -66,31 +68,12 @@ class clsTest {
             foo(p["a"], p["b"], p["c"], p["d"])
         } catch (error) {
             flag = false
-            this._Assertion_Catch(error, msg, fooName)
+            this._Assertion_Catch(error, msg, fooName + " Assertion")
         } finally {
             if (flag) {
                 this._failed(fooName + " Assertion", "Error not thrown")}
         }
     }
-
-    _Assertion_Catch(error, ExpectedMSG, fooName) {
-        // if an empty error was thrown 'throw new Error;' then the message is ""
-        if (error.message == ExpectedMSG) {
-            this._passed(fooName)
-            return}
-
-        let start = "Error successful thrown, error message conflict: "
-        if (error.message != "" && ExpectedMSG == "") {
-            this._failed(fooName + " Assertion", start + "'" + error.message + "' was thrown instead of no error message")
-            return}
-        if (error.message == "" && ExpectedMSG != "") {
-            this._failed(fooName + " Assertion", start + "No error message was thrown instead of '" + ExpectedMSG + "'")
-            return}
-        if (error.message != "" && ExpectedMSG != "") {
-            this._failed(fooName + " Assertion", start + "'" + error.message + "' was thrown instead of '" + ExpectedMSG + "'")
-            return}
-        assert(false)
-        }
  
     _Assertion_Object(foo, p , fooName, msg = "") {
         let flag = true
@@ -98,16 +81,31 @@ class clsTest {
             new foo.constructor(p["a"], p["b"], p["c"], p["d"])
         } catch (error) {
             flag = false
-            if(error.message == msg || "" == msg) {
-                this._passed(fooName + " Assertion")
-            } else {
-                this._failed(fooName + " Assertion", error.message + " was thrown instead of " + msg)
-            }
+            this._Assertion_Catch(error, msg, fooName + " Constructor Assertion")
         } finally {
             if (flag) {
-                this._failed(fooName + " Assertion")}
+                this._failed(fooName + " Constructor Assertion", "Error not thrown")}
         }
     }
+
+    _Assertion_Catch(error, ExpectedMSG, fooNamePlus) {
+        // if an empty error was thrown 'throw new Error;' then the message is ""
+        if (error.message == ExpectedMSG) {
+            this._passed(fooNamePlus)
+            return}
+
+        let start = "Error successful thrown, error message conflict: "
+        if (error.message != "" && ExpectedMSG == "") {
+            this._failed(fooNamePlus, start + "'" + error.message + "' was thrown instead of no error message")
+            return}
+        if (error.message == "" && ExpectedMSG != "") {
+            this._failed(fooNamePlus, start + "No error message was thrown instead of '" + ExpectedMSG + "'")
+            return}
+        if (error.message != "" && ExpectedMSG != "") {
+            this._failed(fooNamePlus, start + "'" + error.message + "' was thrown instead of '" + ExpectedMSG + "'")
+            return}
+        assert(false)
+        }
 
     _passed(fname) {
         this.passed +=1
