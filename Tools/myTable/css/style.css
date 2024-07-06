@@ -1,11 +1,4 @@
-input[type="file"]#nav-input{
-    display: none;
-  }
-
-
-  /* Sticky Table and 90% table area */
+/* Sticky Table and 90% table area */
   body {
     padding-top: 40px;  /* Height of the navbar */
   }
-
-
