@@ -67,9 +67,9 @@ class libDropDowns {
 
     constuctor_init() {
         let ret = {}
-        for (let key of Object.keys(LIB_DROPDOWN_QWERTZ) ) {
+        for (let key of Object.keys(DROPDOWN_CONFIG) ) {
             ret[key] = new libDropDownSingle(
-                LIB_DROPDOWN_QWERTZ[key],
+                DROPDOWN_CONFIG[key],
                 document.getElementById(key))
         
             ret[key].InnerHTML_AddDropDown()

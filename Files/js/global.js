@@ -1,5 +1,6 @@
 // const UploadFile  = (event)  => {
 function UploadFile (event)  {
+
     let funktion = function (input_id) {
         return eval(LIB_UPLOAD_QWERTZ[input_id].replace("()", ""))}
 

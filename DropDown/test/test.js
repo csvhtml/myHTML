@@ -17,7 +17,7 @@ function Create_TestReportDiv() {
 }
 
 function test_DropDownOpen() {
-    let keys = Object.keys(LIB_DROPDOWN_QWERTZ)
+    let keys = Object.keys(DROPDOWN_CONFIG)
     let keys_btn = []
     let keys_dd = []
     for (key of keys) {
