@@ -2,7 +2,7 @@
 function UploadFile (event)  {
 
     let funktion = function (input_id) {
-        return eval(LIB_UPLOAD_QWERTZ[input_id].replace("()", ""))}
+        return eval(FILES_UPLOAD_CONFIG[input_id].replace("()", ""))}
 
     cFileReaders[event.srcElement.id].addEventListener("loadend", funktion(event.srcElement.id)); 
     let divFile = document.getElementById(event.srcElement.id);

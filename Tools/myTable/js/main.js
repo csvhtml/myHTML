@@ -28,7 +28,7 @@ const XCSV = {
     window.addEventListener('mousedown', UIN.MouseDown)
     window.addEventListener('mouseup', UIN.MouseUp)
     // UpDownloadConfig
-    for (let key of Object.keys(LIB_UPLOAD_QWERTZ) ) {
+    for (let key of Object.keys(FILES_UPLOAD_CONFIG) ) {
         cFileReaders[key] = new FileReader()
     }
     XCSV["main"].XFormat.Read(myTrim(XCSV_DATA["WorkingItems"]["X"]))

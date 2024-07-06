@@ -27,7 +27,7 @@ const XCSV_DATA = {
 // UpDownloadConfig
 const cFileReaders = {}; 
 const cFileReaders_File = {};
-const LIB_UPLOAD_QWERTZ = {
+const FILES_UPLOAD_CONFIG  = {
     // "nav-input": "functionAfterUpload()" ,
     "nav-input": 'ParseFromFileReader()'
 };

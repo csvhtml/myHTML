@@ -2,12 +2,12 @@
 
 const cFileReaders = {}; 
 const cFileReaders_File = {};
-const LIB_UPLOAD_QWERTZ = {
+const FILES_UPLOAD_CONFIG = {
     "Input 2": "TestFunction()" ,
 };
 
 (function () {
-    for (let key of Object.keys(LIB_UPLOAD_QWERTZ) ) {
+    for (let key of Object.keys(FILES_UPLOAD_CONFIG) ) {
         cFileReaders[key] = new FileReader()
     }
 })();
