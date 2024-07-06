@@ -1,10 +1,10 @@
-const HTMLTEXT = new libHTMLText();
+const BASIS = new clsBASIS();
 
 (function () {
     let div = document.getElementById("id-1")
-    div.innerHTML = HTMLTEXT.Table_FromMarkdown(div.innerHTML)
+    div.innerHTML = BASIS.HTML.Table.Table_FromMarkdown(div.innerHTML)
 
-    document.getElementById("id-2").innerHTML = HTMLTEXT.Table({
+    document.getElementById("id-2").innerHTML = BASIS.HTML.Table.Table({
         tableID: "id-tableX",
         tableClass: "class1 class2",
         tableStyle: "color: blue;width:600pt",

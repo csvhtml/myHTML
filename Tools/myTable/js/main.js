@@ -2,7 +2,10 @@
 // Refactor: xcsv_dataCollection to dynamically define new config items
 
 // Basis 
-const HMTL = new libHTMLText()  // ToDo: make it a basis functions service, not an object
+// const HMTL = new basisHTMLText()  // ToDo: make it a basis functions service, not an object
+// const HTML = BASIS.HTML.Table()
+
+const BASIS = new clsBASIS();
  
 // DropDowns
 const DD = new libDropDowns();

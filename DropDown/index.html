@@ -6,8 +6,11 @@
     <title>NAVBAR DropDown</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/nav.css">
+    <link rel="stylesheet" href="../Basis/css/bs.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/dropdown.css">
+    <link rel="stylesheet" href="css/infoblock.css">
+    <link rel="stylesheet" href="css/files.css">
 </head>
 
 <body>
@@ -20,11 +23,32 @@
     </nav>
 
     <nav id="navMiddle" class="nav">
-        <a id="id-of-a-Button" class="btn">Button</a>
+        <div id="id-infoblock">
+            <div id="id-infoblock-l" class="infoblock">
+                
+            </div>
+            <div id="id-infoblock-m" class="infoblock">
+                
+            </div>
+            <div id="id-infoblock-r" class="infoblock">
+                
+            </div>
+        </div>
     </nav>
 
     <nav id="navRight" class="nav">
-        <a id="id-test" class="btn">Test</a>
+        <a id="id-of-a-Button" class="btn mx-2 my-2">Button</a>
+        <a id="id-test" class="btn my-2 mx-2 mb-10">Test</a>
+            <form id="form-csv" class="">
+                <input id="nav-input" type="file" class="" accept=".csv" onchange="UploadFile(event)">
+                <label for="nav-input" class="btn my-2 mx-2">Select CSV</label>
+            </form>
+    
+            <form class="mr-15" id="forminput">
+                <a id="nav-download-csv" class="btn my-2 mx-2" type="submit" onclick="DownloadCSV()"> 
+                    Save CSV
+                </a>
+            </form>
     </nav>
 </navbar>
 
@@ -37,23 +61,16 @@
     </div>   
 
 </div>
-<!-- p-3 = padding -3 -->
-<!-- container-fluid = full width -->
-<!-- overflow-auto = add vertical scroll bar -->
+
 
 </body>
-<script src="../Basis/js/basis.js"></script>
-
-<script src="../Basis/js/basisIs.js"></script>
-<script src="../Basis/js/basisTextFunctions.js"></script>
-<script src="../Basis/js/listProperties.js"></script>
+<script src="../Basis/js/Basis All_.js"></script>
 
 <script src="js/libDropDown.js"></script>
-<script src="js/libDropDownConfig.js"></script>
-
-
 <script src="js/global.js"></script>
-<script src="js/main.js"></script>
+
+<script src="js demo/libDropDownConfig.js"></script>
+<script src="js demo/main.js"></script>
 
 <script src="test/test.js"></script>
 

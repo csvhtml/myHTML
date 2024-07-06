@@ -4,7 +4,6 @@ function test_TestCase_Equal(myTest) {
     myTest.Equal(1,1,fname)
     myTest.Equal(1,2,fname)
     myTest.Equal([1,2,3],[1,2,3],fname)
-
 }
 
 function test_TestCase_Assert(myTest) {
@@ -20,7 +19,7 @@ function test_TestCase_Assert(myTest) {
     myTest.Assertion(foo, {"a": true, "b": "same message"}, fname, "same message")          // passed. Error was seen with correct message
 
     // objects
-    // must first create obj without error. Then constructor ia again tested during test
+    // must first create obj without error. Then constructor is tested during myTest.Assertion
     let obj = new cls123(false)
     myTest.Assertion(obj, {}, fname)                                                        // passed. (empty) Error was seen
     myTest.Assertion(obj, {"a": false}, fname)                                              // failed. Error was not seen
@@ -29,7 +28,6 @@ function test_TestCase_Assert(myTest) {
     myTest.Assertion(obj, {"a": true, "b": "some message"}, fname)                          // failed. Error was seen, but no message was expected
     myTest.Assertion(obj, {"a": true, "b": "same message"}, fname, "other message")         // failed. Error was seen, but wrong message
     myTest.Assertion(obj, {"a": true, "b": "same message"}, fname, "same message")          // passed. Error was seen with correct message
-
 }
 
 function ErrorFu(variable = true, msg = "") {

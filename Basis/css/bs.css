@@ -58,6 +58,10 @@
     margin-right: 15pt !important;
 }
 
+.mb-10 {
+    margin-bottom: 10pt !important;
+}
+
 .p-3 {
     padding: 1rem !important;
     box-sizing: border-box; 

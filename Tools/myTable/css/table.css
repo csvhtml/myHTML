@@ -7,6 +7,8 @@ table {
     font-size: 18px;
     text-align: left;
     table-layout: auto;
+    display: block;
+    overflow-y: scroll;
 }
 
 /* Table header styling */
@@ -62,6 +64,30 @@ td:last-child {
     font-weight: bold;
     background-color: lightgray !important;
     position: sticky;
-    top: 54px;  
+    top: 0px;  
     z-index: 2;
   }
+
+
+
+  /* 
+  ###########################################################################
+  # Responsive                                                              #
+  ########################################################################### 
+  */
+
+/* table {max-height: 500pt;}  will be overwritten  */
+
+@media (max-height: 799px) {
+table {height: 600px;}
+}
+
+/* For screens with height between 800px and 1000px */
+@media (min-height: 800px) and (max-height: 999px) {
+    table {height: 700px;}
+}
+
+/* For screens with height greater than 1000px */
+@media (min-height: 1000px) {
+    table {height: 900px;}
+}

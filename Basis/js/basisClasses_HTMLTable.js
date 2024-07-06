@@ -1,6 +1,6 @@
 // This class does not maipulate DOM elements. It returns stirngs
 
-class libHTMLText {
+class basisHTMLText {
     constructor() {}
 
     Table_FromMarkdown (markdownString) {
@@ -79,7 +79,7 @@ class libHTMLText {
     }
 
     xTable(cfg) {
-        let HTB = new libHTMLText_TableBasis()
+        let HTB = new basisHTMLText_TableBasis()
 
         let ret = ""
         ret += HTB.Tag('table', {id:cfg["tableID"], clas:cfg["tableClass"], style:cfg["tableStyle"]})
@@ -144,7 +144,7 @@ class libHTMLText {
 }
 
 
-class libHTMLText_TableBasis{
+class basisHTMLText_TableBasis{
         constructor() {}
     
         htmlText_TagMUp(tag, meta = "") {
@@ -196,6 +196,3 @@ class libHTMLText_TableBasis{
                 ret += key + '="' + val + '" '}
             return ret }
     }
-
-
-

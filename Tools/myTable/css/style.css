@@ -8,19 +8,4 @@ input[type="file"]#nav-input{
     padding-top: 40px;  /* Height of the navbar */
   }
 
-  #id-infoblock {
-    border:1px grey solid;
-    width: 606px;
-    height: 50px;
-    margin-top: 2px;
-  }
 
-  .infoblock {
-    float: left;
-    width: 200px;
-    height: 50px;
-    padding: 1rem 1rem;
-    /* border: 1px black solid; */
-    /* https://www.w3schools.com/css/css3_box-sizing.asp */
-    box-sizing: border-box; 
-  }
