@@ -7,6 +7,7 @@ const FILES_UPLOAD_CONFIG = {
 };
 
 (function () {
+    //this must be in main()
     for (let key of Object.keys(FILES_UPLOAD_CONFIG) ) {
         cFileReaders[key] = new FileReader()
     }
