@@ -3,7 +3,7 @@ const CSVG = new clsSVG();CSVG.CreateSVGs_FromDivClasses()
 class libEdit {
     constructor(name) {
         this.name = name
-        this.innerHTMLs = {}  // in case of Close, then the original state is resored
+        this.innerHTMLs = {}  // in case of Close, then the original state is restored
         this.lasttime = new Date().getTime()
         this.Init()
     }
@@ -18,8 +18,6 @@ class libEdit {
         for (let div of divs) {
             if (div.hasAttribute("onclick")) {
             div.removeAttribute("onclick")}}
-            this.EgoID = ""
-            infoblock(this.EgoID)
     }
 
     Edit(div) {

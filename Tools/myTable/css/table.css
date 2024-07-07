@@ -1,9 +1,9 @@
 /* Base table styling */
 table {
+    margin-top: 40px;
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
-    margin: 20px 0;
     font-size: 18px;
     text-align: left;
     table-layout: auto;

@@ -25,6 +25,29 @@ class clsXCSV {
             this.XHTML.Print()
         }
     }
+
+// ################################################################
+// XCSV - inner config                                            #
+// ################################################################
+
+const CLSXCSV_NAMES = {
+    "id": {
+        "header": {
+            "prefix":'header-',
+            "postfix": ''
+        },
+        "cell": {
+            "r":'R:',
+            "c":'C:',
+            "h":'H:',
+        },
+        "row":{
+            "prefix":'row-',
+            "postfix": ''
+        }
+    }
+}
+
 // ###################################################
 // asserts the init parameters (egoDivID and config) 
 // makes assert functions available (central handling)

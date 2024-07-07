@@ -18,7 +18,6 @@ const UIN = new clsUserInput(["id-main"]);
 
 const EDIT = new libEdit('EDIT');
 
-
 const XCSV = {
     "main": new clsXCSV("id-main", XCSV_DATA)
 };
@@ -40,10 +39,6 @@ const XCSV = {
     infoblock("Holy guacamole!")
     // EDIT.Init()
 })();
-
-function infoblock(text, o = "r") {
-    document.getElementById("id-infoblock-" + o).innerHTML = text
-}
 
 
 

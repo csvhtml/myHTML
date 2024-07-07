@@ -1,6 +1,4 @@
-// Hint 1: "" must be outer quotes, '' must be inner quotes. Rule when using a dict.
-// Hint 2: // Buttons with function calls can be also defined here, 
-//         but better pratcice is to define them via index.html)
+// DROPDOWN
 const DROPDOWN_CONFIG = {
     "nav-Edit": [
         {"Add Row": "XCSV['main'].AddRow()"},   
@@ -10,4 +8,21 @@ const DROPDOWN_CONFIG = {
         {"Data": "XCSV['main'].XHTML.Print()"},     //
         {"Links": "XCSV['main'].XHTML.Print('Link')"}, 
     ],
+}
+
+
+// FIELS UPLOAD
+const cFileReaders = {}; 
+const cFileReaders_File = {};
+const FILES_UPLOAD_CONFIG = {
+    "nav-input": "ParseFromFileReader()" ,
+};
+
+
+//libUserInput
+const cUSERINPUT_EVENT = {}  
+const LIB_USERINPUT = {
+    "id-main": {
+        "Click" : 'Click()'
+    }
 }

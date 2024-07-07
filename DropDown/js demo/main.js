@@ -1,5 +1,7 @@
+// only the cfollowing line must be in main()
 const DD = new libDropDowns();
 
+// the rest is oby for this demo site
 (function () {
 
 })();

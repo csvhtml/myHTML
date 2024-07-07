@@ -1,7 +1,3 @@
-(function () {
-
-})();
-
 function TestFunction() {
     let Output = document.getElementById("TestOutput")
     Output.innerHTML = cFileReaders["Input 2"].result
