@@ -74,7 +74,7 @@ function Edit_Save(divID, value) {
         // dataconfig
         XCSV["main"].XConfigItems.CreateConfigItems()
         //style
-        _Edit_MinHeight_Undo(divID)
+        _helper_MinHeight_Undo(divID)
 
     }
 
@@ -106,6 +106,8 @@ function _Edit_MinHeight(divID) {
 
 function _Edit_MinHeight_Undo(divID) {
     let row = document.getElementById(XCSV["main"].XNames.IDs.RowfromCellID(divID))
-        row.style.height = ""
+    if (row != null) {
+        row.style.height = ""}
+        
 }
 
