@@ -10,6 +10,10 @@ class clsTest {
             console.log(testcase)
         }
     }
+
+    TestThemAll() {
+        cfgTestThemAll(this)
+    }
     
     PrintResult() {
         let runs = this.passed + this.failed
@@ -29,11 +33,15 @@ class clsTest {
         console.log(strA)
     }
 
-    Equal(a,b, fname) {
+// ##################################################################################
+// # Checker                                                                        #
+// ##################################################################################
+
+    Equal(a,b, fname, InvertResult = false) {
         if (IsEqual(a,b)) {
-            this._passed(fname)}
+            this._passed(fname, InvertResult)}
         else {
-            this._failed(fname)}
+            this._failed(fname, " " + a + " not equal to " + b + ". ", InvertResult)}
     }
 
     IsFalse(a, fname) {
@@ -107,12 +115,20 @@ class clsTest {
         assert(false)
         }
 
-    _passed(fname) {
+    _passed(fname, InvertResult = false) {
+        if (InvertResult) {
+            this._failed(fname, "InvertResult failed")
+            return}
+
         this.passed +=1
         this.cases.push([fname, "passed"])
     }
 
-    _failed(fname, msg = "") {
+    _failed(fname, msg = "", InvertResult = false) {
+        if (InvertResult) {
+            this._passed(fname)
+            return}
+
         this.failed +=1
         this.cases.push([fname, "failed", msg])
     }
