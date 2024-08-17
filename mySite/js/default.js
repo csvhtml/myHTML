@@ -1,9 +1,14 @@
 const XCSV_DATA = {
     "WorkingItems": {
-        "X": "\
+        "newTable": "\
             ||A|B|C\n\
             ||1|2|3\n\
             ||Hallo|Welt|dort\n\
+            ",
+        "Y": "\
+            ||a|b\n\
+            ||10|20\n\
+            ||Hello|World\n\
             "
     },
     "ConfigItems": {

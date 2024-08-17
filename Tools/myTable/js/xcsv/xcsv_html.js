@@ -63,7 +63,7 @@ class clsHTML {
 
     DataAsHTML(pre = "") {
         return pre + 
-            BASIS.HTML.Table.Table({
+            HTMLTable_FromConfig({
             tableID: "id-table-" + this.parent.egoDivID,
             tableClass: "table",
             tableStyle: "margin-bottom:0;",

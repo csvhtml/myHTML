@@ -1,5 +1,3 @@
-const BASIS = new clsBASIS();
-
 (function () {
     // create table in id-1: From Markdown inside the html document
     let div = document.getElementById("id-1")

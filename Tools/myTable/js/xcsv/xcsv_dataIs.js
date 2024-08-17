@@ -4,7 +4,7 @@ class clsDataIs {
     }
 
     Empty() {
-        if(this.pOne.headers == null && this.pOne.data == nulL) {
+        if(this.pOne.headers == null && this.pOne.data == null) {
             return true}
         return false
     }

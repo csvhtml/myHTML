@@ -20,8 +20,25 @@ class clsXCSV {
             this.XSelection = new clsXCSV_Selectionhandler(this)  // OK
         }
 
+        AddTable() {
+            let dataNames = this.XWorkingItems.Keys()
+            let NewDataName = dataNames[dataNames.length - 1] + 'copy'
+            this.XWorkingItems.AddFromConfig(NewDataName, "WorkingItems")
+            this.XHTML.Print()
+        }
+
+        DeleteTable() {
+            let dataName = this.ActiveTable()
+            this.XWorkingItems.Delete(dataName)
+            this.XHTML.Print()
+        }
+
+        ActiveTable() {
+            return this.XSelection.dataName()
+        }
+
         AddRow() {
-            this.XData.AddRow()
+            this.XWorkingItems[this.ActiveTable()].AddRow()
             this.XHTML.Print()
         }
     }
@@ -97,13 +114,17 @@ class clsXCSV_Clickhandler {
     ClickEvent(div) {
         let divID = ReturnParentUntilID(div).id
 
-        if (this.parent.XNames.IsHeader(divID)){
-            this._HeaderCell(divID)
-            return}
+        if (this.parent.XNames.IsWorkingItemsTable(divID)){
+            let dataName = this.parent.XNames.DataNameFromID(divID)
 
-        if (this.parent.XNames.IsCell(divID)){
-            this._Cell(divID)
-            return}
+            if (this.parent.XNames.IsHeader(divID)){
+                this._HeaderCell(divID)
+                return}
+
+            if (this.parent.XNames.IsCell(divID)){
+                this._Cell(divID)
+                return}
+            }
     }
 
     _HeaderCell(divID) {
@@ -280,11 +301,38 @@ class clsDataCollection {
         
         for (let key of Object.keys(Config)) {
             this[key] = new clsData(parent, key, ItemsType)
-            if (ItemsType == "XConfigItems") {
-                let hd = this.parent.XFormat._HeadersAndDataFromText(myTrim(Config[key]))
-                this[key].Init(hd[0], hd[1])
-            }
+            let hd = this.parent.XFormat._HeadersAndDataFromText(myTrim(Config[key]))
+            this[key].Init(hd[0], hd[1])
+            // if (ItemsType == "XConfigItems") {
+            //     let hd = this.parent.XFormat._HeadersAndDataFromText(myTrim(Config[key]))
+            //     this[key].Init(hd[0], hd[1])
+            // }
         }
+    }
+
+    Keys () {
+        return Object.keys(this).splice(1);
+    }
+
+
+    AddFromConfig(dataName, ItemsType = "WorkingItems") {
+        this[dataName] = new clsData(this.parent, dataName, ItemsType)
+        let hd = this.parent.XFormat._HeadersAndDataFromText(myTrim(this.parent.config[ItemsType]["newTable"]))
+        this[dataName].Init(hd[0], hd[1])
+    }
+
+
+    Delete(dataName) {
+        if (this.Keys().includes(dataName)) {
+            delete this[dataName]
+        }
+    }
+
+    DeleteAll() {
+        for (let key of Object.keys(this)) {
+            if (key == "parent") {continue} 
+            this.Delete(key)
+        }   
     }
 
     CreateConfigItems() {
@@ -358,40 +406,72 @@ class clsFormat {
         /**
          * Parses the data of the parent as a text file
          */
+
+        
         let ret = '';
-        ret += this._AsCSV_HeaderLine()
-        ret += this._AsCSV_RowsLine()
-        return ret}
+        for (let dataName of this.parent.XWorkingItems.Keys()){
+            ret += this._AsCSV_FileLine(dataName)
+            ret += this._AsCSV_HeaderLine(dataName)
+            ret += this._AsCSV_RowsLine(dataName)
+        }
+        return ret
+        }
     
     xRead(text) {
         if (text == undefined) {
             return}
-        let files = text.split(this.config["file-seperator"])
-        let headers_data = this._HeadersAndDataFromText(files[0])
+        if (text.startsWith(this.config["file-seperator"])) {
+            let files = text.split(this.config["file-seperator"]); files.removeAll("")
+            for (let f of files) {
+                let lines = f.split(this.config["line-end"]); lines.removeAll("")
+                let dataName = lines[0];
+                this.parent.XWorkingItems.AddFromConfig(dataName)
+                let ignore = dataName + this.config["line-end"]
+                let headers_data = this._HeadersAndDataFromText(f.substring(ignore.length))
+                this.parent.XWorkingItems[dataName].Init(headers_data[0], headers_data[1])
+            }
+            return
+        }
 
-        this.parent.XData.Init(headers_data[0], headers_data[1])
+        //backward compatibility:
+        if (text.startsWith(this.config["line-starter"])) {
+            this.parent.XWorkingItems.DeleteAll()
+            this.parent.XWorkingItems.AddFromConfig("X")
+            let headers_data = this._HeadersAndDataFromText(text)
+            this.parent.XWorkingItems["X"].Init(headers_data[0], headers_data[1]) 
+            return
+        }
+        
     }
 
-    _AsCSV_HeaderLine() {
+    _AsCSV_FileLine(dataName) {
+        let llll = this.config["file-seperator"]
+        let n = this.config["line-end"]
+
+        let ret = llll + dataName + n
+        return ret
+    }
+
+    _AsCSV_HeaderLine(dataName) {
         let ll = this.config["line-starter"]
         let l = this.config["cell-seperator"]
         let n = this.config["line-end"]
 
         let ret = ll 
-        for (let header of this.parent.XData.headers) {
+        for (let header of this.parent.XWorkingItems[dataName].headers) {
             ret += header + l}
         ret = ret.slice(0, -1*l.length) + n
         
         return ret
     }
     
-    _AsCSV_RowsLine() {
+    _AsCSV_RowsLine(dataName) {
         let ll = this.config["line-starter"]
         let l = this.config["cell-seperator"]
         let n = this.config["line-end"]
 
         let ret = ""
-        for (let row of this.parent.XData.data) {
+        for (let row of this.parent.XWorkingItems[dataName].data) {
             ret += ll
             for (let cell of row) {
                 ret += cell + l}
@@ -431,19 +511,16 @@ class clsHTML {
     }
 
     _Print() {
-        // document.getElementById(this.parent.egoDivID).innerHTML = HMTL.Table({
-        //     tableID: "id-table-" + this.parent.egoDivID,
-        //     tableClass: "table",
-        //     tableStyle: "margin-bottom:0;",
-        //     thsText: this.parent.XData.headers,
-        //     thsID: this.parent.XNames.IDs.headers(),
-        //     rowsID: this.parent.XNames.IDs.rows(),
-        //     // cellsText: this.parent.XData.data,
-        //     cellsText: this.DataAsHTML(),
-        //     cellsID: this.parent.XNames.IDs.cells(),
-        // })
+        let div = document.getElementById(this.parent.egoDivID)
+        div.innerHTML = ""
+        for (let dataName of this.parent.XWorkingItems.Keys()) {
+            // div.innerHTML += '<div class="mt-30">' + dataName + '</div>'
+            div.innerHTML += this.DataAsHTML(dataName)
+        }
+        
 
-        document.getElementById(this.parent.egoDivID).innerHTML = this.DataAsHTML()
+        // for each data table that is not hidden
+            // print table
     }
 
     _PrintConfig(key) {
@@ -463,9 +540,10 @@ class clsHTML {
         })
     }
 
-    _MarkupToX() {
+    _MarkupToX(dataName) {
         let ret = []
-        for (let row of this.parent.XData.data) {
+        // for (let row of this.parent.XData.data) {
+        for (let row of this.parent.XWorkingItems[dataName].data) {
             let tmp = []
             for (let cell of row) {
                 let value = cell
@@ -476,9 +554,22 @@ class clsHTML {
         return ret
     }
 
-    DataAsHTML(pre = "") {
+    DataAsHTML(dataName = "", pre = "") {
         return pre + 
-            HTMLTable_FromConfig({
+        HTMLTable_FromConfig({
+        tableID: "id-table-" + this.parent.egoDivID,
+        tableClass: "table",
+        tableStyle: "margin-bottom:0;",
+        thsText: this.parent.XWorkingItems[dataName].headers,
+        thsID: this.parent.XNames.IDs.headers(dataName),
+        rowsID: this.parent.XNames.IDs.rows(dataName),
+        // cellsText: this.parent.XData.data,
+        cellsText: this._MarkupToX(dataName),
+        cellsID: this.parent.XNames.IDs.cells(dataName),
+    })
+    
+    return pre + 
+            BASIS.HTML.Table.Table({
             tableID: "id-table-" + this.parent.egoDivID,
             tableClass: "table",
             tableStyle: "margin-bottom:0;",
@@ -535,6 +626,20 @@ class clsXCSV_Names {
 
     }
 
+    IsWorkingItemsTable(divID) {
+        if (this.DataNameFromID(divID) != "") {
+            return true
+        }
+        return false
+    }
+
+    DataNameFromID(divID) {
+        if (this.parent.XWorkingItems.Keys().indexOf(RetStringBetween(divID, '[', ']')) > -1) {
+            return RetStringBetween(divID, '[', ']')
+        }
+        return ""
+    }
+
     IsHeader (divID) {
         if (this.IDs.IsHeader(divID)) {
             return true}
@@ -560,11 +665,12 @@ class clsXCSV_Names {
     }
 
     RowfromCellID(divID) {
+        let dataName = this.DataNameFromID(divID)
         if (this.IsRow(divID)) {
             return divID}
         let X = CLSXCSV_NAMES["id"]["cell"]
         let r = RetStringBetween(divID, X["r"], X["c"])
-        return this._row(r)}
+        return this._row(dataName, r)}
     }
 
 class clsXCSV_Names_ID {
@@ -573,29 +679,30 @@ class clsXCSV_Names_ID {
         this.XData = XData
     }
 
-    headers() {
+    headers(dataName) {
         let ret = []
-        for (let header of this.XData.headers) {
-            ret.push(this._header(header))}
+
+        for (let header of this.parent.XWorkingItems[dataName].headers) {
+            ret.push(this._header(dataName, header))}
         return ret
     }
 
-    rows() {
+    rows(dataName) {
         let ret = []; let r = 0
-        for (let row of this.XData.data) {
-            ret.push(this._row(String(r)))
+        for (let row of this.parent.XWorkingItems[dataName].data) {
+            ret.push(this._row(dataName, String(r)))
             r +=1}
         return ret
     }
 
-    cells() {
-        let headers = this.XData.headers
+    cells(dataName) {
+        let headers = this.parent.XWorkingItems[dataName].headers
         let ret = []; let tmp = []; let r = 0; let c = 0
-        for (let row of this.XData.data) {
+        for (let row of this.parent.XWorkingItems[dataName].data) {
             tmp = []
             c = 0
             for (let cell of row) {
-                tmp.push(this._cell(r,c,headers[c]))
+                tmp.push(this._cell(dataName, r,c,headers[c]))
                 c +=1}
             ret.push(tmp)
             r +=1}
@@ -606,43 +713,49 @@ class clsXCSV_Names_ID {
     RowfromCellID (divID) {
         if (this.IsRow(divID)) {
             return divID}
+        let dataName = this.parent.XNames.DataNameFromID(divID)
         let X = CLSXCSV_NAMES["id"]["cell"]
         let r = RetStringBetween(divID, X["r"], X["c"])
-        return this._row(r)}
+        return this._row(dataName,r)}
 
-    _header(header) {
+    _header(dataName, header) {
         let X = CLSXCSV_NAMES["id"]["header"]
-        return this._egoprefix() + X["prefix"] + header + X["postfix"]
+        return this._egoprefix(dataName) + X["prefix"] + header + X["postfix"]
     }
 
-    _cell(r,c,header) {
+    _cell(dataName, r,c,header) {
         let X = CLSXCSV_NAMES["id"]["cell"]
-        return this._egoprefix() + X["r"] + r + X["c"] + c + X["h"] + header 
+        return this._egoprefix(dataName) + X["r"] + r + X["c"] + c + X["h"] + header 
     }
 
-    _row(r) {
+    _row(dataName, r) {
         let X = CLSXCSV_NAMES["id"]["row"]
-        return this._egoprefix() + X["prefix"] + r + X["postfix"]
+        return this._egoprefix(dataName) + X["prefix"] + r + X["postfix"]
     }
 
-    _egoprefix() {
-        return '[' + this.parent.egoDivID + '] '
+    _egoprefix(dataName) {
+        assert(dataName != undefined)
+        return '[' + dataName + '] '
+        // return '[' + this.parent.egoDivID + '] '
     }
 
     IsHeader(headerID) {
-        if (this.headers().includes(headerID)) {
+        let dataName = this.parent.XNames.DataNameFromID(headerID)
+        if (this.headers(dataName).includes(headerID)) {
             return true}
         return false
     }
 
     IsCell(cellID) {
-        if (ElementInArrayN(this.cells(),cellID)) {
+        let dataName = this.parent.XNames.DataNameFromID(cellID)
+        if (ElementInArrayN(this.cells(dataName),cellID)) {
             return true}
         return false
     }
 
     IsRow(ID) {
-        if (this.rows().includes(ID)) {
+        let dataName = this.parent.XNames.DataNameFromID(ID)
+        if (this.rows(dataName).includes(ID)) {
             return true}
         return false
     }
@@ -715,6 +828,10 @@ class clsXCSV_Selectionhandler {
 
     currentSelection() {
         return this.EgoID
+    }
+
+    dataName() {
+        return this.parent.XNames.DataNameFromID(this.EgoID)
     }
     
     Row() {

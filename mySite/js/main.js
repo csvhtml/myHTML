@@ -1,4 +1,3 @@
-const BASIS = new clsBASIS();
 const DD = new libDropDowns();
 const EDIT = new libEdit('EDIT');
 const UIN = new clsUserInput(["id-main"]);
@@ -16,7 +15,7 @@ const XCSV = {
         cFileReaders[key] = new FileReader()
     }
 
-    XCSV["main"].XFormat.Read(myTrim(XCSV_DATA["WorkingItems"]["X"]))
+    // XCSV["main"].XFormat.Read(myTrim(XCSV_DATA["WorkingItems"]["X"]))
     XCSV["main"].XHTML.Print()
 
 })();

@@ -10,5 +10,6 @@ function _helper_MinHeight(divID) {
 
 function _helper_MinHeight_Undo(divID) {
     let row = document.getElementById(XCSV["main"].XNames.IDs.RowfromCellID(divID))
-        row.style.height = ""
+    if (row != null) {
+        row.style.height = ""}
 }

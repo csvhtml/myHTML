@@ -59,13 +59,14 @@ function Gloabl_Edit_Textarea(div) {
 }
 
 function Edit_Save(divID, value) {
+    let dataName = XCSV["main"].XNames.DataNameFromID(divID)
     if (value == "") {value = ".."}
     if (XCSV["main"].XNames.IDs.IsCell(divID)) {
         //data
         let RC = XCSV["main"].XNames.IDs.RC_fromID(divID)
-        XCSV["main"].XData.data[RC[0]][RC[1]] = value
+        XCSV["main"].XWorkingItems[dataName].data[RC[0]][RC[1]] = value
         // dataconfig
-        XCSV["main"].XConfigItems.CreateConfigItems()
+        // XCSV["main"].XConfigItems.CreateConfigItems()
         //style
         _helper_MinHeight_Undo(divID)
 
@@ -73,7 +74,7 @@ function Edit_Save(divID, value) {
 
     if (XCSV["main"].XNames.IDs.IsHeader(divID)) {
         let h = XCSV["main"].XNames.IDs.H_fromHeaderID(divID)
-        XCSV["main"].XData.headers[h] = value
+        XCSV["main"].XWorkingItems[dataName].headers[h] = value
     }
         let value_modified = value
         value_modified = MyMarkDowntoHTML(value_modified, ignore1 = ["[("])
@@ -81,6 +82,7 @@ function Edit_Save(divID, value) {
         
         return value_modified
 }
+
 
 function Edit_Close(divID) {
     _helper_MinHeight_Undo(divID)
