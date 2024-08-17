@@ -1,4 +1,4 @@
-// This class does not maipulate DOM elements. It returns stirngs
+// This class does not maipulate DOM elements. It returns strings
 
 class basisHTMLText {
     constructor() {}

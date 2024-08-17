@@ -73,8 +73,10 @@ function ValidChars(validChars, text) {
     return true
 }
 
-function typOf(variable) {
+function typOf(variable, extendedInfo = false) {
     if (Array.isArray(variable)) {
+        if (extendedInfo) {
+            return 'list' + '-' + String(ListDepth(variable)) + 'D'}
         return 'list'} // javascript 'Array'
     if (typeof variable === 'object' && variable !== null) {
         return 'dict'} // javascript 'Object'
@@ -90,6 +92,23 @@ function typOf(variable) {
         return 'undefined'}
 
     assert(false, String(variable))
+}
+
+function ListDepth(ListVariable) {
+    if (typOf(ListVariable) != 'list') {return 0}
+
+    let maxDepth = 0;
+    for (let element of ListVariable) {
+        maxDepth = maxx(maxDepth, ListDepth(element));}
+    return maxDepth + 1
+}
+
+function maxx(a, b) {
+    return (a > b) ? a : b;
+}
+
+function minn(a, b) {
+    return (a < b) ? a : b;
 }
 
 function IsEqual(a,b, max_iterations = 100) {
