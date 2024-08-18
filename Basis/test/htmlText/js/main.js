@@ -1,10 +1,10 @@
 (function () {
     // create table in id-1: From Markdown inside the html document
     let div = document.getElementById("id-1")
-    div.innerHTML = HTMLTable_FromMarkdown(div.innerHTML)
+    div.innerHTML = BASIS.HTMLTable_FromMarkdown(div.innerHTML)
 
     // create table in id-2: From configuration, i. e. dictionary
-    document.getElementById("id-2").innerHTML = HTMLTable_FromConfig({
+    document.getElementById("id-2").innerHTML = BASIS.HTMLTable_FromConfig({
         tableID: "id-tableX2",
         tableClass: "table class1 class2",
         tableStyle: "color: blue",
@@ -38,7 +38,7 @@
         thsText: ["A", "B", "C"], 
         cellsText: [["Hallo", "Zusammen", "!"], ["Zeile 2", "Zeile 2-2", "300"]],
     }
-    document.getElementById("id-3").innerHTML = HTMLTable_FromConfig(tableValues)
+    document.getElementById("id-3").innerHTML = BASIS.HTMLTable_FromConfig(tableValues)
 
     // create table in id-4: with additional seperate configuration
     let tableConfig = {
@@ -66,7 +66,7 @@
         cellsStyle: [["color:black", "", ""], ["color:green", "", ""]]
     }
 
-    document.getElementById("id-4").innerHTML = HTMLTable_FromConfig({...tableConfig, ...tableValues}) 
+    document.getElementById("id-4").innerHTML = BASIS.HTMLTable_FromConfig({...tableConfig, ...tableValues}) 
 })();
 
 

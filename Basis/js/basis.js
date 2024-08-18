@@ -262,7 +262,7 @@ Object.defineProperties(String.prototype, {
 // Usefull DOM functions                                          #
 // ################################################################
 
-function ElemementsWithOnClickFunctions (mode="") {
+function ElemementsWithOnClickFunctions(mode="") {
     // let allElements = document.getElementsByTagName('*');
     let allElements = document.getElementsByTagName('*');
     let ret = []
@@ -280,7 +280,7 @@ function ElemementsWithOnClickFunctions (mode="") {
     return ret
 }
 
-function ElemementsWithSubStringInID (fixx =  [], mode="") {
+function ElemementsWithSubStringInID(fixx =  [], mode="") {
     // let allElements = document.getElementsByTagName('*');
     let allElements = document.getElementsByTagName('*');
     let ret = []
@@ -299,7 +299,7 @@ function ElemementsWithSubStringInID (fixx =  [], mode="") {
 }
 
 
-function ReturnParentUntilID (element, targetID = "", iterations = 10) {
+function ReturnParentUntilID(element, targetID = "", iterations = 10) {
     let parent = element
     for (i = 0; i<iterations; i++) {
         if (parent.tagName == "BODY") {
@@ -312,7 +312,7 @@ function ReturnParentUntilID (element, targetID = "", iterations = 10) {
     assert(false)
 }
 
-function DivIsDescendantOf (element, targetID, iterations = 10) {
+function DivIsDescendantOf(element, targetID, iterations = 10) {
     let parent = element
     for (i = 0; i<iterations; i++) {
         if (parent.tagName == "BODY") {

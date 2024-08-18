@@ -1,3 +1,68 @@
+const BASIS = {
+	assert: function(condition, message) {return assert(condition, message)},
+	noBlank: function(text) {return noBlank(text)},
+	ValidChars: function(validChars, text) {return ValidChars(validChars, text)},
+	typOf: function(variable, extendedInfo = false) {return typOf(variable, extendedInfo = false)},
+	ListDepth: function(ListVariable) {return ListDepth(ListVariable)},
+	maxx: function(a, b) {return maxx(a, b)},
+	minn: function(a, b) {return minn(a, b)},
+	IsEqual: function(a,b, max_iterations = 100) {return IsEqual(a,b, max_iterations = 100)},
+	IsListEqualSize: function(a,b, flag = false) {return IsListEqualSize(a,b, flag = false)},
+	IsListEqualDepth: function(a,b, flag = false) {return IsListEqualDepth(a,b, flag = false)},
+	ElementInArrayN: function(array, element) {return ElementInArrayN(array, element)},
+	ElemementsWithOnClickFunctions: function(mode="") {return ElemementsWithOnClickFunctions(mode="")},
+	ElemementsWithSubStringInID: function(fixx =  [], mode="") {return ElemementsWithSubStringInID(fixx =  [], mode="")},
+	ReturnParentUntilID: function(element, targetID = "", iterations = 10) {return ReturnParentUntilID(element, targetID = "", iterations = 10)},
+	DivIsDescendantOf: function(element, targetID, iterations = 10) {return DivIsDescendantOf(element, targetID, iterations = 10)},
+	DOMElementsFromString: function(htmlString, tag = 'div') {return DOMElementsFromString(htmlString, tag = 'div')},
+	test_Basis: function() {return test_Basis()},
+	test_Basis_IsEqual: function() {return test_Basis_IsEqual()},
+	test_Basis_typOf: function() {return test_Basis_typOf()},
+	test_Basis_byVal: function() {return test_Basis_byVal()},
+	test_Basis_RetStringBetween: function() {return test_Basis_RetStringBetween()},
+	test_Basis_FileNameFromPath: function() {return test_Basis_FileNameFromPath()},
+	toggle: function(val, pair) {return toggle(val, pair)},
+	DIV: function(divID) {return DIV(divID)},
+	Append_TextArea: function(div, cfg = {}) {return Append_TextArea(div, cfg = {})},
+	TextArea: function(dicct = {}) {return TextArea(dicct = {})},
+	Bold: function(text) {return Bold(text)},
+	A_HREF: function(dicct = {}) {return A_HREF(dicct = {})},
+	RemoveDIV: function(divID) {return RemoveDIV(divID)},
+	AutoHeight: function(divID) {return AutoHeight(divID)},
+	IsThereDiv: function(divID) {return IsThereDiv(divID)},
+	HTMLTable_FromConfig: function(config) {return HTMLTable_FromConfig(config)},
+	HTMLTable_FromMarkdown: function(markdownString) {return HTMLTable_FromMarkdown(markdownString)},
+	HTMLTable_FullConfig: function(config) {return HTMLTable_FullConfig(config)},
+	HTMLTable_TableRowsCols: function(p = {'thsText' : [],'cellsText' : []}) {return HTMLTable_TableRowsCols(p = {'thsText' : [],'cellsText' : []})},
+	HTMLTable_DefaultVal: function(key, nCols, nRows) {return HTMLTable_DefaultVal(key, nCols, nRows)},
+	IsObject: function(variable) {return IsObject(variable)},
+	IsString: function(variable) {return IsString(variable)},
+	IsUndefined: function(variable) {return IsUndefined(variable)},
+	IsNotUndefined: function(variable) {return IsNotUndefined(variable)},
+	IsBetween: function(number, a, b, incl = true) {return IsBetween(number, a, b, incl = true)},
+	IsEmptyList: function(variable) {return IsEmptyList(variable)},
+	IsString1: function(variable) {return IsString1(variable)},
+	MyMarkDowntoSVG: function(markupText) {return MyMarkDowntoSVG(markupText)},
+	SVGtoMyMarkdown: function(htmlText) {return SVGtoMyMarkdown(htmlText)},
+	RetStringBetween: function(text, fromStr, toStr = "", ignoreBlankAtBorders = false) {return RetStringBetween(text, fromStr, toStr = "", ignoreBlankAtBorders = false)},
+	RetStringOutside: function(text, fromStr, toStr) {return RetStringOutside(text, fromStr, toStr)},
+	FileNameFromPath: function(path) {return FileNameFromPath(path)},
+	rgbText: function(a,b,c) {return rgbText(a,b,c)},
+	myTrim: function(input) {return myTrim(input)},
+	myReplace: function(val,re,place) {return myReplace(val,re,place)},
+	ShortenDotDotDot: function(text, lenn = 12) {return ShortenDotDotDot(text, lenn = 12)},
+	ChangeLastChar: function(inputString, newChar) {return ChangeLastChar(inputString, newChar)},
+	test_TextFunctions: function() {return test_TextFunctions()},
+	test_Basis_RetStringBetween: function() {return test_Basis_RetStringBetween()},
+	test_Basis_FileNameFromPath: function() {return test_Basis_FileNameFromPath()},
+	test_Basis_myReplace: function() {return test_Basis_myReplace()},
+	PatternsFound: function(text, pattern = ["[", ":", "]"], ignore1 = []) {return PatternsFound(text, pattern = ["[", ":", "]"], ignore1 = [])},
+	PatternsFound3: function(text, p3 = ["[", ":", "]"], ignore1 = []) {return PatternsFound3(text, p3 = ["[", ":", "]"], ignore1 = [])},
+	MyMarkDowntoHTML: function(markupText, ignore1 = []) {return MyMarkDowntoHTML(markupText, ignore1 = [])},
+	HTMLtoMyMarkdown: function(htmlText) {return HTMLtoMyMarkdown(htmlText)},
+};
+
+
 // ################################################################
 // Log                                                            #
 // ################################################################
@@ -262,7 +327,7 @@ Object.defineProperties(String.prototype, {
 // Usefull DOM functions                                          #
 // ################################################################
 
-function ElemementsWithOnClickFunctions (mode="") {
+function ElemementsWithOnClickFunctions(mode="") {
     // let allElements = document.getElementsByTagName('*');
     let allElements = document.getElementsByTagName('*');
     let ret = []
@@ -280,7 +345,7 @@ function ElemementsWithOnClickFunctions (mode="") {
     return ret
 }
 
-function ElemementsWithSubStringInID (fixx =  [], mode="") {
+function ElemementsWithSubStringInID(fixx =  [], mode="") {
     // let allElements = document.getElementsByTagName('*');
     let allElements = document.getElementsByTagName('*');
     let ret = []
@@ -299,7 +364,7 @@ function ElemementsWithSubStringInID (fixx =  [], mode="") {
 }
 
 
-function ReturnParentUntilID (element, targetID = "", iterations = 10) {
+function ReturnParentUntilID(element, targetID = "", iterations = 10) {
     let parent = element
     for (i = 0; i<iterations; i++) {
         if (parent.tagName == "BODY") {
@@ -312,7 +377,7 @@ function ReturnParentUntilID (element, targetID = "", iterations = 10) {
     assert(false)
 }
 
-function DivIsDescendantOf (element, targetID, iterations = 10) {
+function DivIsDescendantOf(element, targetID, iterations = 10) {
     let parent = element
     for (i = 0; i<iterations; i++) {
         if (parent.tagName == "BODY") {
@@ -466,17 +531,6 @@ function toggle(val, pair) {
     return pair[1]
 }
 
-class clsBASIS_HTML {
-    constructor() {
-        this.Table = new basisHTMLText()
-    }       
-}
-
-class clsBASIS {
-    constructor() {
-        this.HTML = new clsBASIS_HTML()
-    }
-}
 // ################################################################
 // DOM Elements                                                   #
 // ################################################################
@@ -564,6 +618,10 @@ function IsThereDiv(divID) {{
         return document.getElementById(divID) !== null;
       }
 }
+// ################################################################################
+// # basisHTMLTable.js                                                            #
+// ################################################################################
+
 const BASIS_HTMLTABLE_CONFIG = {
     tableID: "",
     tableClass: "",
@@ -1013,7 +1071,7 @@ function SVGtoMyMarkdown(htmlText) {
     return ret
     }
 
-function  _SVGtoMyMarkdown_Loop(htmlText, svg) {
+function _SVGtoMyMarkdown_Loop(htmlText, svg) {
         let svgText = svg.outerHTML
     
         if (svg.id.includes('pdf-img')) {
@@ -1273,7 +1331,7 @@ function _replaceCheckboxWithBrackets(text) {
     return text.replace(/<input type="checkbox" checked="">/g, '[x]')
 }
 
-    // function parseMarkup(markupText) {
+    // functionn parseMarkup(markupText) {
     //     if (typOf(markupText) != 'str') {
     //         return markupText}
     
@@ -1283,6 +1341,30 @@ function _replaceCheckboxWithBrackets(text) {
     //     htmlText = htmlText.replace(new RegExp('\n', "g") , '<br>')
     //     return htmlText;
     //     }
+// export functionn helloWorld() {
+//     console.log("Hello, World!");
+// }
+
+// MOHI
+// The above only works with a local server (localhost), not on static html pages
+
+// workardound 
+// a) naming convention (that might be integrated inside the merge.py) or
+// b) pseudo object, that contains all functions, with the Function name as key:
+
+// const myDictionary = {
+//     greet: function() {
+//         return greet()
+//    },
+//     add: function(a, b) {
+//         return add(a,b)
+//     },
+// };
+
+// // Access and call the functions
+// console.log(myDictionary.greet()); // Output: "Hello!"
+// console.log(myDictionary.add(3, 4)); // Output: 7
+
 // ################################################################
 // Prototype extentions                                           #
 // ################################################################

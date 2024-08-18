@@ -206,7 +206,7 @@ function SVGtoMyMarkdown(htmlText) {
     return ret
     }
 
-function  _SVGtoMyMarkdown_Loop(htmlText, svg) {
+function _SVGtoMyMarkdown_Loop(htmlText, svg) {
         let svgText = svg.outerHTML
     
         if (svg.id.includes('pdf-img')) {

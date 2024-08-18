@@ -94,7 +94,7 @@ function _replaceCheckboxWithBrackets(text) {
     return text.replace(/<input type="checkbox" checked="">/g, '[x]')
 }
 
-    // function parseMarkup(markupText) {
+    // functionn parseMarkup(markupText) {
     //     if (typOf(markupText) != 'str') {
     //         return markupText}
     
