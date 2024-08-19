@@ -1,3 +1,9 @@
+const cfgTestResultTable = {
+    width: '800px', 
+    colWidths:['5%', '30%', '15%', '50%'],
+    colTexts: ['no.','name', 'result', 'message']
+}
+
 class clsTest {
     constructor() {
         this.passed = 0;
@@ -11,16 +17,28 @@ class clsTest {
         }
     }
 
+    pushTestResult(fname, result, msg) {
+        if (result == 'passed')  {
+            this.passed += 1}
+        if (result == 'failed')  {
+            this.failed += 1}
+        this.cases.push([fname, result, msg])
+    }
+    
     TestThemAll() {
         cfgTestThemAll(this)
     }
     
-    PrintResult() {
+    PrintResult(divID = '') {
         let runs = this.passed + this.failed
         let strA = String(runs) + " tests run. " + String(this.failed) + " failed!"
-        let no = 0
-        let case_no = 1; let count = 0; let lastCaseName = ""
+        let no = 0; let count = 0
+        let case_no = 1; let lastCaseName = ""
+        let table = this._ResultsTable()
         for (let testcase of this.cases) {
+            count += 1
+            if (divID != '') {
+                table.append(this._ResultRow(count, testcase))}
             case_no +=1
             if (testcase[0] != lastCaseName) {case_no = 1}
 
@@ -31,6 +49,48 @@ class clsTest {
             lastCaseName = testcase[0]
         }
         console.log(strA)
+        if (divID != '') {
+            document.getElementById(divID).append(table)}
+    }
+
+    _ResultsTable() {  
+        let style = document.createElement('style');
+        let css = `
+            table, th, td {
+                border: 1px solid #444;
+                border-collapse: collapse;
+                margin: 5px;
+                padding-left: 5px;
+            }`;
+
+        style.appendChild(document.createTextNode(css));
+        document.head.appendChild(style);   
+
+        let cfg = cfgTestResultTable
+        let table = document.createElement('table');
+        table.style.width = cfg['width'];
+        let tr = document.createElement('tr')
+        for (let i = 0; i < cfg["colWidths"].length; i++) {
+            let cell = document.createElement('th');
+            cell.style.width = cfg["colWidths"][i];
+            cell.innerHTML = cfg["colTexts"][i]
+            tr.appendChild(cell);
+        }
+        table.append(tr)
+        return table
+    }
+
+    _ResultRow(n, testcase) {
+        let tr = document.createElement("tr")
+        let cell = document.createElement('td');
+        cell.innerHTML = String(n)
+        tr.appendChild(cell);
+        for (let info of testcase) {
+            let cell = document.createElement('td');
+            cell.innerHTML = info;
+            tr.appendChild(cell);
+        }
+        return tr
     }
 
 // ##################################################################################
@@ -39,23 +99,23 @@ class clsTest {
 
     Equal(a,b, fname, InvertResult = false) {
         if (IsEqual(a,b)) {
-            this._passed(fname, InvertResult)}
+            return this._passed(fname, InvertResult)}
         else {
-            this._failed(fname, " " + a + " not equal to " + b + ". ", InvertResult)}
+            return this._failed(fname, " " + a + " not equal to " + b + ". ", InvertResult)}
     }
 
     IsFalse(a, fname) {
         if (IsEqual(a,false)) {
-            this._passed(fname)}
+            return this._passed(fname)}
         else {
-            this._failed(fname)}
+            return this._passed(fname)}
     }
 
     IsTrue(a, fname) {
         if (IsEqual(a,true)) {
-            this._passed(fname)}
+            return this._passed(fname)}
         else {
-            this._failed(fname)}
+            return this._passed(fname)}
     }
 
     Assertion(foo ,p , fooName, msg ) {
@@ -119,18 +179,22 @@ class clsTest {
         if (InvertResult) {
             this._failed(fname, "InvertResult failed")
             return}
+        
+        let result = 'passed';let msg = ''
 
-        this.passed +=1
-        this.cases.push([fname, "passed"])
+        this.pushTestResult(fname, result, msg)
+        return result
     }
 
     _failed(fname, msg = "", InvertResult = false) {
         if (InvertResult) {
-            this._passed(fname)
+            return this._passed(fname)
             return}
 
-        this.failed +=1
-        this.cases.push([fname, "failed", msg])
+        let result = 'failed'
+    
+        this.pushTestResult(fname, result, msg)
+        return result
     }
 
     _ReturnNumberofCases(fname) {
@@ -143,9 +207,14 @@ class clsTest {
 }
 
 
-function new_test_line(fname, divID) {
-    document.getElementById(divID).append(document.createElement('br'))
-    document.getElementById(divID).append(document.createElement('br'))
-    document.getElementById(divID).append(Bold(fname))
-    document.getElementById(divID).append(document.createElement('br'))
+
+function new_test_line(fname, divID, result) {
+    let tr = document.createElement("tr")
+    tr.innerHTML = '<td>-</td><td>' + fname + '</td><td>' + result + '</td>'
+    // document.getElementById(divID).append(document.createElement('br'))
+    // document.getElementById(divID).append(Bold(fname))
+    // document.getElementById(divID).append(tr)
+
+    
+    // document.getElementById(divID).append(document.createElement('br'))
 }

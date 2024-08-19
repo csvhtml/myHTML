@@ -110,7 +110,8 @@ class libDropDownSingle {
         let idx = -1
         for (let i = 0; i < this.items.length; i++) {
             let itemsPair = this.items[i].split('/')
-            let id = prefix + '-dd-' + noBlank(itemsPair[0]) 
+            // let id = prefix + '-dd-' + noBlank(itemsPair[0]) 
+            let id = prefix + '-dd-' + itemsPair[0].replace(" ", "_") 
             
             let onclick = ""
             let onmouseleave = ""  // used to change val and onclickfunction for switches

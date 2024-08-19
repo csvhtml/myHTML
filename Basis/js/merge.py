@@ -15,9 +15,8 @@ def ReturnJSFunctionsFromFile(filepath):
     retNames = []; retParameters = []; i = 0
     searchString = 'function '; 
     slen = len(searchString)
-    # since the content is long, whilse loop instead of index()
-    while i < len(content):
-        if content[i:i+slen] == searchString and content[i+slen].isalnum():
+    while i < len(content):                                                             # // since the content is long, while loop instead of index()
+        if content[i:i+slen] == searchString and content[i+slen].isalnum():             # // functions starting with '_' shall be excluded
             i += 9
             idxFunctionNameStart = i
             while i < len(content) and (content[i].isalnum() or content[i] == '_'):

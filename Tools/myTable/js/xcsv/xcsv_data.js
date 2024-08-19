@@ -129,7 +129,7 @@ class clsData {
 
         let idx = this.headers.indexOf(colName)
         for (let row of this.data) {
-            ret.push(_byVal(row[idx]))}
+            ret.push(byVal(row[idx]))}
         return ret
     }
 }

@@ -39,7 +39,6 @@ function test_PatternsFound3(myTest) {
 function test_IsBetween(myTest) {
     let fname = arguments.callee.name;
 
-
     myTest.Equal(IsBetween(0,1,3), false)
     myTest.Equal(IsBetween(1,1,3), true)
     myTest.Equal(IsBetween(2,1,3), true)

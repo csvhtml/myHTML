@@ -1,6 +1,8 @@
 const BASIS = {
 	assert: function(condition, message) {return assert(condition, message)},
-	noBlank: function(text) {return noBlank(text)},
+	NoBlanksInList: function(liste) {return NoBlanksInList(liste)},
+	NoBlanks: function(text) {return NoBlanks(text)},
+	byVal: function(data) {return byVal(data)},
 	ValidChars: function(validChars, text) {return ValidChars(validChars, text)},
 	typOf: function(variable, extendedInfo = false) {return typOf(variable, extendedInfo = false)},
 	ListDepth: function(ListVariable) {return ListDepth(ListVariable)},
@@ -18,7 +20,6 @@ const BASIS = {
 	test_Basis: function() {return test_Basis()},
 	test_Basis_IsEqual: function() {return test_Basis_IsEqual()},
 	test_Basis_typOf: function() {return test_Basis_typOf()},
-	test_Basis_byVal: function() {return test_Basis_byVal()},
 	test_Basis_RetStringBetween: function() {return test_Basis_RetStringBetween()},
 	test_Basis_FileNameFromPath: function() {return test_Basis_FileNameFromPath()},
 	toggle: function(val, pair) {return toggle(val, pair)},
@@ -64,23 +65,6 @@ const BASIS = {
 
 
 // ################################################################
-// Log                                                            #
-// ################################################################
-
-class clsLog {
-    constructor() {
-        this.logs= []
-    }
-
-    Add(msg) {
-        if (LOGG) {
-            this.logs.push(msg)
-            console.log(msg)
-        }
-    }
-}
-
-// ################################################################
 // Assert                                                         #
 // ################################################################
 
@@ -97,34 +81,36 @@ function assert(condition, message) {
 // Useful functions                                               #
 // ################################################################
 
-function _RemoveBlanksInList(liste) {
+function NoBlanksInList(liste) {
     let ret = []
     for (ele of liste) {
-        ret.push(ele.replace(" ", "_"))
-    }
+        ret.push(NoBlanks(ele))}
 
     return ret
 }
 
-function noBlank(text) {
-    return text.replace(" ", "_")
+function NoBlanks(text) {
+    return text.replace(/ /g, "")
 }
 
-function _byVal(data) {
+function byVal(data) {
+    // Creates a hard copy of a variable (instead of just createing a reference in case of list and dictioaries). 
+    // It mimics the 'byVal' operater in VBA, hence the name
+    
     if ( ["bool", "str", "int"].indexOf(typOf(data)) >-1) {
-        return data}
+        return data} // as they are 'hard copied' by default
 
     if (typOf(data) == "list") {
         let ret = []
         for (let element of data) {
-            ret.push(_byVal(element))}
+            ret.push(byVal(element))}
         return ret}
     
     if (typOf(data) == "dict") { 
         let ret = { }
         let keys= Object.keys(data)
-        for (key of keys) {
-            ret[key] = _byVal(data[key])}
+        for (let key of keys) {
+            ret[key] = byVal(data[key])}
         return ret}
 
     return data
@@ -407,7 +393,7 @@ function DOMElementsFromString(htmlString, tag = 'div') {
 // ################################################################
 
 function test_Basis() {
-    test_Basis_byVal()
+    test_BasisbyVal()
     test_Basis_RetStringBetween()   
     test_Basis_FileNameFromPath()  
     test_Basis_typOf()
@@ -472,35 +458,7 @@ function test_Basis_typOf() {
     for (let t of test) {
         testEqual(typOf(t[0]), t[1], fname)}
 }
-function test_Basis_byVal() {
-    let fname = arguments.callee.name;
-    liste = ["Super", "Mario", "Land"]
-    listeA = _byVal(liste)
-    listeB = liste
 
-    liste[1] = "Sonic"
-    testEqualList(listeA, ["Super", "Mario", "Land"], fname)
-    testEqualList(listeB, ["Super", "Sonic", "Land"], fname)
-
-    liste = ["Super", "Mario", "Land"]
-    liste = [liste, liste, liste]
-    listeA = _byVal(liste)
-    listeB = liste
-
-    liste[1][1] = "Sonic"
-    testEqualList(listeA, [["Super", "Mario", "Land"], ["Super", "Mario", "Land"], ["Super", "Mario", "Land"]], fname)
-    testEqualList(listeB, [["Super", "Sonic", "Land"], ["Super", "Sonic", "Land"], ["Super", "Sonic", "Land"]], fname)
-
-
-    dicct = {"A": ["Super", "Mario", "Land"], "B":[1,2,3]}
-    dicctA = _byVal(dicct)
-    dicctB = dicct
-
-    dicct["A"] = "Wolf"
-    testEqualDict(dicctA, {"A": ["Super", "Mario", "Land"], "B": [1,2,3]}, fname)
-    testEqualDict(dicctB, {"A": "Wolf", "B": [1,2,3]}, fname)
-    return 0
-}
 
 function test_Basis_RetStringBetween() {
     let fname = arguments.callee.name;
@@ -1341,30 +1299,6 @@ function _replaceCheckboxWithBrackets(text) {
     //     htmlText = htmlText.replace(new RegExp('\n', "g") , '<br>')
     //     return htmlText;
     //     }
-// export functionn helloWorld() {
-//     console.log("Hello, World!");
-// }
-
-// MOHI
-// The above only works with a local server (localhost), not on static html pages
-
-// workardound 
-// a) naming convention (that might be integrated inside the merge.py) or
-// b) pseudo object, that contains all functions, with the Function name as key:
-
-// const myDictionary = {
-//     greet: function() {
-//         return greet()
-//    },
-//     add: function(a, b) {
-//         return add(a,b)
-//     },
-// };
-
-// // Access and call the functions
-// console.log(myDictionary.greet()); // Output: "Hello!"
-// console.log(myDictionary.add(3, 4)); // Output: 7
-
 // ################################################################
 // Prototype extentions                                           #
 // ################################################################

@@ -135,7 +135,7 @@ class clsData {
 
         let idx = this.headers.indexOf(colName)
         for (let row of this.data) {
-            ret.push(_byVal(row[idx]))}
+            ret.push(byVal(row[idx]))}
         return ret
     }
 
@@ -356,7 +356,7 @@ class clsData {
             this.parent.config2.Add(header)
             if (this.len == 0) {
                 for (let i = 0; i < values.length; i++) {
-                    let row = [_byVal(values[i])]
+                    let row = [byVal(values[i])]
                     this.data.push(row)
                 this.len +=1 }
             } else {
@@ -404,7 +404,7 @@ class clsData {
             tmpRow = []
             for (let col of cols) {
                 let j = this.headers.indexOf(col); assert(j >-1)
-                tmpRow.push(_byVal(this.data[i][j]))
+                tmpRow.push(byVal(this.data[i][j]))
             }
             ret.push(tmpRow)
         }
