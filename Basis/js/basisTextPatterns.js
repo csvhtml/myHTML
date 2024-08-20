@@ -1,4 +1,6 @@
-function PatternsFound(text, pattern = ["[", ":", "]"], ignore1 = []) {
+function PatternsFound(text, pattern = [], ignore1 = []) {
+    if (IsEqual(pattern, [])) { 
+        pattern = ["[", ":", "]"]}
     assert(typOf(text) == "str", "a not str")
     assert(typOf(pattern) == "list", "b not list")
     assert(IsBetween(pattern.length, 2,3), "b not length 2 or 3")
@@ -11,7 +13,9 @@ function PatternsFound(text, pattern = ["[", ":", "]"], ignore1 = []) {
     }
 }
 
-function PatternsFound3(text, p3 = ["[", ":", "]"], ignore1 = []) {
+function PatternsFound3(text, p3 = [], ignore1 = []) {
+    if (IsEqual(pattern, [])) { 
+        pattern = ["[", ":", "]"]}
     let ret = []; let tmp = ""
     let startIndex = 0; let pIndex = [-1, -1, -1]
     

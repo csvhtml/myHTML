@@ -108,14 +108,14 @@ class clsTest {
         if (IsEqual(a,false)) {
             return this._passed(fname)}
         else {
-            return this._passed(fname)}
+            return this._failed(fname)}
     }
 
     IsTrue(a, fname) {
         if (IsEqual(a,true)) {
             return this._passed(fname)}
         else {
-            return this._passed(fname)}
+            return this._failed(fname)}
     }
 
     Assertion(foo ,p , fooName, msg ) {
@@ -204,17 +204,4 @@ class clsTest {
                 ret +=1}
         return ret
     }
-}
-
-
-
-function new_test_line(fname, divID, result) {
-    let tr = document.createElement("tr")
-    tr.innerHTML = '<td>-</td><td>' + fname + '</td><td>' + result + '</td>'
-    // document.getElementById(divID).append(document.createElement('br'))
-    // document.getElementById(divID).append(Bold(fname))
-    // document.getElementById(divID).append(tr)
-
-    
-    // document.getElementById(divID).append(document.createElement('br'))
 }

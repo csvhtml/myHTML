@@ -4,19 +4,18 @@ const BASIS = {
 	NoBlanks: function(text) {return NoBlanks(text)},
 	byVal: function(data) {return byVal(data)},
 	ValidChars: function(validChars, text) {return ValidChars(validChars, text)},
-	typOf: function(variable, extendedInfo = false) {return typOf(variable, extendedInfo = false)},
+	typOf: function(variable, extendedInfo = false) {return typOf(variable, extendedInfo)},
 	ListDepth: function(ListVariable) {return ListDepth(ListVariable)},
 	maxx: function(a, b) {return maxx(a, b)},
 	minn: function(a, b) {return minn(a, b)},
-	IsEqual: function(a,b, max_iterations = 100) {return IsEqual(a,b, max_iterations = 100)},
-	IsListEqualSize: function(a,b, flag = false) {return IsListEqualSize(a,b, flag = false)},
-	IsListEqualDepth: function(a,b, flag = false) {return IsListEqualDepth(a,b, flag = false)},
+	IsEqual: function(a,b, max_iterations = 100) {return IsEqual(a,b, max_iterations)},
+	IsListEqualSize: function(a,b, flag = false) {return IsListEqualSize(a,b, flag)},
 	ElementInArrayN: function(array, element) {return ElementInArrayN(array, element)},
-	ElemementsWithOnClickFunctions: function(mode="") {return ElemementsWithOnClickFunctions(mode="")},
-	ElemementsWithSubStringInID: function(fixx =  [], mode="") {return ElemementsWithSubStringInID(fixx =  [], mode="")},
-	ReturnParentUntilID: function(element, targetID = "", iterations = 10) {return ReturnParentUntilID(element, targetID = "", iterations = 10)},
-	DivIsDescendantOf: function(element, targetID, iterations = 10) {return DivIsDescendantOf(element, targetID, iterations = 10)},
-	DOMElementsFromString: function(htmlString, tag = 'div') {return DOMElementsFromString(htmlString, tag = 'div')},
+	ElementsWithOnClickFunctions: function(mode = "") {return ElementsWithOnClickFunctions(mode)},
+	ElementsWithSubStringInID: function(fixx =  [], mode = "") {return ElementsWithSubStringInID(fixx, mode = "")},
+	ReturnParentUntilID: function(element, targetID = "", iterations = 10) {return ReturnParentUntilID(element, targetID, iterations = 10)},
+	DivIsDescendantOf: function(element, targetID, iterations = 10) {return DivIsDescendantOf(element, targetID, iterations)},
+	DOMElementsFromString: function(htmlString, tag = 'div') {return DOMElementsFromString(htmlString, tag)},
 	test_Basis: function() {return test_Basis()},
 	test_Basis_IsEqual: function() {return test_Basis_IsEqual()},
 	test_Basis_typOf: function() {return test_Basis_typOf()},
@@ -24,42 +23,42 @@ const BASIS = {
 	test_Basis_FileNameFromPath: function() {return test_Basis_FileNameFromPath()},
 	toggle: function(val, pair) {return toggle(val, pair)},
 	DIV: function(divID) {return DIV(divID)},
-	Append_TextArea: function(div, cfg = {}) {return Append_TextArea(div, cfg = {})},
-	TextArea: function(dicct = {}) {return TextArea(dicct = {})},
+	Append_TextArea: function(div, cfg = {}) {return Append_TextArea(div, cfg)},
+	TextArea: function(dicct = {}) {return TextArea(dicct)},
 	Bold: function(text) {return Bold(text)},
-	A_HREF: function(dicct = {}) {return A_HREF(dicct = {})},
+	A_HREF: function(dicct = {}) {return A_HREF(dicct)},
 	RemoveDIV: function(divID) {return RemoveDIV(divID)},
 	AutoHeight: function(divID) {return AutoHeight(divID)},
 	IsThereDiv: function(divID) {return IsThereDiv(divID)},
 	HTMLTable_FromConfig: function(config) {return HTMLTable_FromConfig(config)},
 	HTMLTable_FromMarkdown: function(markdownString) {return HTMLTable_FromMarkdown(markdownString)},
 	HTMLTable_FullConfig: function(config) {return HTMLTable_FullConfig(config)},
-	HTMLTable_TableRowsCols: function(p = {'thsText' : [],'cellsText' : []}) {return HTMLTable_TableRowsCols(p = {'thsText' : [],'cellsText' : []})},
+	HTMLTable_TableRowsCols: function(p = {'thsText' : [],'cellsText' : []}) {return HTMLTable_TableRowsCols(p)},
 	HTMLTable_DefaultVal: function(key, nCols, nRows) {return HTMLTable_DefaultVal(key, nCols, nRows)},
 	IsObject: function(variable) {return IsObject(variable)},
 	IsString: function(variable) {return IsString(variable)},
 	IsUndefined: function(variable) {return IsUndefined(variable)},
 	IsNotUndefined: function(variable) {return IsNotUndefined(variable)},
-	IsBetween: function(number, a, b, incl = true) {return IsBetween(number, a, b, incl = true)},
+	IsBetween: function(number, a, b, incl = true) {return IsBetween(number, a, b, incl)},
 	IsEmptyList: function(variable) {return IsEmptyList(variable)},
 	IsString1: function(variable) {return IsString1(variable)},
 	MyMarkDowntoSVG: function(markupText) {return MyMarkDowntoSVG(markupText)},
 	SVGtoMyMarkdown: function(htmlText) {return SVGtoMyMarkdown(htmlText)},
-	RetStringBetween: function(text, fromStr, toStr = "", ignoreBlankAtBorders = false) {return RetStringBetween(text, fromStr, toStr = "", ignoreBlankAtBorders = false)},
+	RetStringBetween: function(text, fromStr, toStr = "", ignoreBlankAtBorders = false) {return RetStringBetween(text, fromStr, toStr, ignoreBlankAtBorders = false)},
 	RetStringOutside: function(text, fromStr, toStr) {return RetStringOutside(text, fromStr, toStr)},
 	FileNameFromPath: function(path) {return FileNameFromPath(path)},
 	rgbText: function(a,b,c) {return rgbText(a,b,c)},
 	myTrim: function(input) {return myTrim(input)},
 	myReplace: function(val,re,place) {return myReplace(val,re,place)},
-	ShortenDotDotDot: function(text, lenn = 12) {return ShortenDotDotDot(text, lenn = 12)},
+	ShortenDotDotDot: function(text, lenn = 12) {return ShortenDotDotDot(text, lenn)},
 	ChangeLastChar: function(inputString, newChar) {return ChangeLastChar(inputString, newChar)},
 	test_TextFunctions: function() {return test_TextFunctions()},
 	test_Basis_RetStringBetween: function() {return test_Basis_RetStringBetween()},
 	test_Basis_FileNameFromPath: function() {return test_Basis_FileNameFromPath()},
 	test_Basis_myReplace: function() {return test_Basis_myReplace()},
-	PatternsFound: function(text, pattern = ["[", ":", "]"], ignore1 = []) {return PatternsFound(text, pattern = ["[", ":", "]"], ignore1 = [])},
-	PatternsFound3: function(text, p3 = ["[", ":", "]"], ignore1 = []) {return PatternsFound3(text, p3 = ["[", ":", "]"], ignore1 = [])},
-	MyMarkDowntoHTML: function(markupText, ignore1 = []) {return MyMarkDowntoHTML(markupText, ignore1 = [])},
+	PatternsFound: function(text, pattern = [], ignore1 = []) {return PatternsFound(text, pattern, ignore1 = [])},
+	PatternsFound3: function(text, p3 = [], ignore1 = []) {return PatternsFound3(text, p3, ignore1 = [])},
+	MyMarkDowntoHTML: function(markupText, ignore1 = []) {return MyMarkDowntoHTML(markupText, ignore1)},
 	HTMLtoMyMarkdown: function(htmlText) {return HTMLtoMyMarkdown(htmlText)},
 };
 
@@ -225,29 +224,20 @@ function IsEqual(a,b, max_iterations = 100) {
 function IsListEqualSize(a,b, flag = false) {
     if (typOf(a) == "list" && typOf(b) == "list") {
         if (a.length == b.length) {
-            return IsListEqualSize(a[0],b[0], true)}
-        return false}
-    if (flag) {
-        if (typOf(a) == "list" || typOf(b) == "list") {
-            return false}
-        else {
-            return true}
+            let result = false
+            for (let i = 0; i<a.length;i++) {
+                result = IsListEqualSize(a[i],b[i], true)
+                if (result == false) {
+                    return false}
+            }
+            return true
+        }
     }
-    else {
-        return false}
-}
 
-function IsListEqualDepth(a,b, flag = false) {
-    if (typOf(a) == "list" && typOf(b) == "list") {
-            return IsListEqualDepth(a[0],b[0], true)}
-    if (flag) {
-        if (typOf(a) == "list" || typOf(b) == "list") {
-            return false}
-        else {
+    if (flag && typOf(a) != "list" && typOf(b) != "list") {
             return true}
-    }
-    else {
-        return false}
+
+    return false
 }
 
 function ElementInArrayN(array, element) {
@@ -263,57 +253,11 @@ function ElementInArrayN(array, element) {
     return false; 
 }
 
-Object.defineProperties(DOMTokenList.prototype, {
-    addX: {
-        value: function(element) {
-            if (!this.contains(element)) {
-                this.add(element)}
-            }
-        }
-});
-
-Object.defineProperties(DOMTokenList.prototype, {
-    removeX: {
-        value: function(element) {
-            if (this.contains(element)) {
-                this.remove(element)}
-            }
-        }
-});
-
-Object.defineProperties(Object.prototype, {
-    key: {
-        value: function(n) {
-            let count = 0
-            for (var key in this) {
-                if (count == n) {
-                    return key;}
-                count += 1
-              }
-              return null;
-            }  
-    } 
-}); 
-
-Object.defineProperties(String.prototype, {
-    count: {
-        value: function(n) {
-            let count = 0;
-            for (let i = 0; i < this.length; i++) {
-                if (this[i] === n) {
-                    count++;
-                }
-            }
-            return count;
-        }
-    } 
-}); 
-
 // ################################################################
 // Usefull DOM functions                                          #
 // ################################################################
 
-function ElemementsWithOnClickFunctions(mode="") {
+function ElementsWithOnClickFunctions(mode = "") {
     // let allElements = document.getElementsByTagName('*');
     let allElements = document.getElementsByTagName('*');
     let ret = []
@@ -331,7 +275,7 @@ function ElemementsWithOnClickFunctions(mode="") {
     return ret
 }
 
-function ElemementsWithSubStringInID(fixx =  [], mode="") {
+function ElementsWithSubStringInID(fixx =  [], mode = "") {
     // let allElements = document.getElementsByTagName('*');
     let allElements = document.getElementsByTagName('*');
     let ret = []
@@ -1193,7 +1137,9 @@ function test_Basis_myReplace() {
 }
 
 
-function PatternsFound(text, pattern = ["[", ":", "]"], ignore1 = []) {
+function PatternsFound(text, pattern = [], ignore1 = []) {
+    if (IsEqual(pattern, [])) { 
+        pattern = ["[", ":", "]"]}
     assert(typOf(text) == "str", "a not str")
     assert(typOf(pattern) == "list", "b not list")
     assert(IsBetween(pattern.length, 2,3), "b not length 2 or 3")
@@ -1206,7 +1152,9 @@ function PatternsFound(text, pattern = ["[", ":", "]"], ignore1 = []) {
     }
 }
 
-function PatternsFound3(text, p3 = ["[", ":", "]"], ignore1 = []) {
+function PatternsFound3(text, p3 = [], ignore1 = []) {
+    if (IsEqual(pattern, [])) { 
+        pattern = ["[", ":", "]"]}
     let ret = []; let tmp = ""
     let startIndex = 0; let pIndex = [-1, -1, -1]
     
@@ -1322,7 +1270,7 @@ Object.defineProperties(Array.prototype, {
 
 
 Object.defineProperties(Array.prototype, {
-    remove: {
+    _remove: {
         value: function(element) {
                 let idx = this.indexOf(element);
                 this.splice(idx, 1)
@@ -1344,7 +1292,7 @@ Object.defineProperties(Array.prototype, {
     removeX: {
         value: function(element) {
             if (this.includes(element)) {
-                this.remove(element)
+                this._remove(element)
             }
         }
     }
@@ -1355,7 +1303,7 @@ Object.defineProperties(Array.prototype, {
     toggle: {
         value: function(element) {
             if (this.includes(element)) {
-                this.remove(element)}
+                this._remove(element)}
             else {
                 this.push(element)}
             }
@@ -1371,16 +1319,48 @@ Object.defineProperties(Array.prototype, {
         }
 });
 
-
-Object.defineProperties(Array.prototype, {
-    replaceIfEmpty: {
+Object.defineProperties(DOMTokenList.prototype, {
+    addX: {
         value: function(element) {
-            if (Array.isArray(element)) {
-                if (this.length === 0) {
-                    for (let e of element) {
-                        this.push(e)
-                    }}
-                }
+            if (!this.contains(element)) {
+                this.add(element)}
             }
         }
 });
+
+Object.defineProperties(DOMTokenList.prototype, {
+    removeX: {
+        value: function(element) {
+            if (this.contains(element)) {
+                this._remove(element)}
+            }
+        }
+});
+
+Object.defineProperties(Object.prototype, {
+    key: {
+        value: function(n) {
+            let count = 0
+            for (var key in this) {
+                if (count == n) {
+                    return key;}
+                count += 1
+              }
+              return null;
+            }  
+    } 
+}); 
+
+Object.defineProperties(String.prototype, {
+    count: {
+        value: function(n) {
+            let count = 0;
+            for (let i = 0; i < this.length; i++) {
+                if (this[i] === n) {
+                    count++;
+                }
+            }
+            return count;
+        }
+    } 
+}); 

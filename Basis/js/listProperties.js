@@ -21,7 +21,7 @@ Object.defineProperties(Array.prototype, {
 
 
 Object.defineProperties(Array.prototype, {
-    remove: {
+    _remove: {
         value: function(element) {
                 let idx = this.indexOf(element);
                 this.splice(idx, 1)
@@ -43,7 +43,7 @@ Object.defineProperties(Array.prototype, {
     removeX: {
         value: function(element) {
             if (this.includes(element)) {
-                this.remove(element)
+                this._remove(element)
             }
         }
     }
@@ -54,7 +54,7 @@ Object.defineProperties(Array.prototype, {
     toggle: {
         value: function(element) {
             if (this.includes(element)) {
-                this.remove(element)}
+                this._remove(element)}
             else {
                 this.push(element)}
             }
@@ -70,16 +70,48 @@ Object.defineProperties(Array.prototype, {
         }
 });
 
-
-Object.defineProperties(Array.prototype, {
-    replaceIfEmpty: {
+Object.defineProperties(DOMTokenList.prototype, {
+    addX: {
         value: function(element) {
-            if (Array.isArray(element)) {
-                if (this.length === 0) {
-                    for (let e of element) {
-                        this.push(e)
-                    }}
-                }
+            if (!this.contains(element)) {
+                this.add(element)}
             }
         }
 });
+
+Object.defineProperties(DOMTokenList.prototype, {
+    removeX: {
+        value: function(element) {
+            if (this.contains(element)) {
+                this._remove(element)}
+            }
+        }
+});
+
+Object.defineProperties(Object.prototype, {
+    key: {
+        value: function(n) {
+            let count = 0
+            for (var key in this) {
+                if (count == n) {
+                    return key;}
+                count += 1
+              }
+              return null;
+            }  
+    } 
+}); 
+
+Object.defineProperties(String.prototype, {
+    count: {
+        value: function(n) {
+            let count = 0;
+            for (let i = 0; i < this.length; i++) {
+                if (this[i] === n) {
+                    count++;
+                }
+            }
+            return count;
+        }
+    } 
+}); 

@@ -159,29 +159,20 @@ function IsEqual(a,b, max_iterations = 100) {
 function IsListEqualSize(a,b, flag = false) {
     if (typOf(a) == "list" && typOf(b) == "list") {
         if (a.length == b.length) {
-            return IsListEqualSize(a[0],b[0], true)}
-        return false}
-    if (flag) {
-        if (typOf(a) == "list" || typOf(b) == "list") {
-            return false}
-        else {
-            return true}
+            let result = false
+            for (let i = 0; i<a.length;i++) {
+                result = IsListEqualSize(a[i],b[i], true)
+                if (result == false) {
+                    return false}
+            }
+            return true
+        }
     }
-    else {
-        return false}
-}
 
-function IsListEqualDepth(a,b, flag = false) {
-    if (typOf(a) == "list" && typOf(b) == "list") {
-            return IsListEqualDepth(a[0],b[0], true)}
-    if (flag) {
-        if (typOf(a) == "list" || typOf(b) == "list") {
-            return false}
-        else {
+    if (flag && typOf(a) != "list" && typOf(b) != "list") {
             return true}
-    }
-    else {
-        return false}
+
+    return false
 }
 
 function ElementInArrayN(array, element) {
@@ -197,57 +188,11 @@ function ElementInArrayN(array, element) {
     return false; 
 }
 
-Object.defineProperties(DOMTokenList.prototype, {
-    addX: {
-        value: function(element) {
-            if (!this.contains(element)) {
-                this.add(element)}
-            }
-        }
-});
-
-Object.defineProperties(DOMTokenList.prototype, {
-    removeX: {
-        value: function(element) {
-            if (this.contains(element)) {
-                this.remove(element)}
-            }
-        }
-});
-
-Object.defineProperties(Object.prototype, {
-    key: {
-        value: function(n) {
-            let count = 0
-            for (var key in this) {
-                if (count == n) {
-                    return key;}
-                count += 1
-              }
-              return null;
-            }  
-    } 
-}); 
-
-Object.defineProperties(String.prototype, {
-    count: {
-        value: function(n) {
-            let count = 0;
-            for (let i = 0; i < this.length; i++) {
-                if (this[i] === n) {
-                    count++;
-                }
-            }
-            return count;
-        }
-    } 
-}); 
-
 // ################################################################
 // Usefull DOM functions                                          #
 // ################################################################
 
-function ElemementsWithOnClickFunctions(mode="") {
+function ElementsWithOnClickFunctions(mode = "") {
     // let allElements = document.getElementsByTagName('*');
     let allElements = document.getElementsByTagName('*');
     let ret = []
@@ -265,7 +210,7 @@ function ElemementsWithOnClickFunctions(mode="") {
     return ret
 }
 
-function ElemementsWithSubStringInID(fixx =  [], mode="") {
+function ElementsWithSubStringInID(fixx =  [], mode = "") {
     // let allElements = document.getElementsByTagName('*');
     let allElements = document.getElementsByTagName('*');
     let ret = []

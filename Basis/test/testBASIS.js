@@ -6,7 +6,18 @@ function test_BASIS() {
     // Modify alll in list
     test_NoBlanksInList(myTest)
     test_ByVal(myTest)
-    
+    test_ValidChars(myTest)
+    test_typOf(myTest)
+    test_maxx(myTest)
+    test_minn(myTest)
+    test_IsListEqualSize(myTest)
+    test_ElementInArrayN(myTest)
+
+    prototype_listCount(myTest)
+    prototype_listRemoveX(myTest)
+    prototype_listRemoveAll(myTest)
+    prototype_listToggle(myTest)
+    prototype_listPushX(myTest)
     myTest.PrintResult(divID = 'id')
 
     test_basisjs_Bold(myTest)
@@ -19,14 +30,12 @@ function test_BASIS() {
 
 
 }
-function test_NoBlanksInList(myTest) {
-    let fname = arguments.callee.name;
 
+function test_NoBlanksInList(myTest) {
+    // let fname = arguments.callee.name;
     let a = ["Hallo Welt", "Das ist ein Test", "   ", " blank "]
     let expected = ["HalloWelt", "DasisteinTest", "", "blank"]
-    let result = myTest.Equal(BASIS.NoBlanksInList(a), expected, fname)
-    
-    new_test_line(fname, DIV_TESTOUTPUT, result)
+    myTest.Equal(BASIS.NoBlanksInList(a), expected, arguments.callee.name)
 }
 
 function test_ByVal(myTest) {
@@ -35,7 +44,7 @@ function test_ByVal(myTest) {
     // 1D List
     let liste = ["Super", "Mario", "Land"]
     let listeRef = liste
-    let listeVal = byVal(liste)
+    let listeVal = BASIS.byVal(liste)
     liste[1] = "Sonic"
 
     let expectedRef = ["Super", "Sonic", "Land"]
@@ -46,7 +55,7 @@ function test_ByVal(myTest) {
     // 2D List
     let listeX = ["Super", "Mario", "Land"]; liste = [listeX, listeX, listeX]
     listeRef = liste
-    listeVal = byVal(liste)
+    listeVal = BASIS.byVal(liste)
     listeX[1] = "Sonic"
 
     expectedRef = [["Super", "Sonic", "Land"], ["Super", "Sonic", "Land"], ["Super", "Sonic", "Land"]]
@@ -57,7 +66,7 @@ function test_ByVal(myTest) {
     // Dictionary
     let dicct = {"A": "Mario", "B":[1,2,3]}
     let dicctRef = dicct
-    let dicctVal = byVal(dicct)
+    let dicctVal = BASIS.byVal(dicct)
     dicct["A"] = "Wolff"; dicct["B"][0] = 99
 
     expectedRef = {"A": "Wolff", "B": [99,2,3]}
@@ -65,13 +74,99 @@ function test_ByVal(myTest) {
 
     result += myTest.Equal(dicctRef, expectedRef, fname)
     result += myTest.Equal(dicctVal, expectedVal, fname)
+}
+
+
+function test_ValidChars(myTest) {
+    myTest.IsFalse(BASIS.ValidChars("abcdefghijklmnopqrstuvxyz", "hallo welt"), arguments.callee.name)
+    myTest.IsFalse(BASIS.ValidChars("abcdefghijklmnopqrstuvxyz", "Hallo Welt"), arguments.callee.name)
+    myTest.IsTrue(BASIS.ValidChars("abcdefghijklmnopqrstuvxyz HW    ", "Hallo Welt"), arguments.callee.name)
+}
+
+function test_typOf(myTest) {
+    myTest.Equal(BASIS.typOf(1), 'int', arguments.callee.name)
+    myTest.Equal(BASIS.typOf("a"), 'str', arguments.callee.name)
+    myTest.Equal(BASIS.typOf(true), 'bool', arguments.callee.name)
+    myTest.Equal(BASIS.typOf([1,2,3]), 'list', arguments.callee.name)
+    myTest.Equal(BASIS.typOf({"a": 1, "b": 2}), 'dict', arguments.callee.name)
+    myTest.Equal(BASIS.typOf([1,2,3], true), 'list-1D', arguments.callee.name)
+    myTest.Equal(BASIS.typOf([[1,2], [3,4]], true), 'list-2D', arguments.callee.name)
+}
+
+function test_maxx(myTest) {
+    myTest.Equal(BASIS.maxx(10,30), 30, arguments.callee.name)
+}
+
+function test_minn(myTest) {
+    myTest.Equal(BASIS.minn(10,30), 10, arguments.callee.name)
+}
+
+function test_IsListEqualSize(myTest) {
+    let a = [[1,2], [[3,4],[5,6]]]
+    let b = [["1","2"], [["3","4"],["5","6"]]]
+    let c = [["1","2"], [["3","4"],["5","6", "7"]]]
+    let d = [["1","2"], [["3","4"],["5",["6","7"]]]]
+
+    myTest.IsTrue(BASIS.IsListEqualSize(a,b), arguments.callee.name)
+    myTest.IsFalse(BASIS.IsListEqualSize(a,c), arguments.callee.name)
+    myTest.IsFalse(BASIS.IsListEqualSize(a,d), arguments.callee.name)
+}
+
+function test_ElementInArrayN(myTest) {
+    let listen = [["Mario", "Peach", "Luigi"], ["Bowser", "Koopa"], "Wario"]
+
+    myTest.IsFalse(BASIS.ElementInArrayN(listen, "Daisy"), arguments.callee.name)
+    myTest.IsTrue(BASIS.ElementInArrayN(listen, "Peach"), arguments.callee.name)
+}
+
+function prototype_listCount(myTest) {
+    let liste = ["a", "b", "c", "a", "f", "a"]
+
+    myTest.Equal(liste.count("a"),3, arguments.callee.name)
+}
+
+function prototype_listRemoveX(myTest) {
+    let liste = ["a", "b", "c","e", "f", "g"]
+    let expected = ["a", "b", "c", "e", "g"]
+    liste.removeX("f")
+
+    myTest.Equal(liste, expected, arguments.callee.name)
+}
+
+function prototype_listRemoveAll(myTest) {
+    let liste = ["a", "b", "c", "e", "f", "c", "c",]
+    let expected = ["a", "b", "e", "f"]
     
-    new_test_line(fname, DIV_TESTOUTPUT, result)
+    liste.removeAll("c")
+    myTest.Equal(liste, expected, arguments.callee.name)
+}
+
+function prototype_listToggle(myTest) {
+    let liste = ["a", "b", "c", "d"]
+    let expected = ["a", "b", "d"]
+    
+    liste.toggle("c")
+    myTest.Equal(liste, expected, arguments.callee.name)
+
+    liste.toggle("c")
+    expected = ["a", "b", "d", "c"]
+    myTest.Equal(liste, expected, arguments.callee.name)
+}
+
+function prototype_listPushX(myTest) {
+    let liste = ["a", "b", "c", "d"]
+    let expected = ["a", "b", "c", "d"]
+    
+    liste.pushX("b")
+    myTest.Equal(liste, expected, arguments.callee.name)
+
+    liste.pushX("z")
+    expected = ["a", "b", "c", "d", "z"]
+    myTest.Equal(liste, expected, arguments.callee.name)
 }
 
 function test_basisjs_Bold(myTest) {
     let fname = arguments.callee.name;
-    new_test_line(fname, DIV_TESTOUTPUT)
 
     let text = "Hallo Welt"
     myTest.Equal(Bold(text).outerHTML, "<b>" + text + "</b>",fname)
@@ -79,7 +174,6 @@ function test_basisjs_Bold(myTest) {
 
 function test_basisjs_AHREF(myTest) {
     let fname = arguments.callee.name;
-    new_test_line(fname, DIV_TESTOUTPUT)
 
     let cfg = {
         id: "id-a-href", 
@@ -95,7 +189,6 @@ function test_basisjs_AHREF(myTest) {
 
 function test_basisjs_TextArea(myTest) {
     let fname = arguments.callee.name;
-    new_test_line(fname, DIV_TESTOUTPUT)
 
     let cfg = {
         id: "id-textarea", 

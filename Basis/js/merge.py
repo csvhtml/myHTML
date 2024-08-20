@@ -35,10 +35,13 @@ def ReturnJSFunctionsFromFile(filepath):
     return [retNames, retParameters]
 
 def JSCode_FunctionsDictionary(dictName, listofFunctionNames, listofFunctionParameters):
+    lName = listofFunctionNames; lPara = listofFunctionParameters
+    def func(a): return RemoveDefaultValuesFromParameterString(a)
+
     ret = 'const ' + dictName + ' = {' + '\n'
     for i in range(len(listofFunctionNames)):
     # for fname in listofFunctionNames:
-        ret += '\t' + listofFunctionNames[i] + ': function' + listofFunctionParameters[i] + ' {return ' + listofFunctionNames[i] + listofFunctionParameters[i]+ '},\n'
+        ret += '\t' + lName[i] + ': function' + lPara[i] + ' {return ' + lName[i] + func(lPara[i])+ '},\n'
     ret += '};\n\n'
     return ret
 
@@ -51,6 +54,18 @@ def merge_js_files(files, output_file):
 
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write(merged_content)
+
+def RemoveDefaultValuesFromParameterString(parameterString):
+    if not ' = ' in parameterString:
+        return parameterString
+    
+    idx1 = parameterString.find(' = ')
+    idx2 = parameterString.find(', ', idx1)
+    if idx2 == -1:
+        idx2 = parameterString.find(')', idx1)
+    
+    parameterString = parameterString[:idx1] + parameterString[idx2:]
+    return parameterString
 
 def AddFunctionDictionaryToMergedFile(file_path, code):
     with open(file_path, "r") as file:
