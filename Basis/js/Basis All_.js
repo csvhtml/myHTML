@@ -57,7 +57,7 @@ const BASIS = {
 	test_Basis_FileNameFromPath: function() {return test_Basis_FileNameFromPath()},
 	test_Basis_myReplace: function() {return test_Basis_myReplace()},
 	PatternsFound: function(text, pattern = [], ignore1 = []) {return PatternsFound(text, pattern, ignore1 = [])},
-	PatternsFound3: function(text, p3 = [], ignore1 = []) {return PatternsFound3(text, p3, ignore1 = [])},
+	PatternsFound3: function(text, pattern = [], ignore1 = []) {return PatternsFound3(text, pattern, ignore1 = [])},
 	MyMarkDowntoHTML: function(markupText, ignore1 = []) {return MyMarkDowntoHTML(markupText, ignore1)},
 	HTMLtoMyMarkdown: function(htmlText) {return HTMLtoMyMarkdown(htmlText)},
 };
@@ -1152,7 +1152,7 @@ function PatternsFound(text, pattern = [], ignore1 = []) {
     }
 }
 
-function PatternsFound3(text, p3 = [], ignore1 = []) {
+function PatternsFound3(text, pattern = [], ignore1 = []) {
     if (IsEqual(pattern, [])) { 
         pattern = ["[", ":", "]"]}
     let ret = []; let tmp = ""
@@ -1160,10 +1160,10 @@ function PatternsFound3(text, p3 = [], ignore1 = []) {
     
     // find p indexes
     while (startIndex < text.length) {
-        pIndex[0] = text.indexOf(p3[0], startIndex)
+        pIndex[0] = text.indexOf(pattern[0], startIndex)
         if (pIndex[0] == -1) {return ret}
-        for (i = 1; i < p3.length; i++) {
-            pIndex[i] = text.indexOf(p3[i], pIndex[i-1])
+        for (i = 1; i < pattern.length; i++) {
+            pIndex[i] = text.indexOf(pattern[i], pIndex[i-1])
             if (pIndex[i] == -1) {return ret}
         }
       
@@ -1319,6 +1319,45 @@ Object.defineProperties(Array.prototype, {
         }
 });
 
+Object.defineProperties(Object.prototype, {
+    key: {
+        value: function(n) {
+            let count = 0
+            for (var key in this) {
+                if (count == n) {
+                    return key;}
+                count += 1
+              }
+              return null;
+            }  
+    } 
+}); 
+
+Object.defineProperties(String.prototype, {
+    until: {
+        value: function(n) {
+            let idx = this.indexOf(n)
+            if (idx == -1) { 
+                return this}
+            return this.substring(0,idx)
+        }
+    } 
+});
+
+Object.defineProperties(String.prototype, {
+    count: {
+        value: function(n) {
+            let count = 0;
+            for (let i = 0; i < this.length; i++) {
+                if (this[i] === n) {
+                    count++;
+                }
+            }
+            return count;
+        }
+    } 
+}); 
+
 Object.defineProperties(DOMTokenList.prototype, {
     addX: {
         value: function(element) {
@@ -1336,31 +1375,3 @@ Object.defineProperties(DOMTokenList.prototype, {
             }
         }
 });
-
-Object.defineProperties(Object.prototype, {
-    key: {
-        value: function(n) {
-            let count = 0
-            for (var key in this) {
-                if (count == n) {
-                    return key;}
-                count += 1
-              }
-              return null;
-            }  
-    } 
-}); 
-
-Object.defineProperties(String.prototype, {
-    count: {
-        value: function(n) {
-            let count = 0;
-            for (let i = 0; i < this.length; i++) {
-                if (this[i] === n) {
-                    count++;
-                }
-            }
-            return count;
-        }
-    } 
-}); 

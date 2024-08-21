@@ -13,7 +13,7 @@ class clsDataCollection {
         for (let key of Object.keys(Config)) {
             this[key] = new clsData(parent, key, ItemsType)
             if (ItemsType == "XConfigItems") {
-                let hd = this.parent.XFormat._HeadersAndDataFromText(myTrim(Config[key]))
+                let hd = this.parent.XFormat._HeadersDataName(myTrim(Config[key]))
                 this[key].Init(hd[0], hd[1])
             }
         }

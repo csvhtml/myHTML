@@ -27,8 +27,8 @@ class clsFormat {
     xRead(text) {
         if (text == undefined) {
             return}
-        let files = text.split(this.config["file-seperator"])
-        let headers_data = this._HeadersAndDataFromText(files[0])
+        let files = text.split(this.config["file-seperator"]); files.removeAll("")
+        let headers_data = this._HeadersDataName(files[0])
 
         this.parent.XData.Init(headers_data[0], headers_data[1])
     }
@@ -61,7 +61,14 @@ class clsFormat {
         return ret
     }
 
-    _HeadersAndDataFromText(textfile) {
+    _HeadersDataName(textfile) {
+        let name = ''
+        if (!textfile.startsWith(this.config["line-starter"])) {
+            name = textfile.until('\n')
+            textfile = textfile.substring(textfile.indexOf('\n')+1)
+        }
+        assert(textfile.startsWith(this.config["line-starter"]))
+
         let lines = textfile.split(this.config["line-starter"]); lines.removeAll("")
         for (let i = 0; i< lines.length; i++) {
             lines[i] = lines[i].replace(/\n+$/, '')} // "at the end.\n\n\n" ->"at the end."
@@ -71,6 +78,16 @@ class clsFormat {
         for (let row of rows){
             data.push(row.split(this.config["cell-seperator"]))}
     
-        return [headers, data]
+        return [headers, data, name]
     }
 }
+
+
+// ||||<name>
+// ||<header1>|<header2>|<header3>|<header4>
+// ||<data 11>|<data 12>|<data 13>|<data 14>
+// ||<data 21>|<data 22>|<data 23>|<data 24>
+// ||||<name>
+// ||<header1>|<header2>|<header3>|<header4>
+// ||<data 11>|<data 12>|<data 13>|<data 14>
+// ||<data 21>|<data 22>|<data 23>|<data 24>

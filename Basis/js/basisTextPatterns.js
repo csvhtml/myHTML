@@ -13,7 +13,7 @@ function PatternsFound(text, pattern = [], ignore1 = []) {
     }
 }
 
-function PatternsFound3(text, p3 = [], ignore1 = []) {
+function PatternsFound3(text, pattern = [], ignore1 = []) {
     if (IsEqual(pattern, [])) { 
         pattern = ["[", ":", "]"]}
     let ret = []; let tmp = ""
@@ -21,10 +21,10 @@ function PatternsFound3(text, p3 = [], ignore1 = []) {
     
     // find p indexes
     while (startIndex < text.length) {
-        pIndex[0] = text.indexOf(p3[0], startIndex)
+        pIndex[0] = text.indexOf(pattern[0], startIndex)
         if (pIndex[0] == -1) {return ret}
-        for (i = 1; i < p3.length; i++) {
-            pIndex[i] = text.indexOf(p3[i], pIndex[i-1])
+        for (i = 1; i < pattern.length; i++) {
+            pIndex[i] = text.indexOf(pattern[i], pIndex[i-1])
             if (pIndex[i] == -1) {return ret}
         }
       

@@ -70,6 +70,45 @@ Object.defineProperties(Array.prototype, {
         }
 });
 
+Object.defineProperties(Object.prototype, {
+    key: {
+        value: function(n) {
+            let count = 0
+            for (var key in this) {
+                if (count == n) {
+                    return key;}
+                count += 1
+              }
+              return null;
+            }  
+    } 
+}); 
+
+Object.defineProperties(String.prototype, {
+    until: {
+        value: function(n) {
+            let idx = this.indexOf(n)
+            if (idx == -1) { 
+                return this}
+            return this.substring(0,idx)
+        }
+    } 
+});
+
+Object.defineProperties(String.prototype, {
+    count: {
+        value: function(n) {
+            let count = 0;
+            for (let i = 0; i < this.length; i++) {
+                if (this[i] === n) {
+                    count++;
+                }
+            }
+            return count;
+        }
+    } 
+}); 
+
 Object.defineProperties(DOMTokenList.prototype, {
     addX: {
         value: function(element) {
@@ -87,31 +126,3 @@ Object.defineProperties(DOMTokenList.prototype, {
             }
         }
 });
-
-Object.defineProperties(Object.prototype, {
-    key: {
-        value: function(n) {
-            let count = 0
-            for (var key in this) {
-                if (count == n) {
-                    return key;}
-                count += 1
-              }
-              return null;
-            }  
-    } 
-}); 
-
-Object.defineProperties(String.prototype, {
-    count: {
-        value: function(n) {
-            let count = 0;
-            for (let i = 0; i < this.length; i++) {
-                if (this[i] === n) {
-                    count++;
-                }
-            }
-            return count;
-        }
-    } 
-}); 

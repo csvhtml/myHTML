@@ -18,12 +18,14 @@ class clsXCSV_assert {
     
     HeaderIs1D (headers) {
         assert(IsNotUndefined(headers), "Undefined headers")
-        assert(IsListEqualDepth(headers, [1,1]))
+        // assert(IsListEqualDepth(headers, [1,1]))
+        assert(ListDepth(headers) == 1)
     }
 
     DataIs2D(data) {
         assert(IsNotUndefined(data), "Undefined data")
-        assert(IsListEqualDepth(data, [[1,1],[1,1]]), "DataIs2D failed")
+        // assert(IsListEqualDepth(data, [[1,1],[1,1]]), "DataIs2D failed")
+        assert(ListDepth(data) == 2)
     }
 
     name() {
