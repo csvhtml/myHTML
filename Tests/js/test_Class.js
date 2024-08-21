@@ -61,6 +61,7 @@ class clsTest {
                 border-collapse: collapse;
                 margin: 5px;
                 padding-left: 5px;
+                padding-right: 10px;
             }`;
 
         style.appendChild(document.createTextNode(css));

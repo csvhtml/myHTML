@@ -56,6 +56,15 @@ function A_HREF({
     return a;
 }
 
+function NewDiv(config) {
+    let defaultConfig = {'type': 'div', 'id': 'id', 'innerHTML': '---'}
+    let cfg = {...defaultConfig,...config}
+    let ret = document.createElement(cfg['type'])
+    ret.id = cfg['id']
+    ret.innerHTML = cfg['innerHTML']
+
+    return ret
+}
 
 // ################################################################
 // Dom Structure Manipulation                                     #

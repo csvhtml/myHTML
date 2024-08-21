@@ -20,6 +20,8 @@ function test_BASIS() {
     prototype_listPushX(myTest)
     prototype_stringUntil(myTest)
     prototype_stringCount(myTest)
+    prototype_documentGetElementsWithOnClickEvent(myTest)
+    prototype_documentGetElementsByIDSubstring(myTest)
     myTest.PrintResult(divID = 'id')
 
     test_basisjs_Bold(myTest)
@@ -185,6 +187,30 @@ function prototype_stringCount(myTest) {
 
     text = "lorem ipsum darum ipsum warum ipsum usum"
     myTest.Equal(text.count('ipsum'), 3, arguments.callee.name)
+}
+
+function prototype_documentGetElementsWithOnClickEvent(myTest) {
+    let div = NewDiv({'type':'div', 'id': 'test-id', 'innerHTML': 'test proto OnClick'})
+    div.onclick = function () {console.log("5")}
+    document.body.append(div)
+
+    let result = document.getElementsWithOnClickEvent()
+    myTest.IsTrue(result.length == 1, arguments.callee.name)
+    myTest.IsTrue(div === result[0], arguments.callee.name)
+    div.remove()
+}
+
+function prototype_documentGetElementsByIDSubstring(myTest) {
+    let div1 = NewDiv({'type':'div', 'id': 'test-id1-XXX', 'innerHTML': 'test proto substring 1'})
+    let div2 = NewDiv({'type':'div', 'id': 'test-id2', 'innerHTML': 'test proto substring 2'})
+    let div3 = NewDiv({'type':'div', 'id': 'test-id3-XXX', 'innerHTML': 'test proto substring 3'})
+    document.body.append(div1); document.body.append(div2); document.body.append(div3)
+
+    let result = document.getElementsByIDSubstring('XXX')
+    myTest.IsTrue(result.length == 2, arguments.callee.name)
+    myTest.IsTrue(div1 === result[0], arguments.callee.name)
+    myTest.IsTrue(div3 === result[1], arguments.callee.name)
+    div1.remove(); div2.remove(); div3.remove()
 }
 
 function test_basisjs_Bold(myTest) {

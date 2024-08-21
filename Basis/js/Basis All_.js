@@ -11,7 +11,6 @@ const BASIS = {
 	IsEqual: function(a,b, max_iterations = 100) {return IsEqual(a,b, max_iterations)},
 	IsListEqualSize: function(a,b, flag = false) {return IsListEqualSize(a,b, flag)},
 	ElementInArrayN: function(array, element) {return ElementInArrayN(array, element)},
-	ElementsWithOnClickFunctions: function(mode = "") {return ElementsWithOnClickFunctions(mode)},
 	ElementsWithSubStringInID: function(fixx =  [], mode = "") {return ElementsWithSubStringInID(fixx, mode = "")},
 	ReturnParentUntilID: function(element, targetID = "", iterations = 10) {return ReturnParentUntilID(element, targetID, iterations = 10)},
 	DivIsDescendantOf: function(element, targetID, iterations = 10) {return DivIsDescendantOf(element, targetID, iterations)},
@@ -27,6 +26,7 @@ const BASIS = {
 	TextArea: function(dicct = {}) {return TextArea(dicct)},
 	Bold: function(text) {return Bold(text)},
 	A_HREF: function(dicct = {}) {return A_HREF(dicct)},
+	NewDiv: function(config) {return NewDiv(config)},
 	RemoveDIV: function(divID) {return RemoveDIV(divID)},
 	AutoHeight: function(divID) {return AutoHeight(divID)},
 	IsThereDiv: function(divID) {return IsThereDiv(divID)},
@@ -257,24 +257,6 @@ function ElementInArrayN(array, element) {
 // Usefull DOM functions                                          #
 // ################################################################
 
-function ElementsWithOnClickFunctions(mode = "") {
-    // let allElements = document.getElementsByTagName('*');
-    let allElements = document.getElementsByTagName('*');
-    let ret = []
-    for ( var i = 0; i<allElements.length; i++ ) {
-        if ( typeof allElements[i].onclick === 'function' ) {
-            if (mode == "") {
-                ret.push(allElements[i])}
-            if (mode == "id") {
-                assert(allElements[i].id != "")
-                ret.push(allElements[i].id)}
-            if (mode == "function") {
-                ret.push(allElements[i].attributes['onclick'].value)}
-        }
-    }
-    return ret
-}
-
 function ElementsWithSubStringInID(fixx =  [], mode = "") {
     // let allElements = document.getElementsByTagName('*');
     let allElements = document.getElementsByTagName('*');
@@ -491,6 +473,15 @@ function A_HREF({
     return a;
 }
 
+function NewDiv(config) {
+    let defaultConfig = {'type': 'div', 'id': 'id', 'innerHTML': '---'}
+    let cfg = {...defaultConfig,...config}
+    let ret = document.createElement(cfg['type'])
+    ret.id = cfg['id']
+    ret.innerHTML = cfg['innerHTML']
+
+    return ret
+}
 
 // ################################################################
 // Dom Structure Manipulation                                     #
@@ -1319,6 +1310,7 @@ Object.defineProperties(Array.prototype, {
         }
 });
 
+// MOHI: To be reworked
 Object.defineProperties(Object.prototype, {
     key: {
         value: function(n) {
@@ -1360,20 +1352,31 @@ Object.defineProperties(String.prototype, {
     } 
 }); 
 
-Object.defineProperties(DOMTokenList.prototype, {
-    addX: {
-        value: function(element) {
-            if (!this.contains(element)) {
-                this.add(element)}
+
+Object.defineProperties(document, {
+    getElementsWithOnClickEvent: {
+        value: function() {
+            ret = []
+            let all = document.getElementsByTagName('*');
+            for (let a of all) {
+                if (typeof a.onclick === 'function') {
+                    ret.push(a)}    
             }
+            return ret
         }
+    }
 });
 
-Object.defineProperties(DOMTokenList.prototype, {
-    removeX: {
-        value: function(element) {
-            if (this.contains(element)) {
-                this._remove(element)}
+Object.defineProperties(document, {
+    getElementsByIDSubstring: {
+        value: function(substring) {
+            ret = []
+            let all = document.getElementsByTagName('*');
+            for (let a of all) {
+                if (a.id.includes(substring)) {
+                    ret.push(a)}    
             }
+            return ret
         }
+    }
 });

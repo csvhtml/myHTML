@@ -192,43 +192,6 @@ function ElementInArrayN(array, element) {
 // Usefull DOM functions                                          #
 // ################################################################
 
-function ElementsWithOnClickFunctions(mode = "") {
-    // let allElements = document.getElementsByTagName('*');
-    let allElements = document.getElementsByTagName('*');
-    let ret = []
-    for ( var i = 0; i<allElements.length; i++ ) {
-        if ( typeof allElements[i].onclick === 'function' ) {
-            if (mode == "") {
-                ret.push(allElements[i])}
-            if (mode == "id") {
-                assert(allElements[i].id != "")
-                ret.push(allElements[i].id)}
-            if (mode == "function") {
-                ret.push(allElements[i].attributes['onclick'].value)}
-        }
-    }
-    return ret
-}
-
-function ElementsWithSubStringInID(fixx =  [], mode = "") {
-    // let allElements = document.getElementsByTagName('*');
-    let allElements = document.getElementsByTagName('*');
-    let ret = []
-    for ( var i = 0; i<allElements.length; i++ ) {
-        for (fix of fixx) {
-            if (allElements[i].id.includes(fix)) {
-                if (mode == "") {
-                    ret.push(allElements[i])}
-                if (mode == "id") {
-                    assert(allElements[i].id != "")
-                    ret.push(allElements[i].id)}
-            }
-        }
-    }
-    return ret
-}
-
-
 function ReturnParentUntilID(element, targetID = "", iterations = 10) {
     let parent = element
     for (i = 0; i<iterations; i++) {

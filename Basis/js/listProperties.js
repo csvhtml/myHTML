@@ -70,6 +70,7 @@ Object.defineProperties(Array.prototype, {
         }
 });
 
+// MOHI: To be reworked
 Object.defineProperties(Object.prototype, {
     key: {
         value: function(n) {
@@ -111,20 +112,31 @@ Object.defineProperties(String.prototype, {
     } 
 }); 
 
-Object.defineProperties(DOMTokenList.prototype, {
-    addX: {
-        value: function(element) {
-            if (!this.contains(element)) {
-                this.add(element)}
+
+Object.defineProperties(document, {
+    getElementsWithOnClickEvent: {
+        value: function() {
+            ret = []
+            let all = document.getElementsByTagName('*');
+            for (let a of all) {
+                if (typeof a.onclick === 'function') {
+                    ret.push(a)}    
             }
+            return ret
         }
+    }
 });
 
-Object.defineProperties(DOMTokenList.prototype, {
-    removeX: {
-        value: function(element) {
-            if (this.contains(element)) {
-                this._remove(element)}
+Object.defineProperties(document, {
+    getElementsByIDSubstring: {
+        value: function(substring) {
+            ret = []
+            let all = document.getElementsByTagName('*');
+            for (let a of all) {
+                if (a.id.includes(substring)) {
+                    ret.push(a)}    
             }
+            return ret
         }
+    }
 });
