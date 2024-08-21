@@ -11,7 +11,6 @@ const BASIS = {
 	IsEqual: function(a,b, max_iterations = 100) {return IsEqual(a,b, max_iterations)},
 	IsListEqualSize: function(a,b, flag = false) {return IsListEqualSize(a,b, flag)},
 	ElementInArrayN: function(array, element) {return ElementInArrayN(array, element)},
-	ElementsWithSubStringInID: function(fixx =  [], mode = "") {return ElementsWithSubStringInID(fixx, mode = "")},
 	ReturnParentUntilID: function(element, targetID = "", iterations = 10) {return ReturnParentUntilID(element, targetID, iterations = 10)},
 	DivIsDescendantOf: function(element, targetID, iterations = 10) {return DivIsDescendantOf(element, targetID, iterations)},
 	DOMElementsFromString: function(htmlString, tag = 'div') {return DOMElementsFromString(htmlString, tag)},
@@ -256,25 +255,6 @@ function ElementInArrayN(array, element) {
 // ################################################################
 // Usefull DOM functions                                          #
 // ################################################################
-
-function ElementsWithSubStringInID(fixx =  [], mode = "") {
-    // let allElements = document.getElementsByTagName('*');
-    let allElements = document.getElementsByTagName('*');
-    let ret = []
-    for ( var i = 0; i<allElements.length; i++ ) {
-        for (fix of fixx) {
-            if (allElements[i].id.includes(fix)) {
-                if (mode == "") {
-                    ret.push(allElements[i])}
-                if (mode == "id") {
-                    assert(allElements[i].id != "")
-                    ret.push(allElements[i].id)}
-            }
-        }
-    }
-    return ret
-}
-
 
 function ReturnParentUntilID(element, targetID = "", iterations = 10) {
     let parent = element
