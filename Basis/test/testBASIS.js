@@ -18,6 +18,8 @@ function test_BASIS() {
     prototype_listRemoveAll(myTest)
     prototype_listToggle(myTest)
     prototype_listPushX(myTest)
+    prototype_stringUntil(myTest)
+    prototype_stringCount(myTest)
     myTest.PrintResult(divID = 'id')
 
     test_basisjs_Bold(myTest)
@@ -163,6 +165,26 @@ function prototype_listPushX(myTest) {
     liste.pushX("z")
     expected = ["a", "b", "c", "d", "z"]
     myTest.Equal(liste, expected, arguments.callee.name)
+}
+
+
+function prototype_stringUntil(myTest) {
+    let text = "Hallo Welt"
+    let expected = "Hallo"
+    
+    myTest.Equal(text.until(' '), expected, arguments.callee.name)
+    myTest.Equal(text.until(''), text, arguments.callee.name)
+}
+
+function prototype_stringCount(myTest) {
+    let text = "Hallo Welt"
+
+    myTest.Equal(text.count('l'), 3, arguments.callee.name)
+    myTest.Equal(text.count('ll'), 1, arguments.callee.name)
+    myTest.Equal(text.count('lll'), 0, arguments.callee.name)
+
+    text = "lorem ipsum darum ipsum warum ipsum usum"
+    myTest.Equal(text.count('ipsum'), 3, arguments.callee.name)
 }
 
 function test_basisjs_Bold(myTest) {

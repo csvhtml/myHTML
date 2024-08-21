@@ -1336,6 +1336,8 @@ Object.defineProperties(Object.prototype, {
 Object.defineProperties(String.prototype, {
     until: {
         value: function(n) {
+            if (n == '') {return this.substring(0)}     // return this will return the wrong data type 'String()'
+
             let idx = this.indexOf(n)
             if (idx == -1) { 
                 return this}
@@ -1349,7 +1351,7 @@ Object.defineProperties(String.prototype, {
         value: function(n) {
             let count = 0;
             for (let i = 0; i < this.length; i++) {
-                if (this[i] === n) {
+                if (this.substring(i,i+n.length) === n) {
                     count++;
                 }
             }
