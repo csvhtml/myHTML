@@ -192,19 +192,6 @@ function ElementInArrayN(array, element) {
 // Usefull DOM functions                                          #
 // ################################################################
 
-function ReturnParentUntilID(element, targetID = "", iterations = 10) {
-    let parent = element
-    for (i = 0; i<iterations; i++) {
-        if (parent.tagName == "BODY") {
-            assert(false)}
-        if (parent.id == "") {
-            parent = parent.parentElement
-        } else {
-            return parent}
-    }
-    assert(false)
-}
-
 function DivIsDescendantOf(element, targetID, iterations = 10) {
     let parent = element
     for (i = 0; i<iterations; i++) {

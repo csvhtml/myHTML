@@ -11,7 +11,6 @@ const BASIS = {
 	IsEqual: function(a,b, max_iterations = 100) {return IsEqual(a,b, max_iterations)},
 	IsListEqualSize: function(a,b, flag = false) {return IsListEqualSize(a,b, flag)},
 	ElementInArrayN: function(array, element) {return ElementInArrayN(array, element)},
-	ReturnParentUntilID: function(element, targetID = "", iterations = 10) {return ReturnParentUntilID(element, targetID, iterations = 10)},
 	DivIsDescendantOf: function(element, targetID, iterations = 10) {return DivIsDescendantOf(element, targetID, iterations)},
 	DOMElementsFromString: function(htmlString, tag = 'div') {return DOMElementsFromString(htmlString, tag)},
 	test_Basis: function() {return test_Basis()},
@@ -255,19 +254,6 @@ function ElementInArrayN(array, element) {
 // ################################################################
 // Usefull DOM functions                                          #
 // ################################################################
-
-function ReturnParentUntilID(element, targetID = "", iterations = 10) {
-    let parent = element
-    for (i = 0; i<iterations; i++) {
-        if (parent.tagName == "BODY") {
-            assert(false)}
-        if (parent.id == "") {
-            parent = parent.parentElement
-        } else {
-            return parent}
-    }
-    assert(false)
-}
 
 function DivIsDescendantOf(element, targetID, iterations = 10) {
     let parent = element
@@ -1218,11 +1204,34 @@ function _replaceCheckboxWithBrackets(text) {
     //     htmlText = htmlText.replace(new RegExp('\n', "g") , '<br>')
     //     return htmlText;
     //     }
-// ################################################################
-// Prototype extentions                                           #
-// ################################################################
+Object.defineProperties(document, {
+    getElementsWithOnClickEvent: {
+        value: function() {
+            ret = []
+            let all = document.getElementsByTagName('*');
+            for (let a of all) {
+                if (typeof a.onclick === 'function') {
+                    ret.push(a)}    
+            }
+            return ret
+        }
+    }
+});
 
-// from https://stackoverflow.com/questions/6120931/how-to-count-certain-elements-in-array
+Object.defineProperties(document, {
+    getElementsByIDSubstring: {
+        value: function(substring) {
+            ret = []
+            let all = document.getElementsByTagName('*');
+            for (let a of all) {
+                if (a.id.includes(substring)) {
+                    ret.push(a)}    
+            }
+            return ret
+        }
+    }
+});
+
 Object.defineProperties(Array.prototype, {
     count: {
         value: function(query) {
@@ -1330,33 +1339,25 @@ Object.defineProperties(String.prototype, {
             return count;
         }
     } 
-}); 
-
-
-Object.defineProperties(document, {
-    getElementsWithOnClickEvent: {
-        value: function() {
-            ret = []
-            let all = document.getElementsByTagName('*');
-            for (let a of all) {
-                if (typeof a.onclick === 'function') {
-                    ret.push(a)}    
-            }
-            return ret
-        }
-    }
 });
 
-Object.defineProperties(document, {
-    getElementsByIDSubstring: {
-        value: function(substring) {
-            ret = []
-            let all = document.getElementsByTagName('*');
-            for (let a of all) {
-                if (a.id.includes(substring)) {
-                    ret.push(a)}    
+// ################################################################
+// DOM /HTML Elements                                             #
+// ################################################################
+
+// Note: When no parent with ID was found, then the ego element is returned
+Object.defineProperties(Object.prototype, {
+    GetParentWithID: {
+        value: function(iterations = 10) {
+            let parent = this
+            for (i = 0; i<iterations; i++) {
+                if (parent.tagName == "BODY") {
+                    return this}
+                if (parent.id != '') {
+                    return parent}
+                parent = parent.parentElement
             }
-            return ret
+            return this
         }
     }
 });
