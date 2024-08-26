@@ -59,7 +59,9 @@ class clsUserInput {
             return}
 
         for (let divID of this.EgoIDs) {
-            if (DivIsDescendantOf(event.srcElement, divID)) {
+            let egoDIV = document.getElementById(divID)
+            // if (DivIsDescendantOf(event.srcElement, divID)) {
+            if (event.srcElement.IsDescendantOf(egoDIV)) {
                 cUSERINPUT_EVENT["event"] = event
                 cUSERINPUT_EVENT["sectionID"] = divID
                 if (typ == "Click") {
