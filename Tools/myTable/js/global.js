@@ -74,7 +74,7 @@ function Edit_Save(divID, value) {
         // dataconfig
         XCSV["main"].XConfigItems.CreateConfigItems()
         //style
-        _helper_MinHeight_Undo(divID)
+        _Edit_MinHeight_Undo(divID)
 
     }
 

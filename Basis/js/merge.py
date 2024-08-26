@@ -1,23 +1,28 @@
 import os
 import glob
 
-fileEnding = '.js'
 
-def get_js_files(directory):
-    pattern = os.path.join(directory, '*' + fileEnding)
-    js_files = glob.glob(pattern)
+
+def get_fileNames(directory, ending, filterString = ""):
+    pattern = os.path.join(directory, '*' + ending)
+    js_files_all = glob.glob(pattern)
+    js_files = [fName for fName in js_files_all if (filterString not in fName or filterString == "")]
     return js_files
 
-def ReturnJSFunctionsFromFile(filepath):
-    with open(filepath, 'r') as file:
-        content = file.read()
+def ReturnJSFunctionsFrom(filepath = '', codeString = ''):
+    assert(filepath == '' or codeString == '' and (filepath+codeString != ''))
+    if filepath != '':
+        with open(filepath, 'r') as file:
+            content = file.read()
+    if codeString != '':
+        content = codeString
 
     retNames = []; retParameters = []; i = 0
     searchString = 'function '; 
     slen = len(searchString)
     while i < len(content):                                                             # // since the content is long, while loop instead of index()
         if content[i:i+slen] == searchString and content[i+slen].isalnum():             # // functions starting with '_' shall be excluded
-            i += 9
+            i += slen
             idxFunctionNameStart = i
             while i < len(content) and (content[i].isalnum() or content[i] == '_'):
                 i += 1 
@@ -45,15 +50,14 @@ def JSCode_FunctionsDictionary(dictName, listofFunctionNames, listofFunctionPara
     ret += '};\n\n'
     return ret
 
-def merge_js_files(files, output_file):
+def mergeTextFiles(files):
     merged_content = ''
 
     for file in files:
         with open(file, 'r', encoding='utf-8') as f:
             merged_content += f.read() + '\n'
 
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(merged_content)
+    return merged_content
 
 def RemoveDefaultValuesFromParameterString(parameterString):
     if not ' = ' in parameterString:
@@ -73,6 +77,37 @@ def AddFunctionDictionaryToMergedFile(file_path, code):
     
     with open(file_path, "w") as file:
         file.write(code + '\n' + original_content)
+    
+    # return code + '\n' + original_content
+
+def WriteToFile(file_path, content):
+    with open(file_path, "w", encoding='utf-8') as file:
+        file.write(content)
+
+def AddFunctionTrace(content):
+    searchString = 'function '; 
+    traceString = '\n\tTraceFunctionCalls.pushX(arguments.callee.name)'
+    slen = len(searchString); tlen = len(traceString); i = 0
+    while i < len(content):                                                             
+        if content[i:i+slen] == searchString and (content[i+slen].isalnum() or content[i] == '_'): 
+            flag = True; i += slen
+            for skip in ['IsEqual', 'IsListEqualSize', 'typOf']:
+                if content[i:i+len(skip)] == skip:
+                    flag = False
+            while i < len(content) and content[i:i+4] != ') {\n':
+                i += 1
+            
+            if flag:
+                content = content[:i+3] + traceString + content[i+3:]
+            i += tlen
+        i += 1
+
+    return content 
+    
+
+fileEnding = '.js'
+MergeString = 'All_'
+TraceString = 'Trace_'
 
 if __name__ == '__main__':
     egopath = os.path.dirname(os.path.abspath(__file__))
@@ -80,18 +115,24 @@ if __name__ == '__main__':
     if parentpath.endswith(fileEnding.lstrip('.')):
         parentpath = os.path.dirname(parentpath)
     folder_name = os.path.basename(parentpath)
+    output_file = folder_name + " " + MergeString + fileEnding
+    output_fileTrace = folder_name + " " + MergeString + TraceString +  fileEnding
+    # egopath = 'C:\\git\\myHTML\\Basis\\js'
+    # parentpath = 'C:\\git\\myHTML\\Basis\\'
+    # folder_name = 'Basis'
+    # output_file = 'Basis All_.js'
+    # output_fileTrace = 'Basis All_Trace_.js'
 
-    files_to_merge = get_js_files(egopath)
-    output_file = folder_name + " All_" + fileEnding
-    if (egopath + "\\" + output_file in files_to_merge):
-        files_to_merge.remove(egopath + "\\" + output_file)
+    files_to_merge = get_fileNames(egopath, fileEnding, MergeString)
+    codeMergedJS = mergeTextFiles(files_to_merge)
+    listFunctPara = ReturnJSFunctionsFrom(filepath='', codeString = codeMergedJS)    # egopath + "\\" + output_file
+
+    codeFunctionDictionary = JSCode_FunctionsDictionary(folder_name.upper(), listFunctPara[0], listFunctPara[1])
     
-    merge_js_files(files_to_merge, egopath + "\\" + output_file)
+    codeAll = codeFunctionDictionary + '\n' + codeMergedJS
+    WriteToFile(egopath + "\\" + output_file, codeAll)
 
-    a = ReturnJSFunctionsFromFile(egopath + "\\" + output_file)
-
-    b = JSCode_FunctionsDictionary(folder_name.upper(), a[0], a[1])
-
-    AddFunctionDictionaryToMergedFile(egopath + "\\" + output_file, b)
+    codeMergedTraceJS = codeFunctionDictionary + '\n' + AddFunctionTrace(codeMergedJS)
+    WriteToFile(egopath + "\\" + output_fileTrace, codeMergedTraceJS)
 
 

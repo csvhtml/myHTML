@@ -63,6 +63,7 @@ const BASIS = {
 // ################################################################
 
 function assert(condition, message) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     if (!condition) {
         if (IsString1(message)) {
             throw new Error(message);
@@ -76,6 +77,7 @@ function assert(condition, message) {
 // ################################################################
 
 function NoBlanksInList(liste) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let ret = []
     for (ele of liste) {
         ret.push(NoBlanks(ele))}
@@ -84,10 +86,12 @@ function NoBlanksInList(liste) {
 }
 
 function NoBlanks(text) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     return text.replace(/ /g, "")
 }
 
 function byVal(data) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     // Creates a hard copy of a variable (instead of just createing a reference in case of list and dictioaries). 
     // It mimics the 'byVal' operater in VBA, hence the name
     
@@ -111,6 +115,7 @@ function byVal(data) {
 }
 
 function ValidChars(validChars, text) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     for (char of text) {
         if (!validChars.includes(char)) {
             return false}
@@ -140,6 +145,7 @@ function typOf(variable, extendedInfo = false) {
 }
 
 function ListDepth(ListVariable) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     if (typOf(ListVariable) != 'list') {return 0}
 
     let maxDepth = 0;
@@ -149,10 +155,12 @@ function ListDepth(ListVariable) {
 }
 
 function maxx(a, b) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     return (a > b) ? a : b;
 }
 
 function minn(a, b) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     return (a < b) ? a : b;
 }
 
@@ -236,6 +244,7 @@ function IsListEqualSize(a,b, flag = false) {
 }
 
 function ElementInArrayN(array, element) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     for (let i = 0; i < array.length; i++) {
         if (typOf(array[i]) == "list") {
             if (ElementInArrayN(array[i], element)) {
@@ -254,6 +263,7 @@ function ElementInArrayN(array, element) {
 // ################################################################
 
 function test_Basis() {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     test_BasisbyVal()
     test_Basis_RetStringBetween()   
     test_Basis_FileNameFromPath()  
@@ -266,6 +276,7 @@ function test_Basis() {
 
 
 function test_Basis_RetStringBetween() {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let fname = arguments.callee.name;
     text = "R:1029C:23H:header"
 
@@ -275,6 +286,7 @@ function test_Basis_RetStringBetween() {
 }
 
 function test_Basis_FileNameFromPath() {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let fname = arguments.callee.name;
 
     text = "file:///C:/A/B/World/FileName.pdf"
@@ -289,6 +301,7 @@ function test_Basis_FileNameFromPath() {
 // ################################################################
 
 function toggle(val, pair) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     if (val != pair[0]) {
         return pair[0]}
     return pair[1]
@@ -299,10 +312,12 @@ function toggle(val, pair) {
 // ################################################################
 
 function DIV(divID) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     return document.getElementById(divID)
 }
 
 function Append_TextArea(div, cfg = {}) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     document.getElementById(div).appendChild(TextArea(cfg))
 }
 
@@ -313,6 +328,7 @@ function TextArea({
     classList = [],
     value = ""
 }) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let input = document.createElement('textarea'); 
     input.cols = cols
     input.rows = rows
@@ -327,6 +343,7 @@ function TextArea({
 }
 
 function Bold(text) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let b = document.createElement('b');
     b.textContent = text;
     return b
@@ -340,6 +357,7 @@ function A_HREF({
     classList = [],
     text = ""
 }) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let a = document.createElement('a');
     a.id = id;
     a.href = href;
@@ -353,6 +371,7 @@ function A_HREF({
 }
 
 function NewDiv(config) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let defaultConfig = {'type': 'div', 'id': 'id', 'innerHTML': '---'}
     let cfg = {...defaultConfig,...config}
     let ret = document.createElement(cfg['type'])
@@ -367,6 +386,7 @@ function NewDiv(config) {
 // ################################################################
 
 function RemoveDIV(divID) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let div  = document.getElementById(divID);
     if (div != undefined) {
         div.remove()}
@@ -378,6 +398,7 @@ function RemoveDIV(divID) {
 // ################################################################
 
 function AutoHeight(divID) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     if (document.getElementById(divID) != null) {
         document.getElementById(divID).style.height = (document.getElementById(divID).scrollHeight)+"px"}
     }
@@ -387,6 +408,7 @@ function AutoHeight(divID) {
 // ################################################################
 
 function IsThereDiv(divID) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
         return document.getElementById(divID) !== null;
 }
 // ################################################################################
@@ -422,6 +444,7 @@ const BASIS_HTMLTABLE_CONFIG = {
 }
 
 function HTMLTable_FromConfig(config) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let fullConfig = HTMLTable_FullConfig(config)
     _HTMLTable_ConfigAssert(fullConfig)
     
@@ -429,6 +452,7 @@ function HTMLTable_FromConfig(config) {
 }
 
 function HTMLTable_FromMarkdown(markdownString) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let MHC = _ReturnMetaHeaderCells(markdownString); if (MHC==false) {return}
     let miniConfig = {
         tableID: MHC[0]["id"],
@@ -441,6 +465,7 @@ function HTMLTable_FromMarkdown(markdownString) {
 }
 
 function HTMLTable_FullConfig(config) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     // will lead to wrong result: let fullConfig = { ...BASIS_HTMLTABLE_CONFIG, ...config }; 
     // because the deimension may not fit. The merge must be done manually
 
@@ -491,6 +516,7 @@ function _HTMLTable_ConfigAssert(cfg) {
 }
 
 function HTMLTable_TableRowsCols(p = {'thsText' : [],'cellsText' : []}) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     assert(!(IsEqual(p['thsText'], []) && IsEqual(p['cellsText'], [])))
 
     let r = 0;let c = 0
@@ -509,6 +535,7 @@ function HTMLTable_TableRowsCols(p = {'thsText' : [],'cellsText' : []}) {
 }
 
 function HTMLTable_DefaultVal(key, nCols, nRows) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     if (typOf(BASIS_HTMLTABLE_CONFIG[key]) == 'str') {
         return ""}
     if (typOf(BASIS_HTMLTABLE_CONFIG[key], true) == 'list-1D') {
@@ -601,22 +628,27 @@ function _htmltable_Tag_PropertyString(key, val) {
         ret += key + '="' + val + '" '}
     return ret}
 function IsObject(variable) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     return typeof variable === 'object' && variable !== null && !Array.isArray(variable);
   }
 
 function IsString(variable) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     return typeof variable === 'string';
   }
 
 function IsUndefined(variable) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     return typeof variable === 'undefined';
   }
 
 function IsNotUndefined(variable) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     return !IsUndefined(variable)
   }
 
 function IsBetween(number, a, b, incl = true) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
   if (incl) {
     if (number >=a && number <=b) {
       return true}
@@ -628,10 +660,12 @@ function IsBetween(number, a, b, incl = true) {
 }
 
 function IsEmptyList(variable) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     return Array.isArray(variable) && variable.length == 0;
 }
 
 function IsString1(variable) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
   return IsString(variable) && variable.length > 0
 }
 const CLS_SVG_APPLYFORTAGS = ["div", "a", "label"]
@@ -772,6 +806,7 @@ class clsSVG {
 // ######################################################
 
 function MyMarkDowntoSVG(markupText) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     if (typOf(markupText) != 'str') {return markupText}
     
     htmlText = markupText
@@ -832,6 +867,7 @@ function MyMarkDowntoSVG(markupText) {
 
 // svg -> markup
 function SVGtoMyMarkdown(htmlText) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let ret = htmlText
     svgs = DOMElementsFromString(htmlText, 'svg')
     for (let svg of svgs) {
@@ -859,6 +895,7 @@ function _SVGtoMyMarkdown_Loop(htmlText, svg) {
 
 
 function DOMElementsFromString(htmlString, tag = 'div') {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, 'text/html');
     const svgElements = doc.querySelectorAll(tag);
@@ -869,6 +906,7 @@ function DOMElementsFromString(htmlString, tag = 'div') {
 // ###############################################################################
 
 function RetStringBetween(text, fromStr, toStr = "", ignoreBlankAtBorders = false) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     /**
      * Returns the String between two  strings.
      * "" / empty strings are interpreted as open end / take rest of string
@@ -885,6 +923,7 @@ function RetStringBetween(text, fromStr, toStr = "", ignoreBlankAtBorders = fals
 }
 
 function RetStringOutside(text, fromStr, toStr) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     /**
      * Returns the String except the text between two  strings.
      * "" / empty strings are interpreted as "remove rest of string"
@@ -928,6 +967,7 @@ function _RetIdxFromTextInString(text, strA, strB, ignoreBlankAtBorders){
 }
 
 function FileNameFromPath(path) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let idxR1 = path.lastIndexOf("/")
     let idxR2 = path.lastIndexOf("\\")
     let idx = Math.max(idxR1, idxR2)
@@ -936,14 +976,17 @@ function FileNameFromPath(path) {
 }
 
 function rgbText(a,b,c) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     return "rgb(" + a + "," + b + "," + c + ")"
 }
 
 function myTrim(input) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
         return input.replace(/ /g, '');
     }
 
 function myReplace(val,re,place) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let value = val
     if (value.includes(re)) {
         value = value.replace(new RegExp(re, "g") , place)
@@ -955,11 +998,13 @@ function ShortenDotDotDot(text, lenn = 12){
     let len = text.length; let len2 = len/2
     let ret = text
     if (len > lenn) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
         ret = text.substring(0, len2) + "..." + text.substring(len-len2,len)}
     return ret
 }
 
 function ChangeLastChar(inputString, newChar) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     if (inputString.length == 0) {
         return ''}
     if (newChar.length != 1) {
@@ -978,6 +1023,7 @@ function ChangeLastChar(inputString, newChar) {
 // ################################################################
 
 function test_TextFunctions() {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     test_Basis_RetStringBetween()   
     test_Basis_FileNameFromPath() 
     test_Basis_myReplace() 
@@ -988,6 +1034,7 @@ function test_TextFunctions() {
 
 
 function test_Basis_RetStringBetween() {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let fname = arguments.callee.name;
     text = "R:1029C:23H:header"
 
@@ -997,6 +1044,7 @@ function test_Basis_RetStringBetween() {
 }
 
 function test_Basis_FileNameFromPath() {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let fname = arguments.callee.name;
 
     text = "file:///C:/A/B/World/FileName.pdf"
@@ -1006,6 +1054,7 @@ function test_Basis_FileNameFromPath() {
 }
 
 function test_Basis_myReplace() {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     let fname = arguments.callee.name;
 
     textRe = "Lorem Ipsum Apsum Ma"
@@ -1015,6 +1064,7 @@ function test_Basis_myReplace() {
 
 
 function PatternsFound(text, pattern = [], ignore1 = []) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     if (IsEqual(pattern, [])) { 
         pattern = ["[", ":", "]"]}
     assert(typOf(text) == "str", "a not str")
@@ -1030,6 +1080,7 @@ function PatternsFound(text, pattern = [], ignore1 = []) {
 }
 
 function PatternsFound3(text, pattern = [], ignore1 = []) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     if (IsEqual(pattern, [])) { 
         pattern = ["[", ":", "]"]}
     let ret = []; let tmp = ""
@@ -1060,6 +1111,7 @@ function PatternsFound3(text, pattern = [], ignore1 = []) {
 
 // markup -> html
 function MyMarkDowntoHTML(markupText, ignore1 = []) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     if (typOf(markupText) != 'str') {
         return markupText}
 
@@ -1082,6 +1134,7 @@ function MyMarkDowntoHTML(markupText, ignore1 = []) {
 
 // html -> markup
 function HTMLtoMyMarkdown(htmlText) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
     htmlText = htmlText.replace('target="#"', '')
     var anchorRegex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1[^>]*?>(.*?)<\/a>/g;
     var markupText = htmlText.replace(anchorRegex, '[$3::$2]');

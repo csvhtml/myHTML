@@ -169,7 +169,6 @@ class libDropDownSingle {
             // let id = prefix + '-dd-' + noBlank(itemsPair[0]) 
             let id = prefix + '-dd-' + itemsPair[0].replace(" ", "_") 
             
-            
             let onclick = ""
             let onmouseleave = ""  // used to change val and onclickfunction for switches
             for (let j = 0; j<1; j++) { //1-loop

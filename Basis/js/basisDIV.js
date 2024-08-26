@@ -90,7 +90,6 @@ function AutoHeight(divID) {
 // Dom Information                                                #
 // ################################################################
 
-function IsThereDiv(divID) {{
+function IsThereDiv(divID) {
         return document.getElementById(divID) !== null;
-      }
 }

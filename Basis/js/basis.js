@@ -188,34 +188,6 @@ function ElementInArrayN(array, element) {
     return false; 
 }
 
-// ################################################################
-// Usefull DOM functions                                          #
-// ################################################################
-
-function DivIsDescendantOf(element, targetID, iterations = 10) {
-    let parent = element
-    for (i = 0; i<iterations; i++) {
-        if (parent.tagName == "BODY") {
-            return false
-        }
-        if (parent.id == targetID) {
-            return true
-        } else if (parent.parentElement == undefined) {
-            return false // if parents are not fully traced... you dont know
-        } else {
-            parent = parent.parentElement}
-    }
-    assert(false)
-}
-
-function DOMElementsFromString(htmlString, tag = 'div') {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlString, 'text/html');
-    const svgElements = doc.querySelectorAll(tag);
-    return Array.from(svgElements);
-}
-
-
 
 // ################################################################
 // test                                                           #
@@ -230,63 +202,7 @@ function test_Basis() {
     return 0 // 32 assertions in this file (and should all be catched)
 }
 
-function test_Basis_IsEqual() {
-    let fname = arguments.callee.name;
-    
-    let test = [
-        [true, true, true],
-        [false, false, true],
-        [false, true, false],
-        [true, false, false],
-        [1, 1, true],
-        [1, 2, false],
-        [1, "1", false],
-        ["1", "1", true],
-        ["Hello", "Hello", true],
-        ["Hello", "World", false],
-        [[1,2,3], [1,2], false],
-        [[1,2,3], [1,7,3], false],
-        [[1,2,3], [1,2,3], true],
-        [{"A": "Hallo", "B":"Welt"}, {"A": "Hallo", "B":"Welt"}, true],
-        [{"A": "Hallo", "B":"Welt"}, {"A": "Hallo"}, false],
-        [{"A": "Hallo", "B":"Welt"}, {"A": "Hallo", "C":"Welt"}, false],
-        [{"A": "Hallo", "B":"Welt"}, {"A": "Hallo", "B":"World"}, false],
-        [{"A": "Hallo", "B":[1,2,3]}, {"A": "Hallo", "B":[1,2,3]}, true],
-        [{"A": "Hallo", "B":[1,2,3]}, {"A": "Hallo", "B":[1,2,4]}, false],
-        [{"A": "Hallo", "B":{"X":[1,2,3], "Y": [4,5]}}, {"A": "Hallo", "B":{"X":[1,2,3], "Y": [4,5]}}, true],
-        [{"A": "Hallo", "B":{"X":[1,2,3], "Y": [4,5]}}, {"A": "Hallo", "B":{"X":[1,2,3], "Y": [44,5]}}, false],
-    ]
 
-    for (let t of test) {
-        testEqual(IsEqual(t[0], t[1]), t[2],fname)}
-
-    let test1 = [
-        [[[1,1],2,3],[1,2,3],[1,2,3]],
-        [[1,2,3],[1,2,3],[1,2,3]],
-    ]
-    let test2 = [
-        [[[1,1],2,3],[1,2,3],[1,2,3]],
-        [[1,2,3],[1,2,3],[1,2,3]],
-    ]
-    let max_iterations = 4
-
-    testEqual(IsEqual(test1, test2, max_iterations), false, fname)
-}
-
-function test_Basis_typOf() {
-    let fname = arguments.callee.name;
-    
-    let test = [
-        [[1, 2, 3],'list'],
-        [{ key: 'value' },'dict'],
-        ['Hello, World!','str'],
-        [42,'int'],
-        [true,'bool'],
-    ]
-
-    for (let t of test) {
-        testEqual(typOf(t[0]), t[1], fname)}
-}
 
 
 function test_Basis_RetStringBetween() {

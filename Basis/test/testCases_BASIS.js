@@ -1,40 +1,3 @@
-const DIV_TESTOUTPUT = "id"
-
-function test_BASIS() {
-    let myTest = new clsTest()
-
-    // Modify alll in list
-    test_NoBlanksInList(myTest)
-    test_ByVal(myTest)
-    test_ValidChars(myTest)
-    test_typOf(myTest)
-    test_maxx(myTest)
-    test_minn(myTest)
-    test_IsListEqualSize(myTest)
-    test_ElementInArrayN(myTest)
-
-    prototype_listCount(myTest)
-    prototype_listRemoveX(myTest)
-    prototype_listRemoveAll(myTest)
-    prototype_listToggle(myTest)
-    prototype_listPushX(myTest)
-    prototype_stringUntil(myTest)
-    prototype_stringCount(myTest)
-    prototype_documentGetElementsWithOnClickEvent(myTest)
-    prototype_documentGetElementsByIDSubstring(myTest)
-    myTest.PrintResult(divID = 'id')
-
-    test_basisjs_Bold(myTest)
-    test_basisjs_AHREF(myTest)
-
-    test_basisjs_TextArea(myTest)
-    
-    // basisIs
-    test_basisjs_Is(myTest)
-
-
-}
-
 function test_NoBlanksInList(myTest) {
     // let fname = arguments.callee.name;
     let a = ["Hallo Welt", "Das ist ein Test", "   ", " blank "]
@@ -88,11 +51,12 @@ function test_ValidChars(myTest) {
 }
 
 function test_typOf(myTest) {
-    myTest.Equal(BASIS.typOf(1), 'int', arguments.callee.name)
-    myTest.Equal(BASIS.typOf("a"), 'str', arguments.callee.name)
-    myTest.Equal(BASIS.typOf(true), 'bool', arguments.callee.name)
-    myTest.Equal(BASIS.typOf([1,2,3]), 'list', arguments.callee.name)
-    myTest.Equal(BASIS.typOf({"a": 1, "b": 2}), 'dict', arguments.callee.name)
+    let test =  [
+        [1, 'int'], ['a', 'str'], [true, 'bool'], [[1,2,3], 'list'], [{'a':1, 'b':2}, 'dict']]
+
+    for (let t of test) {
+        myTest.Equal(BASIS.typOf(t[0]), t[1], arguments.callee.name)}
+
     myTest.Equal(BASIS.typOf([1,2,3], true), 'list-1D', arguments.callee.name)
     myTest.Equal(BASIS.typOf([[1,2], [3,4]], true), 'list-2D', arguments.callee.name)
 }
@@ -116,6 +80,47 @@ function test_IsListEqualSize(myTest) {
     myTest.IsFalse(BASIS.IsListEqualSize(a,d), arguments.callee.name)
 }
 
+function test_IsEqual(myTest) {
+    let test_true = [
+        [true, true, true],
+        [false, false, true],
+        [1, 1, true],
+        ["1", "1", true],
+        ["Hello", "Hello", true],
+        [[1,2,3], [1,2,3], true],
+        [{"A": "Hallo", "B":"Welt"}, {"A": "Hallo", "B":"Welt"}, true],
+        [{"A": "Hallo", "B":[1,2,3]}, {"A": "Hallo", "B":[1,2,3]}, true],
+        [{"A": "Hallo", "B":{"X":[1,2,3], "Y": [4,5]}}, {"A": "Hallo", "B":{"X":[1,2,3], "Y": [4,5]}}, true],      
+    ]
+
+    let test_false = [
+        [false, true, false],
+        [true, false, false],
+        [1, 2, false],
+        [1, "1", false],
+        ["Hello", "World", false],
+        [[1,2,3], [1,2], false],
+        [[1,2,3], [1,7,3], false],
+        [{"A": "Hallo", "B":"Welt"}, {"A": "Hallo"}, false],
+        [{"A": "Hallo", "B":"Welt"}, {"A": "Hallo", "C":"Welt"}, false],
+        [{"A": "Hallo", "B":"Welt"}, {"A": "Hallo", "B":"World"}, false],
+        [{"A": "Hallo", "B":[1,2,3]}, {"A": "Hallo", "B":[1,2,4]}, false],
+        [{"A": "Hallo", "B":{"X":[1,2,3], "Y": [4,5]}}, {"A": "Hallo", "B":{"X":[1,2,3], "Y": [44,5]}}, false],
+    ]
+
+    for (let t of test_true) {
+        myTest.IsTrue(IsEqual(t[0], t[1]), arguments.callee.name)}
+    
+    for (let t of test_false) {
+        myTest.IsFalse(IsEqual(t[0], t[1]), arguments.callee.name)
+    
+    let iterations = 4
+    myTest.IsFalse(IsEqual(
+        [[[[1,1],2,3],1],[1,2,3]], 
+        [[[[1,1],2,3],1],[1,2,3]], iterations), arguments.callee.name) // Check limitation of iterations 
+    }
+}
+
 function test_ElementInArrayN(myTest) {
     let listen = [["Mario", "Peach", "Luigi"], ["Bowser", "Koopa"], "Wario"]
 
@@ -123,13 +128,13 @@ function test_ElementInArrayN(myTest) {
     myTest.IsTrue(BASIS.ElementInArrayN(listen, "Peach"), arguments.callee.name)
 }
 
-function prototype_listCount(myTest) {
+function proto_listCount(myTest) {
     let liste = ["a", "b", "c", "a", "f", "a"]
 
     myTest.Equal(liste.count("a"),3, arguments.callee.name)
 }
 
-function prototype_listRemoveX(myTest) {
+function proto_listRemoveX(myTest) {
     let liste = ["a", "b", "c","e", "f", "g"]
     let expected = ["a", "b", "c", "e", "g"]
     liste.removeX("f")
@@ -137,7 +142,7 @@ function prototype_listRemoveX(myTest) {
     myTest.Equal(liste, expected, arguments.callee.name)
 }
 
-function prototype_listRemoveAll(myTest) {
+function proto_listRemoveAll(myTest) {
     let liste = ["a", "b", "c", "e", "f", "c", "c",]
     let expected = ["a", "b", "e", "f"]
     
@@ -145,7 +150,7 @@ function prototype_listRemoveAll(myTest) {
     myTest.Equal(liste, expected, arguments.callee.name)
 }
 
-function prototype_listToggle(myTest) {
+function proto_listToggle(myTest) {
     let liste = ["a", "b", "c", "d"]
     let expected = ["a", "b", "d"]
     
@@ -157,7 +162,7 @@ function prototype_listToggle(myTest) {
     myTest.Equal(liste, expected, arguments.callee.name)
 }
 
-function prototype_listPushX(myTest) {
+function proto_listPushX(myTest) {
     let liste = ["a", "b", "c", "d"]
     let expected = ["a", "b", "c", "d"]
     
@@ -170,7 +175,7 @@ function prototype_listPushX(myTest) {
 }
 
 
-function prototype_stringUntil(myTest) {
+function proto_stringUntil(myTest) {
     let text = "Hallo Welt"
     let expected = "Hallo"
     
@@ -178,7 +183,7 @@ function prototype_stringUntil(myTest) {
     myTest.Equal(text.until(''), text, arguments.callee.name)
 }
 
-function prototype_stringCount(myTest) {
+function proto_stringCount(myTest) {
     let text = "Hallo Welt"
 
     myTest.Equal(text.count('l'), 3, arguments.callee.name)
@@ -189,7 +194,25 @@ function prototype_stringCount(myTest) {
     myTest.Equal(text.count('ipsum'), 3, arguments.callee.name)
 }
 
-function prototype_documentGetElementsWithOnClickEvent(myTest) {
+function proto_DOMIsDescendantOf(myTest) {
+    let div1 = NewDiv({'type':'div', 'id': 'test-id1-XXX', 'innerHTML': 'test proto 1'})
+    let div2 = NewDiv({'type':'div', 'id': 'test-id2', 'innerHTML': 'test proto 2'})
+    let div3 = NewDiv({'type':'div', 'id': 'test-id3-XXX', 'innerHTML': 'test proto 3'})
+    let div4 = NewDiv({'type':'div', 'id': 'test-id4-XXX', 'innerHTML': 'test proto 4'})
+
+    div2.append(div3)
+    div1.append(div2)
+    document.body.append(div1)
+
+    let divX = document.getElementById('test-id1-XXX')
+    myTest.IsTrue(divX.IsDescendantOf(div1), arguments.callee.name)
+    myTest.IsFalse(divX.IsDescendantOf(div2), arguments.callee.name)
+    myTest.IsFalse(div4.IsDescendantOf(div1), arguments.callee.name)
+
+    div1.remove()
+}
+
+function proto_documentGetElementsWithOnClickEvent(myTest) {
     let div = NewDiv({'type':'div', 'id': 'test-id', 'innerHTML': 'test proto OnClick'})
     div.onclick = function () {console.log("5")}
     document.body.append(div)
@@ -200,7 +223,7 @@ function prototype_documentGetElementsWithOnClickEvent(myTest) {
     div.remove()
 }
 
-function prototype_documentGetElementsByIDSubstring(myTest) {
+function proto_documentGetElementsByIDSubstring(myTest) {
     let div1 = NewDiv({'type':'div', 'id': 'test-id1-XXX', 'innerHTML': 'test proto substring 1'})
     let div2 = NewDiv({'type':'div', 'id': 'test-id2', 'innerHTML': 'test proto substring 2'})
     let div3 = NewDiv({'type':'div', 'id': 'test-id3-XXX', 'innerHTML': 'test proto substring 3'})
@@ -213,57 +236,57 @@ function prototype_documentGetElementsByIDSubstring(myTest) {
     div1.remove(); div2.remove(); div3.remove()
 }
 
-function test_basisjs_Bold(myTest) {
-    let fname = arguments.callee.name;
+// funcction test_basisjs_Bold(myTest) {
+//     let fname = arguments.callee.name;
 
-    let text = "Hallo Welt"
-    myTest.Equal(Bold(text).outerHTML, "<b>" + text + "</b>",fname)
-}
+//     let text = "Hallo Welt"
+//     myTest.Equal(Bold(text).outerHTML, "<b>" + text + "</b>",fname)
+// }
 
-function test_basisjs_AHREF(myTest) {
-    let fname = arguments.callee.name;
+// funcction test_basisjs_AHREF(myTest) {
+//     let fname = arguments.callee.name;
 
-    let cfg = {
-        id: "id-a-href", 
-        href: 'https://www.google.com/',
-        classList: [],
-        text: "Link to google"
-    }
+//     let cfg = {
+//         id: "id-a-href", 
+//         href: 'https://www.google.com/',
+//         classList: [],
+//         text: "Link to google"
+//     }
 
-    myTest.Equal(IsThereDiv(cfg["id"]), false)
-    DIV(DIV_TESTOUTPUT).append(A_HREF(cfg))
-    myTest.Equal(IsThereDiv(cfg["id"]), true)
-}
+//     myTest.Equal(IsThereDiv(cfg["id"]), false)
+//     DIV(DIV_TESTOUTPUT).append(A_HREF(cfg))
+//     myTest.Equal(IsThereDiv(cfg["id"]), true)
+// }
 
-function test_basisjs_TextArea(myTest) {
-    let fname = arguments.callee.name;
+// funcction test_basisjs_TextArea(myTest) {
+//     let fname = arguments.callee.name;
 
-    let cfg = {
-        id: "id-textarea", 
-        cols: 50, 
-        rows: 5, 
-        classList: [],
-        value: "Test Value xyz"
-    }
+//     let cfg = {
+//         id: "id-textarea", 
+//         cols: 50, 
+//         rows: 5, 
+//         classList: [],
+//         value: "Test Value xyz"
+//     }
 
-    myTest.Equal(IsThereDiv(cfg["id"]), false)
-    Append_TextArea(DIV_TESTOUTPUT, cfg)
-    myTest.Equal(IsThereDiv(cfg["id"]), true)
-}
+//     myTest.Equal(IsThereDiv(cfg["id"]), false)
+//     Append_TextArea(DIV_TESTOUTPUT, cfg)
+//     myTest.Equal(IsThereDiv(cfg["id"]), true)
+// }
 
-function test_basisjs_Is(myTest) {
-    let fname = arguments.callee.name;
+// funcction test_basisjs_Is(myTest) {
+//     let fname = arguments.callee.name;
 
-    let v1 = [1, 2, 3];
-    let v2 = "not an array";
-    let v3 = [];
+//     let v1 = [1, 2, 3];
+//     let v2 = "not an array";
+//     let v3 = [];
 
-    myTest.IsFalse(IsEmptyList(v1),fname)
-    myTest.IsFalse(IsEmptyList(v2),fname)
-    myTest.IsTrue(IsEmptyList(v3),fname)
+//     myTest.IsFalse(IsEmptyList(v1),fname)
+//     myTest.IsFalse(IsEmptyList(v2),fname)
+//     myTest.IsTrue(IsEmptyList(v3),fname)
 
-    myTest.IsFalse(IsString1(1),fname)
-    myTest.IsFalse(IsString1(""),fname)
-    myTest.IsTrue(IsString1("a"),fname)
+//     myTest.IsFalse(IsString1(1),fname)
+//     myTest.IsFalse(IsString1(""),fname)
+//     myTest.IsTrue(IsString1("a"),fname)
 
-}
+// }

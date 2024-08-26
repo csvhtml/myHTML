@@ -219,3 +219,12 @@ function _SVGtoMyMarkdown_Loop(htmlText, svg) {
         }
         return htmlText
 }
+
+
+
+function DOMElementsFromString(htmlString, tag = 'div') {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    const svgElements = doc.querySelectorAll(tag);
+    return Array.from(svgElements);
+}

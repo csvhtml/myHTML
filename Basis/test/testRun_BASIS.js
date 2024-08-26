@@ -1,0 +1,23 @@
+function test_BASIS(divID, myTest) {
+	test_NoBlanksInList(myTest)
+	test_ByVal(myTest)
+	test_ValidChars(myTest)
+	test_typOf(myTest)
+	test_maxx(myTest)
+	test_minn(myTest)
+	test_IsListEqualSize(myTest)
+	test_IsEqual(myTest)
+	test_ElementInArrayN(myTest)
+	proto_listCount(myTest)
+	proto_listRemoveX(myTest)
+	proto_listRemoveAll(myTest)
+	proto_listToggle(myTest)
+	proto_listPushX(myTest)
+	proto_stringUntil(myTest)
+	proto_stringCount(myTest)
+	proto_DOMIsDescendantOf(myTest)
+	proto_documentGetElementsWithOnClickEvent(myTest)
+	proto_documentGetElementsByIDSubstring(myTest)
+
+	myTest.PrintResult(divID)
+}

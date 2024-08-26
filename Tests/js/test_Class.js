@@ -4,11 +4,21 @@ const cfgTestResultTable = {
     colTexts: ['no.','name', 'result', 'message']
 }
 
+const cfgFunctionCallTable = {
+    width: '300px', 
+    colWidths:['10%', '90%'],
+    colTexts: ['no.','name']
+}
+
+
+const TraceFunctionCalls = []
+
 class clsTest {
     constructor() {
         this.passed = 0;
         this.failed = 0;
         this.cases = [];
+        this.calls = [];
       }
 
     debug_PrintAllCases() {
@@ -28,32 +38,40 @@ class clsTest {
     TestThemAll() {
         cfgTestThemAll(this)
     }
-    
-    PrintResult(divID = '') {
-        let runs = this.passed + this.failed
-        let strA = String(runs) + " tests run. " + String(this.failed) + " failed!"
-        let no = 0; let count = 0
-        let case_no = 1; let lastCaseName = ""
-        let table = this._ResultsTable()
-        for (let testcase of this.cases) {
-            count += 1
-            if (divID != '') {
-                table.append(this._ResultRow(count, testcase))}
-            case_no +=1
-            if (testcase[0] != lastCaseName) {case_no = 1}
 
-            if (testcase[1] == "failed") {
-                no += 1
-                strA += "\n" + String(no) + ") Test Case " + String(case_no) + "/" + String(this._ReturnNumberofCases(testcase[0])) + ": " + String(testcase)
-            }
-            lastCaseName = testcase[0]
+    PrintResult(divID = '') {
+        let h1 = document.createElement('h3'); h1.innerHTML = 'Functions Called'
+        let table1 = this.CallTable()
+        document.getElementById(divID).append(h1)
+        document.getElementById(divID).append(table1)
+
+        let h2= document.createElement('h3'); h2.innerHTML = 'Test Runs'
+        let table2 = this.ResultTable() 
+        document.getElementById(divID).append(h2)
+        document.getElementById(divID).append(table2)
+    }
+    
+    CallTable() {
+        let count = 0
+        let table = this._ResultsTable(cfgFunctionCallTable)
+        for (let func of TraceFunctionCalls) {
+            count += 1
+            table.append(this._RowN(count, [func]))
         }
-        console.log(strA)
-        if (divID != '') {
-            document.getElementById(divID).append(table)}
+        return table
     }
 
-    _ResultsTable() {  
+    ResultTable() {
+        let count = 0
+        let table = this._ResultsTable(cfgTestResultTable)
+        for (let testcase of this.cases) {
+            count += 1
+            table.append(this._RowN(count, testcase))
+        }
+        return table
+    }
+
+    _ResultsTable(cfg) {  
         let style = document.createElement('style');
         let css = `
             table, th, td {
@@ -67,7 +85,6 @@ class clsTest {
         style.appendChild(document.createTextNode(css));
         document.head.appendChild(style);   
 
-        let cfg = cfgTestResultTable
         let table = document.createElement('table');
         table.style.width = cfg['width'];
         let tr = document.createElement('tr')
@@ -81,7 +98,7 @@ class clsTest {
         return table
     }
 
-    _ResultRow(n, testcase) {
+    _RowN(n, testcase) {
         let tr = document.createElement("tr")
         let cell = document.createElement('td');
         cell.innerHTML = String(n)
@@ -206,3 +223,13 @@ class clsTest {
         return ret
     }
 }
+
+
+// case_no +=1
+// if (testcase[0] != lastCaseName) {case_no = 1}
+
+// if (testcase[1] == "failed") {
+//     no += 1
+//     strA += "\n" + String(no) + ") Test Case " + String(case_no) + "/" + String(this._ReturnNumberofCases(testcase[0])) + ": " + String(testcase)
+// }
+// lastCaseName = testcase[0]
