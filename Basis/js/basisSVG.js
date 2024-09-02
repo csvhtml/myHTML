@@ -1,3 +1,6 @@
+// MOHI
+
+
 const CLS_SVG_APPLYFORTAGS = ["div", "a", "label"]
 const CLS_SVG_VALID_NAMES = {
     "SquareArrowDown": "mySVG-SqAwDwn",
@@ -40,7 +43,7 @@ const CLS_SVG_REPLACE = {
     </svg>'
 }
 
-dictSVG = {
+const dictSVG = {
     'pdf-img': '<svg id="pdf-img" width="100" height="125" viewBox="0 0 80 100" fill="none"> \
             <path d="M 10 0 \
             L 70 0 Q 80 0 80 10 \
@@ -74,6 +77,8 @@ class clsSVG {
  */
     constructor() {
         // this.CreateSVGs_FromDivClasses()
+        for (let key of Object.keys(dictSVG)) {
+            this[key] = dictSVG[key]}
     }
 
 
@@ -194,37 +199,37 @@ function MyMarkDowntoSVG(markupText) {
         assert(false)
     }
 
-// svg -> markup
-function SVGtoMyMarkdown(htmlText) {
-    let ret = htmlText
-    svgs = DOMElementsFromString(htmlText, 'svg')
-    for (let svg of svgs) {
-        ret = _SVGtoMyMarkdown_Loop(ret, svg)}
+// // svg -> markup
+// function SVGtoMyMarkdown(htmlText) {
+//     let ret = htmlText
+//     svgs = DOMElementsFromString(htmlText, 'svg')
+//     for (let svg of svgs) {
+//         ret = _SVGtoMyMarkdown_Loop(ret, svg)}
     
-    ret = HTMLtoMyMarkdown(ret)
+//     ret = HTMLtoMyMarkdown(ret)
 
-    return ret
-    }
+//     return ret
+//     }
 
-function _SVGtoMyMarkdown_Loop(htmlText, svg) {
-        let svgText = svg.outerHTML
+// function _SVGtoMyMarkdown_Loop(htmlText, svg) {
+//         let svgText = svg.outerHTML
     
-        if (svg.id.includes('pdf-img')) {
-            htmlText = htmlText.replace(svgText, '(img)pdf') }
-        if (svg.id.includes('pdf-icon')) {
-            htmlText = htmlText.replace(svgText + ' ', '')
-            let linkName = RetStringBetween(svg.id, 'pdf-icon-', '')
-            if (linkName.length > 3) {
-                htmlText = htmlText.replace('>' + linkName + '</a>', '>(icon)pdf</a>')}
-        }
-        return htmlText
-}
+//         if (svg.id.includes('pdf-img')) {
+//             htmlText = htmlText.replace(svgText, '(img)pdf') }
+//         if (svg.id.includes('pdf-icon')) {
+//             htmlText = htmlText.replace(svgText + ' ', '')
+//             let linkName = RetStringBetween(svg.id, 'pdf-icon-', '')
+//             if (linkName.length > 3) {
+//                 htmlText = htmlText.replace('>' + linkName + '</a>', '>(icon)pdf</a>')}
+//         }
+//         return htmlText
+// }
 
 
 
-function DOMElementsFromString(htmlString, tag = 'div') {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlString, 'text/html');
-    const svgElements = doc.querySelectorAll(tag);
-    return Array.from(svgElements);
-}
+// function DOMElementsFromString(htmlString, tag = 'div') {
+//     const parser = new DOMParser();
+//     const doc = parser.parseFromString(htmlString, 'text/html');
+//     const svgElements = doc.querySelectorAll(tag);
+//     return Array.from(svgElements);
+// }

@@ -19,7 +19,7 @@ function test_SVG(myTest) {
     
     for (element of markup_svg) {
         myTest.Equal(MyMarkDowntoSVG(element[0]), element[1], fname)
-        myTest.Equal(SVGtoMyMarkdown(element[1]), element[0], fname)
+        // myTest.Equal(SVGtoMyMarkdown(element[1]), element[0], fname)
     }
     
 }

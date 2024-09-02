@@ -11,6 +11,7 @@ function test_BASIS(divID, myTest) {
 	test_PatternsFound_Donts(myTest)
 	test_PatternsFound_Dos(myTest)
 	test_Markup(myTest)
+	test_MarkupSVG(myTest)
 	proto_listCount(myTest)
 	proto_listRemoveX(myTest)
 	proto_listRemoveAll(myTest)

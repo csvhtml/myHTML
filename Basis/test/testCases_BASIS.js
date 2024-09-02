@@ -191,6 +191,21 @@ function test_Markup(myTest) {
     
 }
 
+function test_MarkupSVG(myTest) {
+    let fname = arguments.callee.name;
+    let markup_html = [
+        // pdf icon
+        ["[(svg)pdf]", dictSVG['pdf-icon']], 
+        ["[(SVG)pdf]", dictSVG['pdf-img']], 
+]
+    
+    for (element of markup_html) {
+        myTest.Equal(MyMarkDowntoHTML(element[0]), element[1], fname)
+        myTest.Equal(HTMLtoMyMarkdown(element[1]), element[0], fname)
+    }
+    
+}
+
 // #############################################################################################################
 // # Prototype tests                                                                                           #
 // #############################################################################################################

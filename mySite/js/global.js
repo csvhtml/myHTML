@@ -53,7 +53,7 @@ function Gloabl_Edit_Textarea(div) {
         row.style.height = (row.getBoundingClientRect()["height"]+40)+"px"}
     
     let value_modified = div.innerHTML
-    value_modified = SVGtoMyMarkdown(value_modified)
+    // value_modified = SVGtoMyMarkdown(value_modified)
     value_modified = HTMLtoMyMarkdown(value_modified)
     return value_modified
 }

@@ -54,6 +54,7 @@ const BASIS = {
 	PatternsFound: function(text, patternL, ignore1L) {return PatternsFound(text, patternL, ignore1L)},
 	MyMarkDowntoHTML: function(markupText) {return MyMarkDowntoHTML(markupText)},
 	HTMLtoMyMarkdown: function(htmlText) {return HTMLtoMyMarkdown(htmlText)},
+	DOMElementsFromString: function(htmlString, tag) {return DOMElementsFromString(htmlString, tag)},
 };
 
 
@@ -680,7 +681,7 @@ const CLS_SVG_REPLACE = {
     </svg>'
 }
 
-dictSVG = {
+const dictSVG = {
     'pdf-img': '<svg id="pdf-img" width="100" height="125" viewBox="0 0 80 100" fill="none"> \
             <path d="M 10 0 \
             L 70 0 Q 80 0 80 10 \
@@ -714,6 +715,8 @@ class clsSVG {
  */
     constructor() {
         // this.CreateSVGs_FromDivClasses()
+        for (let key of Object.keys(dictSVG)) {
+            this[key] = dictSVG[key]}
     }
 
 
@@ -1070,6 +1073,20 @@ function _PatternsFound3(text, patternL, ignore1L) {
     return ret;
   }
 
+// ################################################################
+// MarkDown                                                       #
+// ################################################################
+
+const CLASS_SVG_FOR_MARKDOWN = new clsSVG()
+
+ const CONFIG_SVG_FOR_MARKDOWN_REPLACE = [
+    // ['Markdown String', Regex, svg code]
+    ["[(SVG)pdf]", /\[\(SVG\)pdf\]/g, CLASS_SVG_FOR_MARKDOWN['pdf-img'], 'pdf-img'],
+    ["[(svg)pdf]", /\[\(svg\)pdf\]/g, CLASS_SVG_FOR_MARKDOWN['pdf-icon'], 'pdf-icon']
+    ]
+
+
+
 // markup -> html
 function MyMarkDowntoHTML(markupText) {
     if (typOf(markupText) != 'str') {
@@ -1089,6 +1106,7 @@ function MyMarkDowntoHTML(markupText) {
 
     htmlText = _replaceMultipleSpacesWithNbsp(htmlText)
     htmlText = _replaceBracketWitchCheckbox(htmlText)
+    htmlText = _replace_MarkDown_To_SVG(htmlText)
     return htmlText;
     }
 
@@ -1100,6 +1118,7 @@ function HTMLtoMyMarkdown(htmlText) {
     markupText = markupText.replace(new RegExp('<br>', "g") , '\n')
     markupText = _replaceNbspWithSpaces(markupText)
     markupText = _replaceCheckboxWithBrackets(markupText)
+    markupText = _replace_SVG_BACK_To_MyMarkdon(markupText)
     return markupText;
     }
 
@@ -1125,6 +1144,38 @@ function _replaceCheckboxWithBrackets(text) {
     text = text.replace(/<input type="checkbox">/g, '[ ]')
     return text.replace(/<input type="checkbox" checked="">/g, '[x]')
 }
+
+function _replace_MarkDown_To_SVG(text) {
+    let replace = CONFIG_SVG_FOR_MARKDOWN_REPLACE
+
+    for (let rpl of replace) {
+        if (text.includes('[(svg)') || text.includes('[(SVG)')) {
+            text = text.replace(rpl[1], rpl[2])}
+    }
+    return text
+}
+
+function _replace_SVG_BACK_To_MyMarkdon(htmlText) {
+    let replace = CONFIG_SVG_FOR_MARKDOWN_REPLACE
+    let ret = htmlText
+    svgs = DOMElementsFromString(htmlText, 'svg')
+    for (let svg of svgs) {
+        ret = ret.replace(svg.outerHTML, 'xxy' + svg.id + 'yxx')
+        for (let rpl of replace) {
+            ret = ret.replace('xxy' + rpl[3] + 'yxx', rpl[0])}
+        }
+    
+    return ret
+    }
+
+function DOMElementsFromString(htmlString, tag) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    const svgElements = doc.querySelectorAll(tag);
+    return Array.from(svgElements);
+}
+
+
 
     // functionn parseMarkup(markupText) {
     //     if (typOf(markupText) != 'str') {
