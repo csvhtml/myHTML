@@ -1,14 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test Cases BASIS</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">   
+    <style>
+        body {
+            background-color: #222;
+            color: #ddd;
+            font-size: 18pt;
+        }
+        li {
+            margin-bottom: 5pt;
+        }
+        i {
+            background-color: #aaa;
+            color: #222;
+            padding-inline: 4pt;
+            margin-inline: 4pt;
+        }
+        .section {
+            margin-bottom: 60pt;
+            max-width: 800pt;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="id-1" class="section">
+        <h2>My Test Framework</h2>
+        <div id="id-1-1">
+            This Test Framework is self build for light weight javascript projects.<br>
+
+            <h4>Use the framework:</h4>
+            <ul>
+                <li>Insert  the  <i> script src="../../Basis/js/Basis All_.js" /script' </i> to your index html. the test class uses some functions from the basis js module </li>
+                <li>Insert  the  <i> script src="../../Tests/js/test_Class.js" /script' </i> to your index html</li>
+                <li>Init the test class via <i>'let myTest = new clsTest()'</i> </li>
+                <li>Run/Call each test case and provide the test class obbject (= 'myTest' in this example) to the test as paramter.</li>
+                <li>At the end you can print the test results using <i>'myTest.PrintResult(divID)'</i>, where 'divID' is the id of the DOM element where the results are written to.</li>
+            </ul> 
+            <h4>Write Test Cases</h4>
+            <ul>
+                <li>Each test case gets the clsTest() object (='myTest') provided as a parameter, e. g. <i>'function test_NoBlanksInList(myTest)'</i> </li>
+                <li>Within the test you can use one of the four class test functions 1) Equal, 2) IsTrue, 3) IsFalse, 4) Assertion</li>
+                <li>The class test functions work with all sorts of data types, including lists/arrays and dictionaries/objects</li>
+                <li>The class test functions require also the current ego name of the test case (actually current javascript function) name that is running. Yuu get this information via <i>'arguments.callee.name'</i></li>
+            </ul>
+            <h4>Optional Features</h4>
+            <ul>
+                <li> You can print all functions that have been called, e. g. to get a coverage of functions. 
+                    The <i> 'TraceFunctionCalls = []' </i> serves as a collector for all functons being called during the test runs</li>
+                <li> Therfore you have to insert <i>'TraceFunctionCalls.pushX(arguments.callee.name)'</i> to every function at the very beginning. This is not recommended for productive code.
+                     But you can Copy Paste ypur codefile(s) and insert the line and then test this modified code</li>
+            </ul>
+        </div>
+    </div>
+    <div id="id-2" class="section">
+        <h2>My Test Framework -  Ego Test Results</h2>
+    </div>
+    
+</body>
 <script src="../../Basis/js/Basis All_.js"></script>
 <script src="test_Class.js"></script>
-<script src="test_Config.js"></script>
 
 <script src="testcases_TestClass.js"></script>
 
 <script>
     (function () {
         let myTest = new clsTest()
-        myTest.TestThemAll()
-        // myTest.debug_PrintAllCases()
-        myTest.PrintResult()
+        
+        testcase_Equal(myTest)
+        testcase_TrueFalse(myTest)
+
+        myTest.PrintResult('id-2')
     })();
 </script>
+</html>

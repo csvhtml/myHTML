@@ -1,19 +1,21 @@
 const INVRESULT = true
 
-function AllTestCases (myTest) {
-    console.log("10 'failed' test cases to ckeck assertions work correctly. no invert function created" + 
-        "as no futher use exxpected\n" +
-        "Hence 10 'failed'test cases are the intended test result.")
-    this.testcase_Equal(myTest)
-    this.testcase_Assert(myTest)
-}
-
 function testcase_Equal(myTest) {
     let fname = arguments.callee.name;
     
     myTest.Equal(1,1,fname)
     myTest.Equal(1,2,fname, INVRESULT)
     myTest.Equal([1,2,3],[1,2,3],fname)
+    myTest.Equal({"A":[1,2,3], "B":{"a":1, "b":2}, "C":"Text", "D":123, "E": true}, {"A":[1,2,3], "B":{"a":1, "b":2}, "C":"Text", "D":123, "E": true},fname)
+    myTest.Equal({"A":[1,2,3], "B":{"a":1, "b":2}, "C":"Text", "D":123, "E": true}, {"A":[1,2,0], "B":{"a":1, "b":2}, "C":"Text", "D":123, "E": true},fname, INVRESULT)
+    myTest.Equal({"A":[1,2,3], "B":{"a":1, "b":2}, "C":"Text", "D":123, "E": true}, {"A":[1,2,3], "B":{"a":3, "b":2}, "C":"Text", "D":123, "E": true},fname, INVRESULT)
+}
+
+function testcase_TrueFalse(myTest) {
+    let fname = arguments.callee.name;
+    
+    myTest.IsTrue(true,fname)
+    myTest.IsFalse(false,fname)
 }
 
 function testcase_Assert(myTest) {

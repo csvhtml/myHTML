@@ -34,10 +34,6 @@ class clsTest {
             this.failed += 1}
         this.cases.push([fname, result, msg])
     }
-    
-    TestThemAll() {
-        cfgTestThemAll(this)
-    }
 
     PrintResult(divID = '') {
         let h1 = document.createElement('h3'); h1.innerHTML = 'Functions Called'
@@ -56,7 +52,7 @@ class clsTest {
         let table = this._ResultsTable(cfgFunctionCallTable)
         for (let func of TraceFunctionCalls) {
             count += 1
-            table.append(this._RowN(count, [func]))
+            table.append(HTMLTable_Row({tx:'td', cells:[count,func]}))
         }
         return table
     }
@@ -66,7 +62,7 @@ class clsTest {
         let table = this._ResultsTable(cfgTestResultTable)
         for (let testcase of this.cases) {
             count += 1
-            table.append(this._RowN(count, testcase))
+            table.append(HTMLTable_Row({tx:'td', cells:[count].concat(testcase)}))
         }
         return table
     }
@@ -96,19 +92,6 @@ class clsTest {
         }
         table.append(tr)
         return table
-    }
-
-    _RowN(n, testcase) {
-        let tr = document.createElement("tr")
-        let cell = document.createElement('td');
-        cell.innerHTML = String(n)
-        tr.appendChild(cell);
-        for (let info of testcase) {
-            let cell = document.createElement('td');
-            cell.innerHTML = info;
-            tr.appendChild(cell);
-        }
-        return tr
     }
 
 // ##################################################################################
@@ -223,13 +206,3 @@ class clsTest {
         return ret
     }
 }
-
-
-// case_no +=1
-// if (testcase[0] != lastCaseName) {case_no = 1}
-
-// if (testcase[1] == "failed") {
-//     no += 1
-//     strA += "\n" + String(no) + ") Test Case " + String(case_no) + "/" + String(this._ReturnNumberofCases(testcase[0])) + ": " + String(testcase)
-// }
-// lastCaseName = testcase[0]

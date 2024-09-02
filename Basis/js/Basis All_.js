@@ -29,6 +29,7 @@ const BASIS = {
 	HTMLTable_FullConfig: function(config) {return HTMLTable_FullConfig(config)},
 	HTMLTable_TableRowsCols: function(p = {'thsText' : [],'cellsText' : []}) {return HTMLTable_TableRowsCols(p)},
 	HTMLTable_DefaultVal: function(key, nCols, nRows) {return HTMLTable_DefaultVal(key, nCols, nRows)},
+	HTMLTable_Row: function(config) {return HTMLTable_Row(config)},
 	IsObject: function(variable) {return IsObject(variable)},
 	IsString: function(variable) {return IsString(variable)},
 	IsUndefined: function(variable) {return IsUndefined(variable)},
@@ -459,13 +460,13 @@ function HTMLTable_FullConfig(config) {
 
 function _HTMLTable_FromConfigRaw(cfg) {
     let Tag = function (key, val) {return _htmltable_Tag(key, val)}
-    let Row = function (a,b,c) {return _htmltable_Row(a,b,c)}
+    let Row = function (a) {return HTMLTable_Row(a)}
     let Body = function (a,b) {return _htmltable_Body(a,b)}
     let ret = ""
     ret += Tag('table', {id:cfg["tableID"], clas:cfg["tableClass"], style:cfg["tableStyle"]})
     ret += Tag('thead', {id:cfg["theadID"], clas:cfg["theadClass"], style:cfg["theadStyle"]})
-    ret += Row("th", cfg["thsText"], {id:cfg["trhID"], clas:cfg["trhClass"], style:cfg["thStyle"],
-                         ids:cfg["thsID"], classes:cfg["thsClass"], styles:cfg["thsStyle"]})
+    ret += Row({tx:"th", cells: cfg["thsText"], id:cfg["trhID"], clas:cfg["trhClass"], style:cfg["thStyle"],
+                         ids:cfg["thsID"], classes:cfg["thsClass"], styles:cfg["thsStyle"]}).outerHTML
     ret += '</thead>';
     ret += Tag('tbody', {});
     ret += Body(cfg["cellsText"], cfg)  
@@ -573,33 +574,49 @@ function _htmltable_Tag(tag, {id="", clas="", style=""}) {
     return ret}
 
 function _htmltable_Body(rows, cfg) {
-    let Row = function (a,b,c) {return _htmltable_Row(a,b,c)}
+    let Row = function (a,b,c) {return HTMLTable_Row(a,b,c)}
     let ret = ""
     for (let i = 0;i<rows.length;i++) {
         if (IsEqual(cfg, {})) {
-            ret += Row("td", rows[i], {})}
+            ret += Row({tx:"td", cells:rows[i]}).outerHTML}
         else {
-            ret += Row("td", rows[i], {
+            ret += Row({tx:"td", cells:rows[i],
                 id:cfg["rowsID"][i], clas:cfg["rowsClass"][i], style:cfg["rowsStyle"][i], 
-                ids:cfg["cellsID"][i], classes:cfg["cellsClass"][i], styles:cfg["cellsStyle"][i]})}
+                ids:cfg["cellsID"][i], classes:cfg["cellsClass"][i], styles:cfg["cellsStyle"][i]}).outerHTML}
     }
     return ret
 }
 
-function _htmltable_Row(tx, cells, {id="", clas="", style="", ids=["",""], classes=["",""], styles=["",""]}) {
-    let Tag = function (key, val) {return _htmltable_Tag(key, val)}
-    let ret = Tag("tr", {id:id, clas:clas, style:style})
-    for (let i = 0;i<cells.length;i++) {
-        ret += Tag(tx, {id:ids[i], clas:classes[i], style:styles[i]})
-        ret += cells[i] + '</' + tx + '>';}
+function HTMLTable_Row(config) {
+    let defaultConfig = {tx: '', cells: ['',''], id: "", clas: "", style: "", ids: ["",""], classes: ["",""], styles: ["",""]}
+    let cfg = {...defaultConfig,...config}
+    let DOM_tr = document.createElement('tr')
+    DOM_tr = _DOM_Tags(DOM_tr, cfg['id'], cfg['clas'], cfg['style'])
+    for (let i = 0; i< cfg['cells'].length; i++) {
+        let DOM_cell = document.createElement(cfg['tx'])
+        DOM_cell = _DOM_Tags(DOM_cell, cfg['ids'][i], cfg['classes'][i], cfg['styles'][i])
+        DOM_cell.innerHTML = cfg['cells'][i]
+        DOM_tr.appendChild(DOM_cell)}
 
-    return ret +"</tr>"}
+    return DOM_tr}
 
 function _htmltable_Tag_PropertyString(key, val) {
     let ret = ""
     if (val.length > 0) {
         ret += key + '="' + val + '" '}
     return ret}
+
+function _DOM_Tags(DOM, id="", clas="", style="") {
+    if (id != '') {
+        DOM.id = id}
+    if (clas != '') {
+        let klassen = clas.split(' ')
+        DOM.classList.replace(...klassen)}
+    if (style != '') {
+        DOM.style.cssText = style}
+
+    return DOM
+}
 function IsObject(variable) {
     return typeof variable === 'object' && variable !== null && !Array.isArray(variable);
   }
