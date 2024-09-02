@@ -197,12 +197,4 @@ class clsTest {
         this.pushTestResult(fname, result, msg)
         return result
     }
-
-    _ReturnNumberofCases(fname) {
-        let ret = 0
-        for (let casse of this.cases)
-            if (casse[0] == fname) {
-                ret +=1}
-        return ret
-    }
 }

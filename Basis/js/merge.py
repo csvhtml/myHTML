@@ -107,7 +107,7 @@ def AddFunctionTrace(content):
 
 fileEnding = '.js'
 MergeString = 'All_'
-TraceString = 'Trace_'
+TraceString = 'TestTrace_'
 
 if __name__ == '__main__':
     egopath = os.path.dirname(os.path.abspath(__file__))

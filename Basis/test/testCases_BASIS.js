@@ -128,6 +128,74 @@ function test_ElementInArrayN(myTest) {
     myTest.IsTrue(BASIS.ElementInArrayN(listen, "Peach"), arguments.callee.name)
 }
 
+
+function test_PatternsFound_Donts(myTest) {
+    let fname = arguments.callee.name;
+
+    let foo = function (a,b) {PatternsFound(a,b)}
+    myTest.Assertion(foo, {"a":123, "b":"string"}, fname)
+    myTest.Assertion(foo, {"a":"string", "b":"string"}, fname)
+    // Patern must be length 2 or length 3
+    myTest.Assertion(foo, {"a":"string", "b": ["1"]}, fname)    
+    myTest.Assertion(foo, {"a":"string", "b": ["1", "2", "3", "4"]}, fname)
+
+    myTest.IsFalse(PatternsFound(), fname)
+    myTest.IsFalse(PatternsFound('something'), fname)
+    myTest.IsFalse(PatternsFound(), fname)
+}
+
+function test_PatternsFound_Dos(myTest) {
+    let fname = arguments.callee.name;
+    let input = "Some Text"; let pattern = ["[", "::", "]"]
+
+    myTest.Equal(PatternsFound(input, pattern), [], fname)
+
+    input = "Some [Text]";
+    myTest.Equal(PatternsFound(input, pattern), [], fname)
+
+    input = "[Some:Text] for you"; pattern = ["[", ":", "]"]
+    myTest.Equal(PatternsFound(input, pattern), ["[Some:Text]"], fname)
+
+    input = "[Some:Text] for you"; pattern = ["[", "::", "]"]
+    myTest.Equal(PatternsFound(input, pattern), [], fname)
+    
+    input = "[Some::Text] for you"; pattern = ["[", "::", "]"]
+    myTest.Equal(PatternsFound(input, pattern), ["[Some::Text]"], fname)
+
+    input = "[Some::Text] [for::you]"; pattern = ["[", "::", "]"]
+    myTest.Equal(PatternsFound(input, pattern), ["[Some::Text]", "[for::you]"], fname)
+}
+
+function test_Markup(myTest) {
+    let fname = arguments.callee.name;
+    let markup_html = [
+        // new line
+        ["\n", "<br>"], 
+        // links
+        ["[A::B]", '<a href="B" target="#">A</a>'],
+        ["xxx[A::B]", 'xxx<a href="B" target="#">A</a>'],
+        ["xxx[A::B]xxx[A::B]", 'xxx<a href="B" target="#">A</a>xxx<a href="B" target="#">A</a>'],
+        // preserve spaces
+        [" ", " "],
+        ["  ", "&nbsp;&nbsp;"],
+        ["   ", "&nbsp;&nbsp;&nbsp;"],
+        // Checkboxes
+        ["[ ]abc[ ]", '<input type="checkbox">abc<input type="checkbox">'],   // [ ] will not work if data is loaded
+        ["[x]abc[x]", '<input type="checkbox" checked="">abc<input type="checkbox" checked="">']
+]
+    
+    for (element of markup_html) {
+        myTest.Equal(MyMarkDowntoHTML(element[0]), element[1], fname)
+        myTest.Equal(HTMLtoMyMarkdown(element[1]), element[0], fname)
+    }
+    
+}
+
+// #############################################################################################################
+// # Prototype tests                                                                                           #
+// #############################################################################################################
+
+
 function proto_listCount(myTest) {
     let liste = ["a", "b", "c", "a", "f", "a"]
 

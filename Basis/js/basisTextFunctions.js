@@ -2,13 +2,17 @@
 // Basis   Text Functions                                                        #
 // ###############################################################################
 
-function RetStringBetween(text, fromStr, toStr = "", ignoreBlankAtBorders = false) {
+function RetStringBetween(text, fromStr, toStr, ignoreBlankAtBorders) {
     /**
      * Returns the String between two  strings.
      * "" / empty strings are interpreted as open end / take rest of string
      * strings not found in text are interpreted as "" / empty strings
      * 
      */
+    if (text === undefined) return false;
+    if (fromStr === undefined) return false;
+    if (toStr === undefined) toStr = ''
+    if (ignoreBlankAtBorders === undefined) ignoreBlankAtBorders = false
 
     var [idx1, idx2, len1, len2] = _RetIdxFromTextInString(text, fromStr, toStr, ignoreBlankAtBorders)
 
