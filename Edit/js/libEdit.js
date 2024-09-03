@@ -1,4 +1,4 @@
-const CSVG = new clsSVG();CSVG.CreateSVGs_FromDivClasses()
+const CSVG = new clsSVG();CSVG.CreateAll_BasedOnDivClasses(['div', 'a'])
 
 class libEdit {
     constructor(name) {
@@ -104,8 +104,8 @@ class libEdit {
             "x": this.name + '.Close("'+ div.id + '")',
             "save": this.name+ '.Save("'+ div.id + '")'}
         let svgString = {
-            "x": "X",
-            "save": "SquareArrowDown"}
+            "x": "a-x",
+            "save": "a-ArrowDown"}
         let topStringRight = {
             "x": "top-30",
             "save": "top-0"}
@@ -116,7 +116,7 @@ class libEdit {
         a.classList.add("xsvg-link")
         a.setAttribute('onclick', functionString[type]);
         div.append(a)
-        CSVG.CreateSVG_FromDivID(a.id, svgString[type])
+        CSVG.Create_ToDIV(a.id, svgString[type])
 
         if (position[size] == "right") {
             a.classList.add("xsvg-right", topStringRight[type])}}

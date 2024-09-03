@@ -93,3 +93,14 @@ function AutoHeight(divID) {
 function IsThereDiv(divID) {
         return document.getElementById(divID) !== null;
 }
+
+function ListOfDivs(TagsL) {
+    if (TagsL === undefined) {return []}
+    ret = []
+    for (let tag of TagsL) {
+        let pageDIVs = document.getElementsByTagName(tag)
+        for (let div of pageDIVs) {
+            ret.push(div)}
+    }
+    return ret
+}

@@ -1,48 +1,60 @@
-function PatternsFound(text, patternL, ignore1L) {
+function PatternsInText(text, patternL) {
     if (text === undefined) return false;
     if (patternL === undefined) return false;
-    if (ignore1L === undefined) ignore1L = []
     assert(typOf(text) == "str")
     assert(typOf(patternL) == "list")
-    assert(typOf(ignore1L) == "list")
     assert(2 <= patternL.length && patternL.length <= 3)
 
     
     // paternL = ["[", "]"];
     if (patternL.length == 2) {
-        // not implemented
+        return _PatternsFound2(text, patternL)
     }
     // paternL = ["[", ":", "]"];
     if (patternL.length == 3) {
-        return _PatternsFound3(text, patternL, ignore1L)
+        return _PatternsFound3(text, patternL)
     }
 }
 
-function _PatternsFound3(text, patternL, ignore1L) {
+function _PatternsFound2(text, patternL) {
+    let ret = []; let tmp = ""
+    let startIndex = 0; let pIndex = [-1, -1]
+
+    while (startIndex < text.length) {
+        // find index 0
+        pIndex[0] = text.indexOf(patternL[0], startIndex)
+        if (pIndex[0] == -1) return ret
+        // find index 1
+        pIndex[1] = text.indexOf(patternL[1], pIndex[0])
+        if (pIndex[1] == -1) return ret
+        // Extract Pattern and Push
+        ret.push(text.slice(pIndex[0], pIndex[1] + 1))
+
+        startIndex = pIndex[1] + 1;}
+
+    return ret
+}
+
+function _PatternsFound3(text, patternL) {
     let ret = []; let tmp = ""
     let startIndex = 0; let pIndex = [-1, -1, -1]
     
-    // find p indexes
     while (startIndex < text.length) {
-        pIndex[0] = text.indexOf(patternL[0], startIndex)
-        if (pIndex[0] == -1) return ret
-        
-        for (i = 1; i < patternL.length; i++) {
-            pIndex[i] = text.indexOf(patternL[i], pIndex[i-1])
-            if (pIndex[i] == -1) {return ret}
-        }
-      
-        // Extract the pattern and push it into the occurrences array
-        tmp = text.slice(pIndex[0], pIndex[pIndex.length-1] + 1);
-        if (ignore1L.length > 0) {
-            for (let ignore of ignore1L) {
-                if (!tmp.startsWith(ignore1L)) {
-                    ret.push(tmp);}
-            }
-        } else {
-            ret.push(tmp) }
-        startIndex = pIndex[pIndex.length-1] + 1;
-    }
+        // find index 0
+        pIndex[0] = text.indexOf(patternL[0], startIndex); if (pIndex[0] == -1) return ret
+        // find index 1
+        pIndex[1] = text.indexOf(patternL[1], pIndex[0]); if (pIndex[1] == -1) return ret
+        // find index 2 (again strarting from pIndex[0])
+        pIndex[2] = text.indexOf(patternL[2], pIndex[0]); if (pIndex[1] == -1) return ret
+        // skip if index 1 > index 2
+        if (pIndex[1] > pIndex[2]) {
+            startIndex = pIndex[0] + 1;
+            continue}
+        // Extract Pattern and Push
+        ret.push(text.slice(pIndex[0], pIndex[2] + 1))
+
+        startIndex = pIndex[2] + 1;}
+
     return ret;
   }
 
@@ -61,13 +73,12 @@ const CLASS_SVG_FOR_MARKDOWN = new clsSVG()
 
 // markup -> html
 function MyMarkDowntoHTML(markupText) {
-    if (typOf(markupText) != 'str') {
-        return markupText}
+    assert(typOf(markupText) == 'str')
 
-    // replace [Text::Link] -> <a href="Link" ...>
-    pats = PatternsFound(markupText, ["[", "::", "]"])
-    htmlText = markupText; var p1; var p2; var href
-    for (pat of pats) {
+    let pats3 = PatternsInText(markupText, ["[", "::", "]"])
+    let pats2 = PatternsInText(markupText, ["[", "]"]); pats2.removeItems(pats3) // MOHI
+    let htmlText = markupText; var p1; var p2; var href
+    for (let pat of pats3) {
         p1 = RetStringBetween(pat, "[", "::")
         p2 = RetStringBetween(pat, "::", "]")
         href = '<a href="' + p2 + '" target="#">' + p1 + '</a>'

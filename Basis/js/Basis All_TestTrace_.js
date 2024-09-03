@@ -24,6 +24,7 @@ const BASIS = {
 	RemoveDIV: function(divID) {return RemoveDIV(divID)},
 	AutoHeight: function(divID) {return AutoHeight(divID)},
 	IsThereDiv: function(divID) {return IsThereDiv(divID)},
+	ListOfDivs: function(TagsL) {return ListOfDivs(TagsL)},
 	HTMLTable_FromConfig: function(config) {return HTMLTable_FromConfig(config)},
 	HTMLTable_FromMarkdown: function(markdownString) {return HTMLTable_FromMarkdown(markdownString)},
 	HTMLTable_FullConfig: function(config) {return HTMLTable_FullConfig(config)},
@@ -37,8 +38,6 @@ const BASIS = {
 	IsEmptyList: function(variable) {return IsEmptyList(variable)},
 	IsString1: function(variable) {return IsString1(variable)},
 	MyMarkDowntoSVG: function(markupText) {return MyMarkDowntoSVG(markupText)},
-	SVGtoMyMarkdown: function(htmlText) {return SVGtoMyMarkdown(htmlText)},
-	DOMElementsFromString: function(htmlString, tag = 'div') {return DOMElementsFromString(htmlString, tag)},
 	RetStringBetween: function(text, fromStr, toStr, ignoreBlankAtBorders) {return RetStringBetween(text, fromStr, toStr, ignoreBlankAtBorders)},
 	RetStringOutside: function(text, fromStr, toStr) {return RetStringOutside(text, fromStr, toStr)},
 	FileNameFromPath: function(path) {return FileNameFromPath(path)},
@@ -51,7 +50,7 @@ const BASIS = {
 	test_Basis_RetStringBetween: function() {return test_Basis_RetStringBetween()},
 	test_Basis_FileNameFromPath: function() {return test_Basis_FileNameFromPath()},
 	test_Basis_myReplace: function() {return test_Basis_myReplace()},
-	PatternsFound: function(text, patternL, ignore1L) {return PatternsFound(text, patternL, ignore1L)},
+	PatternsInText: function(text, patternL) {return PatternsInText(text, patternL)},
 	MyMarkDowntoHTML: function(markupText) {return MyMarkDowntoHTML(markupText)},
 	HTMLtoMyMarkdown: function(htmlText) {return HTMLtoMyMarkdown(htmlText)},
 	DOMElementsFromString: function(htmlString, tag) {return DOMElementsFromString(htmlString, tag)},
@@ -411,6 +410,18 @@ function IsThereDiv(divID) {
 	TraceFunctionCalls.pushX(arguments.callee.name)
         return document.getElementById(divID) !== null;
 }
+
+function ListOfDivs(TagsL) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
+    if (TagsL === undefined) {return []}
+    ret = []
+    for (let tag of TagsL) {
+        let pageDIVs = document.getElementsByTagName(tag)
+        for (let div of pageDIVs) {
+            ret.push(div)}
+    }
+    return ret
+}
 // ################################################################################
 // # basisHTMLTable.js                                                            #
 // ################################################################################
@@ -673,48 +684,6 @@ function IsString1(variable) {
 	TraceFunctionCalls.pushX(arguments.callee.name)
   return IsString(variable) && variable.length > 0
 }
-const CLS_SVG_APPLYFORTAGS = ["div", "a", "label"]
-const CLS_SVG_VALID_NAMES = {
-    "SquareArrowDown": "mySVG-SqAwDwn",
-    "SquareArrowDownWithBottomLine": "mySVG-SqAwDwnBmLine",
-    "A":  "mySVG-FileAwUp",
-    "B": "mySVG-FileAwDown",
-    "X": "mySVG-X"
-}
-const CLS_SVG_REPLACE = {
-    "mySVG-SqAwDwnBmLine": '<svg width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">\
-    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>\
-    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>\
-    </svg>',
-
-    // "mySVG-SqAwDwn": '<svg width="20" height="20" fill="currentColor" class="bi bi-save m-1" viewBox="0 0 16 16"> \
-    // <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 \
-    // 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/> \
-    // </svg>',
-
-    "mySVG-SqAwDwn": '<svg width="20" height="20" fill="currentColor" class="m-1" viewBox="0 0 16 16"> \
-    <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 \
-    3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/> \
-    </svg>',
-
-    "mySVG-FileAwUp": '<svg width="25" height="25" fill="currentColor" class="bi bi-file-earmark-arrow-up-fill" viewBox="0 0 16 16"> \
-    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM6.354 9.854a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 8.707V12.5a.5.5 0 0 1-1 0V8.707L6.354 9.854z"/> \
-    </svg>',
-
-    "mySVG-FileAwDown": '<svg width="25" height="25" fill="currentColor" class="bi bi-file-earmark-arrow-down-fill" viewBox="0 0 16 16"> \
-    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zm-1 4v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 11.293V7.5a.5.5 0 0 1 1 0z"/> \
-    </svg>',
-
-    // "mySVG-X": '<svg width="16" height="16" fill="currentColor" class="bi bi-bag-x" viewBox="0 0 16 16"> \
-    // <path fill-rule="evenodd" d="M6.146 8.146a.5.5 0 0 1 .708 0L8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 0 1 0-.708"/> \
-    // </svg>'
-
-    "mySVG-X": '<svg width="20" height="20" fill="currentColor" class="m-1" viewBox="2 2 18 18">\
-    <line x1="4" y1="4" x2="16" y2="16" stroke="currentColor" stroke-width="2"/>\
-    <line x1="4" y1="16" x2="16" y2="4" stroke="currentColor" stroke-width="2"/>\
-    </svg>'
-}
-
 const dictSVG = {
     'pdf-img': '<svg id="pdf-img" width="100" height="125" viewBox="0 0 80 100" fill="none"> \
             <path d="M 10 0 \
@@ -733,77 +702,49 @@ const dictSVG = {
             <text x="8" y="25" fill="white" font-size="20">pdf</text> \
             <text x="5" y="80" fill="black" font-size="10"></text> \
             </svg>',
+
     'pdf-icon': '<svg id="pdf-icon" width="16" height="20" viewBox="0 0 16 20" fill="none"> \
-        <path d="M 2 0 \
-        L 14 0 Q 16 0 16 2 \
-        L 16 18 Q 16 20 14 20 \
-        L 2 20 Q 0 20 0 18 \
-        L 0 2 Q 0 0 2 0" fill="#E2574C"></path> \
-        <text x="1" y="12" fill="white" font-size="9">pdf</text> \
-        </svg>'
+            <path d="M 2 0 \
+            L 14 0 Q 16 0 16 2 \
+            L 16 18 Q 16 20 14 20 \
+            L 2 20 Q 0 20 0 18 \
+            L 0 2 Q 0 0 2 0" fill="#E2574C"></path> \
+            <text x="1" y="12" fill="white" font-size="9">pdf</text> \
+            </svg>',
+
+    'a-x': '<svg id="a-x" width="20" height="20" fill="currentColor" class="m-1" viewBox="2 2 18 18">\
+            <line x1="4" y1="4" x2="16" y2="16" stroke="currentColor" stroke-width="2"/>\
+            <line x1="4" y1="16" x2="16" y2="4" stroke="currentColor" stroke-width="2"/>\
+            </svg>',
+
+    'a-ArrowDown': '<svg id="a-ArrowDown" width="20" height="20" fill="currentColor" class="m-1" viewBox="0 0 16 16"> \
+            <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 \
+            3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/> \
+            </svg>',
         }
 
 class clsSVG {
-/**
- * Insert Creates SVG icons based on SVG class
- */
     constructor() {
-        // this.CreateSVGs_FromDivClasses()
         for (let key of Object.keys(dictSVG)) {
             this[key] = dictSVG[key]}
     }
 
+    CreateAll_BasedOnDivClasses(tags) {
+        let svgKeys = Object.keys(this)
+        var svgKeyClasses = svgKeys.preFix('svg:')
+        let listDIVS = ListOfDivs(tags)
 
-
-
-    Get_SVG(key, idpostfix, height = null, width = null, subtext = "") {
-        let svg = ""; let re = ""; let place = ""
-        if (key in dictSVG) {
-            svg = dictSVG[key]
-            svg = svg.replace('" width', '-' + idpostfix + '" width')
-            if (height != null) {
-                re = 'height="' + RetStringBetween(svg, 'height="', '"') + '"'
-                place = 'height="' + height + '"'
-                svg = svg.replace(re, place)}
-            if (width != null) {
-                re = 'width="' + RetStringBetween(svg, 'width="', '"') + '"'
-                place = 'width="' + width + '"'
-                svg = svg.replace(re, place)}
-            if (subtext != "") {
-                re = 'font-size="10">' + RetStringBetween(svg, 'font-size="10">', '</text>') + '</text>'
-                place = 'font-size="10">' + subtext + '</text>'
-                svg = svg.replace(re, place)}
-        }
-        return svg
-    } 
-
-    CreateSVGs_FromDivClasses() {
-        var Cls_SVG_ValidTags = Object.keys(CLS_SVG_REPLACE)
-        let listDIVS = []
-        // get all divs
-        for (let tag of CLS_SVG_APPLYFORTAGS) {
-            let pageDIVs = document.getElementsByTagName(tag)
-            for (let div of pageDIVs) {
-                listDIVS.push(div)
-            }
-        }
-        
-        // loop all divs->loop all classes
         for (let div of listDIVS) {
             for (let cls of div.classList)
-                if (Cls_SVG_ValidTags.includes(cls)) {
-                    div.innerHTML = CLS_SVG_REPLACE[cls] + div.innerHTML
-                    // if (cls == "mySVG-SqAwDwnBmLine") {
-                    //     div.innerHTML = CLS_SVG_REPLACE[cls] + div.innerHTML
-                    // }
-                }
+                if (svgKeyClasses.includes(cls)) {
+                    div.innerHTML = this[cls.after('svg:')] + div.innerHTML}
         }
     }
 
-    CreateSVG_FromDivID(divID, SVGName) {
-        if (Object.keys(CLS_SVG_VALID_NAMES).includes(SVGName)) {
-            let div = document.getElementById(divID);   
-            div.innerHTML = CLS_SVG_REPLACE[CLS_SVG_VALID_NAMES[SVGName]] + div.innerHTML
+    Create_ToDIV(divID, SVGName) {
+        if (Object.keys(this).includes(SVGName)) {
+            let div = document.getElementById(divID); 
+            div.innerHTML = this[SVGName] + div.innerHTML
         }
     }
 }
@@ -811,6 +752,16 @@ class clsSVG {
 // ######################################################
 // MarkDown Functions                                   #
 // ######################################################
+
+// MOHI: 
+
+// [(svg)pdf] = small pdf icon
+// [(SVG)pdf] = big  pdf icon
+// [(svg)pdf][textTo::Link] == [(pdf)textTo::Link]  small pdf icon followed by hyperlink
+
+// THis basisSVG only knows [(svg)pdf] and [(SVG)pdf]
+// the logic for combination with hyperlink happend ins basis Patterns.
+
 
 function MyMarkDowntoSVG(markupText) {
 	TraceFunctionCalls.pushX(arguments.callee.name)
@@ -853,8 +804,8 @@ function MyMarkDowntoSVG(markupText) {
         }
 
     function _MyMarkDowntoSVG_Patterns(markupText) {
-        patsIMG = PatternsFound(markupText, ["[(img)", "::", "]"])  
-        patsICON = PatternsFound(markupText, ["[(icon)", "::", "]"])  
+        patsIMG = PatternsInText(markupText, ["[(img)", "::", "]"])  
+        patsICON = PatternsInText(markupText, ["[(icon)", "::", "]"])  
         return patsIMG.concat(patsICON)
     }
 
@@ -872,42 +823,109 @@ function MyMarkDowntoSVG(markupText) {
         assert(false)
     }
 
-// svg -> markup
-function SVGtoMyMarkdown(htmlText) {
-	TraceFunctionCalls.pushX(arguments.callee.name)
-    let ret = htmlText
-    svgs = DOMElementsFromString(htmlText, 'svg')
-    for (let svg of svgs) {
-        ret = _SVGtoMyMarkdown_Loop(ret, svg)}
+// // svg -> markup
+// funcction SVGtoMyMarkdown(htmlText) {
+//     let ret = htmlText
+//     svgs = DOMElementsFromString(htmlText, 'svg')
+//     for (let svg of svgs) {
+//         ret = _SVGtoMyMarkdown_Loop(ret, svg)}
     
-    ret = HTMLtoMyMarkdown(ret)
+//     ret = HTMLtoMyMarkdown(ret)
 
-    return ret
-    }
+//     return ret
+//     }
 
-function _SVGtoMyMarkdown_Loop(htmlText, svg) {
-        let svgText = svg.outerHTML
+// function _SVGtoMyMarkdown_Loop(htmlText, svg) {
+//         let svgText = svg.outerHTML
     
-        if (svg.id.includes('pdf-img')) {
-            htmlText = htmlText.replace(svgText, '(img)pdf') }
-        if (svg.id.includes('pdf-icon')) {
-            htmlText = htmlText.replace(svgText + ' ', '')
-            let linkName = RetStringBetween(svg.id, 'pdf-icon-', '')
-            if (linkName.length > 3) {
-                htmlText = htmlText.replace('>' + linkName + '</a>', '>(icon)pdf</a>')}
-        }
-        return htmlText
-}
+//         if (svg.id.includes('pdf-img')) {
+//             htmlText = htmlText.replace(svgText, '(img)pdf') }
+//         if (svg.id.includes('pdf-icon')) {
+//             htmlText = htmlText.replace(svgText + ' ', '')
+//             let linkName = RetStringBetween(svg.id, 'pdf-icon-', '')
+//             if (linkName.length > 3) {
+//                 htmlText = htmlText.replace('>' + linkName + '</a>', '>(icon)pdf</a>')}
+//         }
+//         return htmlText
+// }
 
 
 
-function DOMElementsFromString(htmlString, tag = 'div') {
-	TraceFunctionCalls.pushX(arguments.callee.name)
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlString, 'text/html');
-    const svgElements = doc.querySelectorAll(tag);
-    return Array.from(svgElements);
-}
+// funcction DOMElementsFromString(htmlString, tag = 'div') {
+//     const parser = new DOMParser();
+//     const doc = parser.parseFromString(htmlString, 'text/html');
+//     const svgElements = doc.querySelectorAll(tag);
+//     return Array.from(svgElements);
+// }
+
+
+
+// Get_SVG(key, idpostfix, height = null, width = null, subtext = "") {
+//     let svg = ""; let re = ""; let place = ""
+//     if (key in dictSVG) {
+//         svg = dictSVG[key]
+//         svg = svg.replace('" width', '-' + idpostfix + '" width')
+//         if (height != null) {
+//             re = 'height="' + RetStringBetween(svg, 'height="', '"') + '"'
+//             place = 'height="' + height + '"'
+//             svg = svg.replace(re, place)}
+//         if (width != null) {
+//             re = 'width="' + RetStringBetween(svg, 'width="', '"') + '"'
+//             place = 'width="' + width + '"'
+//             svg = svg.replace(re, place)}
+//         if (subtext != "") {
+//             re = 'font-size="10">' + RetStringBetween(svg, 'font-size="10">', '</text>') + '</text>'
+//             place = 'font-size="10">' + subtext + '</text>'
+//             svg = svg.replace(re, place)}
+//     }
+//     return svg
+// } 
+
+// const CLS_SVG_REPLACE = {
+//     "mySVG-SqAwDwnBmLine": '<svg width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">\
+//     <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>\
+//     <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>\
+//     </svg>',
+
+//     // "mySVG-SqAwDwn": '<svg width="20" height="20" fill="currentColor" class="bi bi-save m-1" viewBox="0 0 16 16"> \
+//     // <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 \
+//     // 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/> \
+//     // </svg>',
+
+//     "mySVG-SqAwDwn": '<svg width="20" height="20" fill="currentColor" class="m-1" viewBox="0 0 16 16"> \
+//     <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 \
+//     3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/> \
+//     </svg>',
+
+//     "mySVG-FileAwUp": '<svg width="25" height="25" fill="currentColor" class="bi bi-file-earmark-arrow-up-fill" viewBox="0 0 16 16"> \
+//     <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM6.354 9.854a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 8.707V12.5a.5.5 0 0 1-1 0V8.707L6.354 9.854z"/> \
+//     </svg>',
+
+//     "mySVG-FileAwDown": '<svg width="25" height="25" fill="currentColor" class="bi bi-file-earmark-arrow-down-fill" viewBox="0 0 16 16"> \
+//     <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zm-1 4v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 11.293V7.5a.5.5 0 0 1 1 0z"/> \
+//     </svg>',
+
+//     // "mySVG-X": '<svg width="16" height="16" fill="currentColor" class="bi bi-bag-x" viewBox="0 0 16 16"> \
+//     // <path fill-rule="evenodd" d="M6.146 8.146a.5.5 0 0 1 .708 0L8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 0 1 0-.708"/> \
+//     // </svg>'
+
+//     "mySVG-X": '<svg width="20" height="20" fill="currentColor" class="m-1" viewBox="2 2 18 18">\
+//     <line x1="4" y1="4" x2="16" y2="16" stroke="currentColor" stroke-width="2"/>\
+//     <line x1="4" y1="16" x2="16" y2="4" stroke="currentColor" stroke-width="2"/>\
+//     </svg>'
+// }
+
+
+
+// const CLS_SVG_VALID_NAMES = {
+//     "SquareArrowDown": "mySVG-SqAwDwn",
+//     "SquareArrowDownWithBottomLine": "mySVG-SqAwDwnBmLine",
+//     "A":  "mySVG-FileAwUp",
+//     "B": "mySVG-FileAwDown",
+//     "X": "mySVG-X"
+// }
+
+
 // ###############################################################################
 // Basis   Text Functions                                                        #
 // ###############################################################################
@@ -1074,52 +1092,64 @@ function test_Basis_myReplace() {
 }
 
 
-function PatternsFound(text, patternL, ignore1L) {
+function PatternsInText(text, patternL) {
 	TraceFunctionCalls.pushX(arguments.callee.name)
     if (text === undefined) return false;
     if (patternL === undefined) return false;
-    if (ignore1L === undefined) ignore1L = []
     assert(typOf(text) == "str")
     assert(typOf(patternL) == "list")
-    assert(typOf(ignore1L) == "list")
     assert(2 <= patternL.length && patternL.length <= 3)
 
     
     // paternL = ["[", "]"];
     if (patternL.length == 2) {
-        // not implemented
+        return _PatternsFound2(text, patternL)
     }
     // paternL = ["[", ":", "]"];
     if (patternL.length == 3) {
-        return _PatternsFound3(text, patternL, ignore1L)
+        return _PatternsFound3(text, patternL)
     }
 }
 
-function _PatternsFound3(text, patternL, ignore1L) {
+function _PatternsFound2(text, patternL) {
+    let ret = []; let tmp = ""
+    let startIndex = 0; let pIndex = [-1, -1]
+
+    while (startIndex < text.length) {
+        // find index 0
+        pIndex[0] = text.indexOf(patternL[0], startIndex)
+        if (pIndex[0] == -1) return ret
+        // find index 1
+        pIndex[1] = text.indexOf(patternL[1], pIndex[0])
+        if (pIndex[1] == -1) return ret
+        // Extract Pattern and Push
+        ret.push(text.slice(pIndex[0], pIndex[1] + 1))
+
+        startIndex = pIndex[1] + 1;}
+
+    return ret
+}
+
+function _PatternsFound3(text, patternL) {
     let ret = []; let tmp = ""
     let startIndex = 0; let pIndex = [-1, -1, -1]
     
-    // find p indexes
     while (startIndex < text.length) {
-        pIndex[0] = text.indexOf(patternL[0], startIndex)
-        if (pIndex[0] == -1) return ret
-        
-        for (i = 1; i < patternL.length; i++) {
-            pIndex[i] = text.indexOf(patternL[i], pIndex[i-1])
-            if (pIndex[i] == -1) {return ret}
-        }
-      
-        // Extract the pattern and push it into the occurrences array
-        tmp = text.slice(pIndex[0], pIndex[pIndex.length-1] + 1);
-        if (ignore1L.length > 0) {
-            for (let ignore of ignore1L) {
-                if (!tmp.startsWith(ignore1L)) {
-                    ret.push(tmp);}
-            }
-        } else {
-            ret.push(tmp) }
-        startIndex = pIndex[pIndex.length-1] + 1;
-    }
+        // find index 0
+        pIndex[0] = text.indexOf(patternL[0], startIndex); if (pIndex[0] == -1) return ret
+        // find index 1
+        pIndex[1] = text.indexOf(patternL[1], pIndex[0]); if (pIndex[1] == -1) return ret
+        // find index 2 (again strarting from pIndex[0])
+        pIndex[2] = text.indexOf(patternL[2], pIndex[0]); if (pIndex[1] == -1) return ret
+        // skip if index 1 > index 2
+        if (pIndex[1] > pIndex[2]) {
+            startIndex = pIndex[0] + 1;
+            continue}
+        // Extract Pattern and Push
+        ret.push(text.slice(pIndex[0], pIndex[2] + 1))
+
+        startIndex = pIndex[2] + 1;}
+
     return ret;
   }
 
@@ -1136,17 +1166,15 @@ const CLASS_SVG_FOR_MARKDOWN = new clsSVG()
     ]
 
 
-
 // markup -> html
 function MyMarkDowntoHTML(markupText) {
 	TraceFunctionCalls.pushX(arguments.callee.name)
-    if (typOf(markupText) != 'str') {
-        return markupText}
+    assert(typOf(markupText) == 'str')
 
-    // replace [Text::Link] -> <a href="Link" ...>
-    pats = PatternsFound(markupText, ["[", "::", "]"])
-    htmlText = markupText; var p1; var p2; var href
-    for (pat of pats) {
+    let pats3 = PatternsInText(markupText, ["[", "::", "]"])
+    let pats2 = PatternsInText(markupText, ["[", "]"]); pats2.removeItems(pats3) // MOHI
+    let htmlText = markupText; var p1; var p2; var href
+    for (let pat of pats3) {
         p1 = RetStringBetween(pat, "[", "::")
         p2 = RetStringBetween(pat, "::", "]")
         href = '<a href="' + p2 + '" target="#">' + p1 + '</a>'
@@ -1314,6 +1342,15 @@ Object.defineProperties(Array.prototype, {
     }
 });
 
+Object.defineProperties(Array.prototype, {
+    removeItems: {
+        value: function(liste) {
+            for (element of liste) {
+                this.removeAll(element)}
+        }
+    }
+});
+
 
 Object.defineProperties(Array.prototype, {
     toggle: {
@@ -1332,6 +1369,18 @@ Object.defineProperties(Array.prototype, {
             if (!this.includes(element)) {
                 this.push(element)}
             }
+        }
+});
+
+Object.defineProperties(Array.prototype, {
+    preFix: {
+        value: function(preFix) {
+            ret = []
+            for(let i=0; i<this.length; i++)
+                if (typeof this[i] === "string")
+                    ret.push(preFix + this[i])
+            return ret
+        }
         }
 });
 
@@ -1359,6 +1408,19 @@ Object.defineProperties(String.prototype, {
             if (idx == -1) { 
                 return this}
             return this.substring(0,idx)
+        }
+    } 
+});
+
+Object.defineProperties(String.prototype, {
+    after: {
+        value: function(n) {
+            if (n == '') {return this} 
+
+            let idx = this.indexOf(n)
+            if (idx == -1) { 
+                return this}
+            return this.substring(idx + n.length)
         }
     } 
 });

@@ -33,7 +33,7 @@ class clsDataCollection {
         let items = []
         for (let row of this.parent.XData.data) {
             for (let val of row) {
-                items = PatternsFound(val,["[", "::", "]"])
+                items = PatternsInText(val,["[", "::", "]"])
                 if (items.length > 0) {
                     this.AddLinksToConfigList(items)}}}  // key information actually redundant
     }

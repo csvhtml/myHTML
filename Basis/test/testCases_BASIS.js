@@ -132,43 +132,75 @@ function test_ElementInArrayN(myTest) {
 function test_PatternsFound_Donts(myTest) {
     let fname = arguments.callee.name;
 
-    let foo = function (a,b) {PatternsFound(a,b)}
+    let foo = function (a,b) {PatternsInText(a,b)}
     myTest.Assertion(foo, {"a":123, "b":"string"}, fname)
     myTest.Assertion(foo, {"a":"string", "b":"string"}, fname)
     // Patern must be length 2 or length 3
     myTest.Assertion(foo, {"a":"string", "b": ["1"]}, fname)    
     myTest.Assertion(foo, {"a":"string", "b": ["1", "2", "3", "4"]}, fname)
 
-    myTest.IsFalse(PatternsFound(), fname)
-    myTest.IsFalse(PatternsFound('something'), fname)
-    myTest.IsFalse(PatternsFound(), fname)
+    myTest.IsFalse(PatternsInText(), fname)
+    myTest.IsFalse(PatternsInText('something'), fname)
+    myTest.IsFalse(PatternsInText(), fname)
 }
 
-function test_PatternsFound_Dos(myTest) {
+function test_PatternsFound_Dos2(myTest) {
+    let fname = arguments.callee.name;
+    let input = "Some Text"; let pattern = ["[", "]"]
+
+    myTest.Equal(PatternsInText(input, pattern), [], fname)
+
+    input = "Some [Text]"
+    myTest.Equal(PatternsInText(input, pattern), ['[Text]'], fname)
+
+    input = "[Some:Text] for you"
+    myTest.Equal(PatternsInText(input, pattern), ["[Some:Text]"], fname)
+
+    input = "[Some::Text] for you"
+    myTest.Equal(PatternsInText(input, pattern), ["[Some::Text]"], fname)
+
+    input = "[Some Text] [for you]"
+    myTest.Equal(PatternsInText(input, pattern), ["[Some Text]", "[for you]"], fname)
+}
+
+
+function test_PatternsFound_Dos3(myTest) {
     let fname = arguments.callee.name;
     let input = "Some Text"; let pattern = ["[", "::", "]"]
 
-    myTest.Equal(PatternsFound(input, pattern), [], fname)
+    myTest.Equal(PatternsInText(input, pattern), [], fname)
 
     input = "Some [Text]";
-    myTest.Equal(PatternsFound(input, pattern), [], fname)
+    myTest.Equal(PatternsInText(input, pattern), [], fname)
 
     input = "[Some:Text] for you"; pattern = ["[", ":", "]"]
-    myTest.Equal(PatternsFound(input, pattern), ["[Some:Text]"], fname)
+    myTest.Equal(PatternsInText(input, pattern), ["[Some:Text]"], fname)
 
     input = "[Some:Text] for you"; pattern = ["[", "::", "]"]
-    myTest.Equal(PatternsFound(input, pattern), [], fname)
+    myTest.Equal(PatternsInText(input, pattern), [], fname)
     
     input = "[Some::Text] for you"; pattern = ["[", "::", "]"]
-    myTest.Equal(PatternsFound(input, pattern), ["[Some::Text]"], fname)
+    myTest.Equal(PatternsInText(input, pattern), ["[Some::Text]"], fname)
 
     input = "[Some::Text] [for::you]"; pattern = ["[", "::", "]"]
-    myTest.Equal(PatternsFound(input, pattern), ["[Some::Text]", "[for::you]"], fname)
+    myTest.Equal(PatternsInText(input, pattern), ["[Some::Text]", "[for::you]"], fname)
+
+    input = "[Some::Text] [for you]"; pattern = ["[", "::", "]"]
+    myTest.Equal(PatternsInText(input, pattern), ["[Some::Text]"], fname)
+
+    input = "[Some Text] [for::you]"; pattern = ["[", "::", "]"]
+    myTest.Equal(PatternsInText(input, pattern), ["[for::you]"], fname)
 }
 
 function test_Markup(myTest) {
     let fname = arguments.callee.name;
+
+    let foo = function (a) {MyMarkDowntoHTML(a)}
+    myTest.Assertion(foo, {"a":123}, fname)
+    myTest.Assertion(foo, {"a":[1,2,3]}, fname)
+
     let markup_html = [
+        // ["[x] abc [x::y] [y]  [asdsa::acas]", '<input type="checkbox" checked="">abc<input type="checkbox" checked="">'],
         // new line
         ["\n", "<br>"], 
         // links
@@ -182,9 +214,11 @@ function test_Markup(myTest) {
         // Checkboxes
         ["[ ]abc[ ]", '<input type="checkbox">abc<input type="checkbox">'],   // [ ] will not work if data is loaded
         ["[x]abc[x]", '<input type="checkbox" checked="">abc<input type="checkbox" checked="">']
+
+        
 ]
     
-    for (element of markup_html) {
+    for (let element of markup_html) {
         myTest.Equal(MyMarkDowntoHTML(element[0]), element[1], fname)
         myTest.Equal(HTMLtoMyMarkdown(element[1]), element[0], fname)
     }
@@ -233,6 +267,14 @@ function proto_listRemoveAll(myTest) {
     myTest.Equal(liste, expected, arguments.callee.name)
 }
 
+function proto_listRemoveItems(myTest) {
+    let liste = ["a", "b", "c", "e", "f", "c", "c",]
+    let expected = ["a", "b", "e"]
+    
+    liste.removeItems(["c", "f"])
+    myTest.Equal(liste, expected, arguments.callee.name)
+}
+
 function proto_listToggle(myTest) {
     let liste = ["a", "b", "c", "d"]
     let expected = ["a", "b", "d"]
@@ -257,6 +299,13 @@ function proto_listPushX(myTest) {
     myTest.Equal(liste, expected, arguments.callee.name)
 }
 
+function proto_listPreFix(myTest) {
+    let liste = ["a", "b", "c", "d"]
+    let expected = ["xxa", "xxb", "xxc", "xxd"]
+    
+    myTest.Equal(liste.preFix('xx'), expected, arguments.callee.name)
+}
+
 
 function proto_stringUntil(myTest) {
     let text = "Hallo Welt"
@@ -264,6 +313,12 @@ function proto_stringUntil(myTest) {
     
     myTest.Equal(text.until(' '), expected, arguments.callee.name)
     myTest.Equal(text.until(''), text, arguments.callee.name)
+}
+
+function proto_stringAfter(myTest) {
+    let text = "Hallo Welt da oben"
+    
+    myTest.Equal(text.after("Welt "), "da oben", arguments.callee.name)
 }
 
 function proto_stringCount(myTest) {

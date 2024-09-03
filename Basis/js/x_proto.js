@@ -44,6 +44,15 @@ Object.defineProperties(Array.prototype, {
     }
 });
 
+Object.defineProperties(Array.prototype, {
+    removeItems: {
+        value: function(liste) {
+            for (element of liste) {
+                this.removeAll(element)}
+        }
+    }
+});
+
 
 Object.defineProperties(Array.prototype, {
     toggle: {
@@ -62,6 +71,18 @@ Object.defineProperties(Array.prototype, {
             if (!this.includes(element)) {
                 this.push(element)}
             }
+        }
+});
+
+Object.defineProperties(Array.prototype, {
+    preFix: {
+        value: function(preFix) {
+            ret = []
+            for(let i=0; i<this.length; i++)
+                if (typeof this[i] === "string")
+                    ret.push(preFix + this[i])
+            return ret
+        }
         }
 });
 
@@ -89,6 +110,19 @@ Object.defineProperties(String.prototype, {
             if (idx == -1) { 
                 return this}
             return this.substring(0,idx)
+        }
+    } 
+});
+
+Object.defineProperties(String.prototype, {
+    after: {
+        value: function(n) {
+            if (n == '') {return this} 
+
+            let idx = this.indexOf(n)
+            if (idx == -1) { 
+                return this}
+            return this.substring(idx + n.length)
         }
     } 
 });

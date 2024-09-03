@@ -84,7 +84,7 @@ function Edit_Save(divID, value) {
     }
         let value_modified = value
         value_modified = MyMarkDowntoHTML(value_modified, ignore1 = ["[("])
-        value_modified = MyMarkDowntoSVG(value_modified)
+        // value_modified = MyMarkDowntoSVG(value_modified)
         
         return value_modified
 }
