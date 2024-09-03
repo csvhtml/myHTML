@@ -37,7 +37,6 @@ const BASIS = {
 	IsNotUndefined: function(variable) {return IsNotUndefined(variable)},
 	IsEmptyList: function(variable) {return IsEmptyList(variable)},
 	IsString1: function(variable) {return IsString1(variable)},
-	MyMarkDowntoSVG: function(markupText) {return MyMarkDowntoSVG(markupText)},
 	RetStringBetween: function(text, fromStr, toStr, ignoreBlankAtBorders) {return RetStringBetween(text, fromStr, toStr, ignoreBlankAtBorders)},
 	RetStringOutside: function(text, fromStr, toStr) {return RetStringOutside(text, fromStr, toStr)},
 	FileNameFromPath: function(path) {return FileNameFromPath(path)},
@@ -714,78 +713,78 @@ class clsSVG {
     }
 }
 
-// ######################################################
-// MarkDown Functions                                   #
-// ######################################################
+// // ######################################################
+// // MarkDown Functions                                   #
+// // ######################################################
 
-// MOHI: 
+// // MOHI: 
 
-// [(svg)pdf] = small pdf icon
-// [(SVG)pdf] = big  pdf icon
-// [(svg)pdf][textTo::Link] == [(pdf)textTo::Link]  small pdf icon followed by hyperlink
+// // [(svg)pdf] = small pdf icon
+// // [(SVG)pdf] = big  pdf icon
+// // [(svg)pdf][textTo::Link] == [(pdf)textTo::Link]  small pdf icon followed by hyperlink
 
-// THis basisSVG only knows [(svg)pdf] and [(SVG)pdf]
-// the logic for combination with hyperlink happend ins basis Patterns.
+// // THis basisSVG only knows [(svg)pdf] and [(SVG)pdf]
+// // the logic for combination with hyperlink happend ins basis Patterns.
 
 
-function MyMarkDowntoSVG(markupText) {
-    if (typOf(markupText) != 'str') {return markupText}
+// funcction MyMarkDowntoSVG(markupText) {
+//     if (typOf(markupText) != 'str') {return markupText}
     
-    htmlText = markupText
-    patterns = _MyMarkDowntoSVG_Patterns(markupText)
-    for (pattern of patterns) {
-        replaceText = _MyMarkDowntoSVG_Replacement(pattern)
-        htmlText = htmlText.replace(pattern, replaceText)
-    }
+//     htmlText = markupText
+//     patterns = _MyMarkDowntoSVG_Patterns(markupText)
+//     for (pattern of patterns) {
+//         replaceText = _MyMarkDowntoSVG_Replacement(pattern)
+//         htmlText = htmlText.replace(pattern, replaceText)
+//     }
 
-    return htmlText;
-    }
+//     return htmlText;
+//     }
 
-    function _MyMarkDowntoSVG_Replacement(pattern) {
-        SVG = new clsSVG()
-        let typ = _MyMarkDowntoSVG_PatternsType(pattern)
-        let filetyp = _MyMarkDowntoSVG_PatternsFileType(pattern)
-        var p = RetStringBetween(pattern, "::", "]")
+//     funcction _MyMarkDowntoSVG_Replacement(pattern) {
+//         SVG = new clsSVG()
+//         let typ = _MyMarkDowntoSVG_PatternsType(pattern)
+//         let filetyp = _MyMarkDowntoSVG_PatternsFileType(pattern)
+//         var p = RetStringBetween(pattern, "::", "]")
 
-        let ret
-        ret = _MyMarkDowntoSVG_Replacement2(typ, filetyp, p)
-        return ret
-    }   
-        function _MyMarkDowntoSVG_Replacement2(typ, filetyp, p2) {
-            subtext = FileNameFromPath(RetStringBetween(p2, "::", "]"))
-            subtext = RetStringBetween(subtext, "", ".pdf")
-            if (typ == 'img') {
-                subtext = ShortenDotDotDot(subtext)}
-            let key = filetyp + '-' + typ
-            svg = SVG.Get_SVG(key, subtext, null, null, subtext)
+//         let ret
+//         ret = _MyMarkDowntoSVG_Replacement2(typ, filetyp, p)
+//         return ret
+//     }   
+//         funcction _MyMarkDowntoSVG_Replacement2(typ, filetyp, p2) {
+//             subtext = FileNameFromPath(RetStringBetween(p2, "::", "]"))
+//             subtext = RetStringBetween(subtext, "", ".pdf")
+//             if (typ == 'img') {
+//                 subtext = ShortenDotDotDot(subtext)}
+//             let key = filetyp + '-' + typ
+//             svg = SVG.Get_SVG(key, subtext, null, null, subtext)
             
-            let ret = ""
-            if (typ == 'img') {
-                ret = '<a href="' + p2 + '" target="#">' + svg + '</a>'}
-            if (typ == 'icon') {
-                ret = svg + ' <a href="' + p2 + '" target="#">' + subtext + '</a>'}
-            return ret
-        }
+//             let ret = ""
+//             if (typ == 'img') {
+//                 ret = '<a href="' + p2 + '" target="#">' + svg + '</a>'}
+//             if (typ == 'icon') {
+//                 ret = svg + ' <a href="' + p2 + '" target="#">' + subtext + '</a>'}
+//             return ret
+//         }
 
-    function _MyMarkDowntoSVG_Patterns(markupText) {
-        patsIMG = PatternsInText(markupText, ["[(img)", "::", "]"])  
-        patsICON = PatternsInText(markupText, ["[(icon)", "::", "]"])  
-        return patsIMG.concat(patsICON)
-    }
+//     funcction _MyMarkDowntoSVG_Patterns(markupText) {
+//         patsIMG = PatternsInText(markupText, ["[(img)", "::", "]"])  
+//         patsICON = PatternsInText(markupText, ["[(icon)", "::", "]"])  
+//         return patsIMG.concat(patsICON)
+//     }
 
-    function _MyMarkDowntoSVG_PatternsType(pattern) {
-        if (pattern.includes('[(img)')) {
-            return 'img'}
-        if (pattern.includes('[(icon)')) {
-            return 'icon'}
-        assert(false)
-    }
+//     funcction _MyMarkDowntoSVG_PatternsType(pattern) {
+//         if (pattern.includes('[(img)')) {
+//             return 'img'}
+//         if (pattern.includes('[(icon)')) {
+//             return 'icon'}
+//         assert(false)
+//     }
 
-    function _MyMarkDowntoSVG_PatternsFileType(pattern) {
-        if (pattern.includes(')pdf::')) {
-            return 'pdf'}
-        assert(false)
-    }
+//     funcction _MyMarkDowntoSVG_PatternsFileType(pattern) {
+//         if (pattern.includes(')pdf::')) {
+//             return 'pdf'}
+//         assert(false)
+//     }
 
 // // svg -> markup
 // funcction SVGtoMyMarkdown(htmlText) {
@@ -1103,95 +1102,158 @@ function _PatternsFound3(text, patternL) {
 
     return ret;
   }
-
 // ################################################################
-// MarkDown                                                       #
+// MarkDown   Config                                              #
 // ################################################################
 
 const CLASS_SVG_FOR_MARKDOWN = new clsSVG()
 
- const CONFIG_SVG_FOR_MARKDOWN_REPLACE = [
-    // ['Markdown String', Regex, svg code]
-    ["[(SVG)pdf]", /\[\(SVG\)pdf\]/g, CLASS_SVG_FOR_MARKDOWN['pdf-img'], 'pdf-img'],
-    ["[(svg)pdf]", /\[\(svg\)pdf\]/g, CLASS_SVG_FOR_MARKDOWN['pdf-icon'], 'pdf-icon']
-    ]
+const CONFIG_SVG_FOR_MARKDOWN_REPLACE = [
+    // ['Markdown String', svg string, key]
+    ["[(SVG)pdf]", CLASS_SVG_FOR_MARKDOWN['pdf-img'], 'pdf-img'],
+    ["[(svg)pdf]", CLASS_SVG_FOR_MARKDOWN['pdf-icon'], 'pdf-icon']
+]
 
+const CONFIG_MYMARKDOWN_FEATURES_ACTIVE = {
+    'new Line': true,
+    'multi Space': true,
+}
 
-// markup -> html
+const CONFIG_MYMARKDOWN_PATTERN2_ACTIVE = {
+    'Checkbox': true,
+    'svg': true,
+}
+
+const CONFIG_MYMARKDOWN_PATTERN3_ACTIVE = {
+    'Link': true,
+}
+
+// ################################################################
+// MarkDown   -> HTML                                             #
+// ################################################################
+
 function MyMarkDowntoHTML(markupText) {
     assert(typOf(markupText) == 'str')
 
     let pats3 = PatternsInText(markupText, ["[", "::", "]"])
-    let pats2 = PatternsInText(markupText, ["[", "]"]); pats2.removeItems(pats3) // MOHI
-    let htmlText = markupText; var p1; var p2; var href
-    for (let pat of pats3) {
-        p1 = RetStringBetween(pat, "[", "::")
-        p2 = RetStringBetween(pat, "::", "]")
-        href = '<a href="' + p2 + '" target="#">' + p1 + '</a>'
-        htmlText = htmlText.replace(pat, href)
-    }
-    // repalce /n -> <br>
-    htmlText = htmlText.replace(new RegExp('\n', "g") , '<br>')
+    let pats2 = PatternsInText(markupText, ["[", "]"]); pats2.removeItems(pats3)
 
-    htmlText = _replaceMultipleSpacesWithNbsp(htmlText)
-    htmlText = _replaceBracketWitchCheckbox(htmlText)
-    htmlText = _replace_MarkDown_To_SVG(htmlText)
+    htmlText = _MyMarkDown_FeaturesWithoutBrackets_Apply(markupText)
+
+    htmlText = _MyMarkDown_Patterns2_Apply(htmlText, pats2)
+
+    htmlText = _MyMarkDown_Patterns3_Apply(htmlText, pats3)
+
     return htmlText;
     }
 
-// html -> markup
+
+function _MyMarkDown_FeaturesWithoutBrackets_Apply(text) {
+    let Features = CONFIG_MYMARKDOWN_FEATURES_ACTIVE
+
+    if (Features['new Line']) {
+        text = text.replace(new RegExp('\n', "g") , '<br>')}
+    if (Features['multi Space']) {
+        text = text.replace(/ {2,}/g, function(match) {return '&nbsp;'.repeat(match.length);});}
+
+    return text
+}
+
+function _MyMarkDown_Patterns2_Apply(text, pats2) {
+    let Features = CONFIG_MYMARKDOWN_PATTERN2_ACTIVE
+
+    if (Features['Checkbox']) {
+        text = text.replace(/\[ \]/g, '<input type="checkbox">')
+        text = text.replace(/\[x\]/g, '<input type="checkbox" checked="">')
+        pats2.removeAll('[ ]'); pats2.removeAll('[x]')}
+    if (Features['svg']) {
+        for (let pat of pats2) {
+            if (pat.includes('[(svg)') || pat.includes('[(SVG)')) {
+                text = _MyMarkDown_ReplaceSVG(text, pat)}}}
+    return text
+}
+
+function _MyMarkDown_Patterns3_Apply(text, pats3) {
+    let Features = CONFIG_MYMARKDOWN_PATTERN3_ACTIVE
+    let part1 = ''; let part2 = ''
+    if (Features['Link']) {
+        for (let pat of pats3) {
+            part1 = RetStringBetween(pat, "[", "::")
+            part2 = RetStringBetween(pat, "::", "]")
+            href = '<a href="' + part2 + '" target="#">' + part1 + '</a>'
+            text = text.replace(pat, href)
+        }}
+
+    return text
+}
+
+function _MyMarkDown_ReplaceSVG(text, pattern) {
+    let idx = 0
+    for (i = 0; i < CONFIG_SVG_FOR_MARKDOWN_REPLACE.length; i++) {
+        if (CONFIG_SVG_FOR_MARKDOWN_REPLACE[i][0] == pattern) {
+            idx = i
+            break}}
+    return text.replace(pattern, CONFIG_SVG_FOR_MARKDOWN_REPLACE[idx][1])
+}
+
+
+// ################################################################
+// HTML    -> MarkDown                                            #
+// ################################################################
+
+
 function HTMLtoMyMarkdown(htmlText) {
-    htmlText = htmlText.replace('target="#"', '')
-    var anchorRegex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1[^>]*?>(.*?)<\/a>/g;
-    var markupText = htmlText.replace(anchorRegex, '[$3::$2]');
-    markupText = markupText.replace(new RegExp('<br>', "g") , '\n')
-    markupText = _replaceNbspWithSpaces(markupText)
-    markupText = _replaceCheckboxWithBrackets(markupText)
-    markupText = _replace_SVG_BACK_To_MyMarkdon(markupText)
+    assert(typOf(htmlText) == 'str')
+
+    markupText = _BackToMyMarkDown_FeaturesWithoutBrackets_Apply(htmlText)
+
+    markupText = _BackToMyMarkDown_Patterns2_Apply(markupText)
+
+    markupText = _BackToMyMarkDown_Patterns3_Apply(markupText)
+
     return markupText;
     }
 
+function _BackToMyMarkDown_FeaturesWithoutBrackets_Apply(text) {
+    let Features = CONFIG_MYMARKDOWN_FEATURES_ACTIVE
 
-function _replaceMultipleSpacesWithNbsp(text) {
-    return text.replace(/ {2,}/g, function(match) {
-        return '&nbsp;'.repeat(match.length);
-    });
-    }
+    if (Features['new Line']) {
+        text = text.replace(new RegExp('<br>', "g") , '\n')}
+    if (Features['multi Space']) {
+        text = text.replace(/&nbsp;+/g, function(match) {return ' '.repeat(match.length / 6); });}// 6 is the length of '&nbsp;'
 
-function _replaceNbspWithSpaces(text) {
-    return text.replace(/&nbsp;+/g, function(match) {
-        return ' '.repeat(match.length / 6); // 6 is the length of '&nbsp;'
-    });
-    }
-
-function _replaceBracketWitchCheckbox(text) {
-    text = text.replace(/\[ \]/g, '<input type="checkbox">')
-    return text.replace(/\[x\]/g, '<input type="checkbox" checked="">')
+    return text
 }
 
-function _replaceCheckboxWithBrackets(text) {
-    text = text.replace(/<input type="checkbox">/g, '[ ]')
-    return text.replace(/<input type="checkbox" checked="">/g, '[x]')
+function _BackToMyMarkDown_Patterns2_Apply(text) {
+    let Features = CONFIG_MYMARKDOWN_PATTERN2_ACTIVE
+
+    if (Features['Checkbox']) {
+        text = text.replace(/<input type="checkbox">/g, '[ ]')
+        text = text.replace(/<input type="checkbox" checked="">/g, '[x]')}
+    if (Features['svg']) {
+        text = _replace_SVG_BACK_To_MyMarkdon(text)}
+    return text
 }
 
-function _replace_MarkDown_To_SVG(text) {
-    let replace = CONFIG_SVG_FOR_MARKDOWN_REPLACE
+function _BackToMyMarkDown_Patterns3_Apply(text) {
+    let Features = CONFIG_MYMARKDOWN_PATTERN3_ACTIVE
+    let part1 = ''; let part2 = ''
+    if (Features['Link']) {
+        text = text.replace('target="#"', '')
+        var anchorRegex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1[^>]*?>(.*?)<\/a>/g;
+        var text = text.replace(anchorRegex, '[$3::$2]');}
 
-    for (let rpl of replace) {
-        if (text.includes('[(svg)') || text.includes('[(SVG)')) {
-            text = text.replace(rpl[1], rpl[2])}
-    }
     return text
 }
 
 function _replace_SVG_BACK_To_MyMarkdon(htmlText) {
-    let replace = CONFIG_SVG_FOR_MARKDOWN_REPLACE
     let ret = htmlText
-    svgs = DOMElementsFromString(htmlText, 'svg')
+    let svgs = DOMElementsFromString(htmlText, 'svg')
     for (let svg of svgs) {
-        ret = ret.replace(svg.outerHTML, 'xxy' + svg.id + 'yxx')
-        for (let rpl of replace) {
-            ret = ret.replace('xxy' + rpl[3] + 'yxx', rpl[0])}
+        ret = ret.replace(svg.outerHTML, 'xxy-' + svg.id + '-yxx')
+        for (let rpl of CONFIG_SVG_FOR_MARKDOWN_REPLACE) {
+            ret = ret.replace('xxy-' + rpl[2] + '-yxx', rpl[0])}
         }
     
     return ret
@@ -1203,19 +1265,6 @@ function DOMElementsFromString(htmlString, tag) {
     const svgElements = doc.querySelectorAll(tag);
     return Array.from(svgElements);
 }
-
-
-
-    // functionn parseMarkup(markupText) {
-    //     if (typOf(markupText) != 'str') {
-    //         return markupText}
-    
-    //     var linkRegex = /\[([^\]]+)::([^\]]+)\]/g;
-    //     var htmlText = markupText.replace(linkRegex, '<a href="$2" target="#">$1</a>');
-    //     // \n -> <br>
-    //     htmlText = htmlText.replace(new RegExp('\n', "g") , '<br>')
-    //     return htmlText;
-    //     }
 Object.defineProperties(document, {
     getElementsWithOnClickEvent: {
         value: function() {

@@ -54,8 +54,8 @@ class clsHTML {
             let tmp = []
             for (let cell of row) {
                 let value = cell
-                value = MyMarkDowntoHTML(value, ["[("])
-                value = MyMarkDowntoSVG(value)
+                value = MyMarkDowntoHTML(value)
+                // value = MyMarkDowntoSVG(value)
                 tmp.push(value)}
             ret.push(tmp)}
         return ret
