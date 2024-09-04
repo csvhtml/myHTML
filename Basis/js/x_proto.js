@@ -141,6 +141,17 @@ Object.defineProperties(String.prototype, {
     } 
 });
 
+Object.defineProperties(String.prototype, {
+    trimPlus: {
+        value: function() {
+            let ret = this.trim()               // removes starting and ending spaces
+            ret = ret.replace(/\s+/g, ' ');      // Plus replaces all multi spaces inside with normal blank space. 
+            return ret
+        }
+    } 
+});
+
+
 // ################################################################
 // DOM /HTML Elements                                             #
 // ################################################################

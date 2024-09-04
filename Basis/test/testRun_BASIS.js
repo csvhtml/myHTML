@@ -25,6 +25,7 @@ function test_BASIS(divID, myTest) {
 	proto_stringUntil(myTest)
 	proto_stringAfter(myTest)
 	proto_stringCount(myTest)
+	proto_stringTrimPlus(myTest)
 	proto_DOMIsDescendantOf(myTest)
 	proto_documentGetElementsWithOnClickEvent(myTest)
 	proto_documentGetElementsByIDSubstring(myTest)

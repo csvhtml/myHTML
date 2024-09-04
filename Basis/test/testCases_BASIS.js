@@ -350,6 +350,21 @@ function proto_stringCount(myTest) {
     myTest.Equal(text.count('ipsum'), 3, arguments.callee.name)
 }
 
+
+function proto_stringTrimPlus(myTest) {
+    test = [
+         [' ', ''],
+         ['  ', ''],
+         ['   ', ''],
+         [' Hallo ', 'Hallo'],
+         [' Hallo Welt ', 'Hallo Welt'],
+         [' Hallo  Welt ', 'Hallo Welt']
+    ]
+
+    for (let t of test) {
+        myTest.Equal(t[0].trimPlus(), t[1], arguments.callee.name)}
+}
+
 function proto_DOMIsDescendantOf(myTest) {
     let div1 = NewDiv({'type':'div', 'id': 'test-id1-XXX', 'innerHTML': 'test proto 1'})
     let div2 = NewDiv({'type':'div', 'id': 'test-id2', 'innerHTML': 'test proto 2'})

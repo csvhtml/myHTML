@@ -77,6 +77,7 @@ function rgbText(a,b,c) {
     return "rgb(" + a + "," + b + "," + c + ")"
 }
 
+// obsolete: replacement is string.trimPlus
 function myTrim(input) {
         return input.replace(/ /g, '');
     }
