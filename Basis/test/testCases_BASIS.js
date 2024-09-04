@@ -128,6 +128,24 @@ function test_ElementInArrayN(myTest) {
     myTest.IsTrue(BASIS.ElementInArrayN(listen, "Peach"), arguments.callee.name)
 }
 
+function test_RetStringBetween(myTest) {
+    let fname = arguments.callee.name;
+    text = "R:1029C:23H:header"
+
+    myTest.Equal(RetStringBetween(text, "R:", "C:"), "1029", fname)
+    myTest.Equal(RetStringBetween(text, "R:", ""), "1029C:23H:header", fname)
+    myTest.Equal(RetStringBetween(text, "H:", ""), "header", fname)
+}
+
+function test_FileNameFromPath(myTest) {
+    let fname = arguments.callee.name;
+
+    text = "file:///C:/A/B/World/FileName.pdf"
+    myTest.Equal(FileNameFromPath(text), "FileName.pdf", fname)
+    text = "file:///C:/A/B/World\\FileName.pdf"
+    myTest.Equal(FileNameFromPath(text), "FileName.pdf", fname)
+}
+
 
 function test_PatternsFound_Donts(myTest) {
     let fname = arguments.callee.name;

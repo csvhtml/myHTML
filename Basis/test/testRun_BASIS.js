@@ -8,6 +8,8 @@ function test_BASIS(divID, myTest) {
 	test_IsListEqualSize(myTest)
 	test_IsEqual(myTest)
 	test_ElementInArrayN(myTest)
+	test_RetStringBetween(myTest)
+	test_FileNameFromPath(myTest)
 	test_PatternsFound_Donts(myTest)
 	test_PatternsFound_Dos2(myTest)
 	test_PatternsFound_Dos3(myTest)

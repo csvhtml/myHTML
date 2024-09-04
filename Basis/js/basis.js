@@ -188,42 +188,6 @@ function ElementInArrayN(array, element) {
     return false; 
 }
 
-
-// ################################################################
-// test                                                           #
-// ################################################################
-
-function test_Basis() {
-    test_BasisbyVal()
-    test_Basis_RetStringBetween()   
-    test_Basis_FileNameFromPath()  
-    test_Basis_typOf()
-    test_Basis_IsEqual() 
-    return 0 // 32 assertions in this file (and should all be catched)
-}
-
-
-
-
-function test_Basis_RetStringBetween() {
-    let fname = arguments.callee.name;
-    text = "R:1029C:23H:header"
-
-    testEqual(RetStringBetween(text, "R:", "C:"), "1029", fname)
-    testEqual(RetStringBetween(text, "R:", ""), "1029C:23H:header", fname)
-    testEqual(RetStringBetween(text, "H:", ""), "header", fname)
-}
-
-function test_Basis_FileNameFromPath() {
-    let fname = arguments.callee.name;
-
-    text = "file:///C:/A/B/World/FileName.pdf"
-    testEqual(FileNameFromPath(text), "FileName.pdf", fname)
-    text = "file:///C:/A/B/World\\FileName.pdf"
-    testEqual(FileNameFromPath(text), "FileName.pdf", fname)
-}
-
-
 // ################################################################
 // rest                                                           #
 // ################################################################

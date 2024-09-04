@@ -11,9 +11,6 @@ const BASIS = {
 	IsEqual: function(a,b, max_iterations = 100) {return IsEqual(a,b, max_iterations)},
 	IsListEqualSize: function(a,b, flag = false) {return IsListEqualSize(a,b, flag)},
 	ElementInArrayN: function(array, element) {return ElementInArrayN(array, element)},
-	test_Basis: function() {return test_Basis()},
-	test_Basis_RetStringBetween: function() {return test_Basis_RetStringBetween()},
-	test_Basis_FileNameFromPath: function() {return test_Basis_FileNameFromPath()},
 	toggle: function(val, pair) {return toggle(val, pair)},
 	DIV: function(divID) {return DIV(divID)},
 	Append_TextArea: function(div, cfg = {}) {return Append_TextArea(div, cfg)},
@@ -42,13 +39,8 @@ const BASIS = {
 	FileNameFromPath: function(path) {return FileNameFromPath(path)},
 	rgbText: function(a,b,c) {return rgbText(a,b,c)},
 	myTrim: function(input) {return myTrim(input)},
-	myReplace: function(val,re,place) {return myReplace(val,re,place)},
 	ShortenDotDotDot: function(text, lenn = 12) {return ShortenDotDotDot(text, lenn)},
 	ChangeLastChar: function(inputString, newChar) {return ChangeLastChar(inputString, newChar)},
-	test_TextFunctions: function() {return test_TextFunctions()},
-	test_Basis_RetStringBetween: function() {return test_Basis_RetStringBetween()},
-	test_Basis_FileNameFromPath: function() {return test_Basis_FileNameFromPath()},
-	test_Basis_myReplace: function() {return test_Basis_myReplace()},
 	PatternsInText: function(text, patternL) {return PatternsInText(text, patternL)},
 	MyMarkDowntoHTML: function(markupText) {return MyMarkDowntoHTML(markupText)},
 	HTMLtoMyMarkdown: function(htmlText) {return HTMLtoMyMarkdown(htmlText)},
@@ -245,42 +237,6 @@ function ElementInArrayN(array, element) {
     }
     return false; 
 }
-
-
-// ################################################################
-// test                                                           #
-// ################################################################
-
-function test_Basis() {
-    test_BasisbyVal()
-    test_Basis_RetStringBetween()   
-    test_Basis_FileNameFromPath()  
-    test_Basis_typOf()
-    test_Basis_IsEqual() 
-    return 0 // 32 assertions in this file (and should all be catched)
-}
-
-
-
-
-function test_Basis_RetStringBetween() {
-    let fname = arguments.callee.name;
-    text = "R:1029C:23H:header"
-
-    testEqual(RetStringBetween(text, "R:", "C:"), "1029", fname)
-    testEqual(RetStringBetween(text, "R:", ""), "1029C:23H:header", fname)
-    testEqual(RetStringBetween(text, "H:", ""), "header", fname)
-}
-
-function test_Basis_FileNameFromPath() {
-    let fname = arguments.callee.name;
-
-    text = "file:///C:/A/B/World/FileName.pdf"
-    testEqual(FileNameFromPath(text), "FileName.pdf", fname)
-    text = "file:///C:/A/B/World\\FileName.pdf"
-    testEqual(FileNameFromPath(text), "FileName.pdf", fname)
-}
-
 
 // ################################################################
 // rest                                                           #
@@ -712,183 +668,6 @@ class clsSVG {
         }
     }
 }
-
-// // ######################################################
-// // MarkDown Functions                                   #
-// // ######################################################
-
-// // MOHI: 
-
-// // [(svg)pdf] = small pdf icon
-// // [(SVG)pdf] = big  pdf icon
-// // [(svg)pdf][textTo::Link] == [(pdf)textTo::Link]  small pdf icon followed by hyperlink
-
-// // THis basisSVG only knows [(svg)pdf] and [(SVG)pdf]
-// // the logic for combination with hyperlink happend ins basis Patterns.
-
-
-// funcction MyMarkDowntoSVG(markupText) {
-//     if (typOf(markupText) != 'str') {return markupText}
-    
-//     htmlText = markupText
-//     patterns = _MyMarkDowntoSVG_Patterns(markupText)
-//     for (pattern of patterns) {
-//         replaceText = _MyMarkDowntoSVG_Replacement(pattern)
-//         htmlText = htmlText.replace(pattern, replaceText)
-//     }
-
-//     return htmlText;
-//     }
-
-//     funcction _MyMarkDowntoSVG_Replacement(pattern) {
-//         SVG = new clsSVG()
-//         let typ = _MyMarkDowntoSVG_PatternsType(pattern)
-//         let filetyp = _MyMarkDowntoSVG_PatternsFileType(pattern)
-//         var p = RetStringBetween(pattern, "::", "]")
-
-//         let ret
-//         ret = _MyMarkDowntoSVG_Replacement2(typ, filetyp, p)
-//         return ret
-//     }   
-//         funcction _MyMarkDowntoSVG_Replacement2(typ, filetyp, p2) {
-//             subtext = FileNameFromPath(RetStringBetween(p2, "::", "]"))
-//             subtext = RetStringBetween(subtext, "", ".pdf")
-//             if (typ == 'img') {
-//                 subtext = ShortenDotDotDot(subtext)}
-//             let key = filetyp + '-' + typ
-//             svg = SVG.Get_SVG(key, subtext, null, null, subtext)
-            
-//             let ret = ""
-//             if (typ == 'img') {
-//                 ret = '<a href="' + p2 + '" target="#">' + svg + '</a>'}
-//             if (typ == 'icon') {
-//                 ret = svg + ' <a href="' + p2 + '" target="#">' + subtext + '</a>'}
-//             return ret
-//         }
-
-//     funcction _MyMarkDowntoSVG_Patterns(markupText) {
-//         patsIMG = PatternsInText(markupText, ["[(img)", "::", "]"])  
-//         patsICON = PatternsInText(markupText, ["[(icon)", "::", "]"])  
-//         return patsIMG.concat(patsICON)
-//     }
-
-//     funcction _MyMarkDowntoSVG_PatternsType(pattern) {
-//         if (pattern.includes('[(img)')) {
-//             return 'img'}
-//         if (pattern.includes('[(icon)')) {
-//             return 'icon'}
-//         assert(false)
-//     }
-
-//     funcction _MyMarkDowntoSVG_PatternsFileType(pattern) {
-//         if (pattern.includes(')pdf::')) {
-//             return 'pdf'}
-//         assert(false)
-//     }
-
-// // svg -> markup
-// funcction SVGtoMyMarkdown(htmlText) {
-//     let ret = htmlText
-//     svgs = DOMElementsFromString(htmlText, 'svg')
-//     for (let svg of svgs) {
-//         ret = _SVGtoMyMarkdown_Loop(ret, svg)}
-    
-//     ret = HTMLtoMyMarkdown(ret)
-
-//     return ret
-//     }
-
-// function _SVGtoMyMarkdown_Loop(htmlText, svg) {
-//         let svgText = svg.outerHTML
-    
-//         if (svg.id.includes('pdf-img')) {
-//             htmlText = htmlText.replace(svgText, '(img)pdf') }
-//         if (svg.id.includes('pdf-icon')) {
-//             htmlText = htmlText.replace(svgText + ' ', '')
-//             let linkName = RetStringBetween(svg.id, 'pdf-icon-', '')
-//             if (linkName.length > 3) {
-//                 htmlText = htmlText.replace('>' + linkName + '</a>', '>(icon)pdf</a>')}
-//         }
-//         return htmlText
-// }
-
-
-
-// funcction DOMElementsFromString(htmlString, tag = 'div') {
-//     const parser = new DOMParser();
-//     const doc = parser.parseFromString(htmlString, 'text/html');
-//     const svgElements = doc.querySelectorAll(tag);
-//     return Array.from(svgElements);
-// }
-
-
-
-// Get_SVG(key, idpostfix, height = null, width = null, subtext = "") {
-//     let svg = ""; let re = ""; let place = ""
-//     if (key in dictSVG) {
-//         svg = dictSVG[key]
-//         svg = svg.replace('" width', '-' + idpostfix + '" width')
-//         if (height != null) {
-//             re = 'height="' + RetStringBetween(svg, 'height="', '"') + '"'
-//             place = 'height="' + height + '"'
-//             svg = svg.replace(re, place)}
-//         if (width != null) {
-//             re = 'width="' + RetStringBetween(svg, 'width="', '"') + '"'
-//             place = 'width="' + width + '"'
-//             svg = svg.replace(re, place)}
-//         if (subtext != "") {
-//             re = 'font-size="10">' + RetStringBetween(svg, 'font-size="10">', '</text>') + '</text>'
-//             place = 'font-size="10">' + subtext + '</text>'
-//             svg = svg.replace(re, place)}
-//     }
-//     return svg
-// } 
-
-// const CLS_SVG_REPLACE = {
-//     "mySVG-SqAwDwnBmLine": '<svg width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">\
-//     <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>\
-//     <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>\
-//     </svg>',
-
-//     // "mySVG-SqAwDwn": '<svg width="20" height="20" fill="currentColor" class="bi bi-save m-1" viewBox="0 0 16 16"> \
-//     // <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 \
-//     // 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/> \
-//     // </svg>',
-
-//     "mySVG-SqAwDwn": '<svg width="20" height="20" fill="currentColor" class="m-1" viewBox="0 0 16 16"> \
-//     <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 \
-//     3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/> \
-//     </svg>',
-
-//     "mySVG-FileAwUp": '<svg width="25" height="25" fill="currentColor" class="bi bi-file-earmark-arrow-up-fill" viewBox="0 0 16 16"> \
-//     <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM6.354 9.854a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 8.707V12.5a.5.5 0 0 1-1 0V8.707L6.354 9.854z"/> \
-//     </svg>',
-
-//     "mySVG-FileAwDown": '<svg width="25" height="25" fill="currentColor" class="bi bi-file-earmark-arrow-down-fill" viewBox="0 0 16 16"> \
-//     <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zm-1 4v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 11.293V7.5a.5.5 0 0 1 1 0z"/> \
-//     </svg>',
-
-//     // "mySVG-X": '<svg width="16" height="16" fill="currentColor" class="bi bi-bag-x" viewBox="0 0 16 16"> \
-//     // <path fill-rule="evenodd" d="M6.146 8.146a.5.5 0 0 1 .708 0L8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 0 1 0-.708"/> \
-//     // </svg>'
-
-//     "mySVG-X": '<svg width="20" height="20" fill="currentColor" class="m-1" viewBox="2 2 18 18">\
-//     <line x1="4" y1="4" x2="16" y2="16" stroke="currentColor" stroke-width="2"/>\
-//     <line x1="4" y1="16" x2="16" y2="4" stroke="currentColor" stroke-width="2"/>\
-//     </svg>'
-// }
-
-
-
-// const CLS_SVG_VALID_NAMES = {
-//     "SquareArrowDown": "mySVG-SqAwDwn",
-//     "SquareArrowDownWithBottomLine": "mySVG-SqAwDwnBmLine",
-//     "A":  "mySVG-FileAwUp",
-//     "B": "mySVG-FileAwDown",
-//     "X": "mySVG-X"
-// }
-
-
 // ###############################################################################
 // Basis   Text Functions                                                        #
 // ###############################################################################
@@ -972,14 +751,6 @@ function myTrim(input) {
         return input.replace(/ /g, '');
     }
 
-function myReplace(val,re,place) {
-    let value = val
-    if (value.includes(re)) {
-        value = value.replace(new RegExp(re, "g") , place)
-    }
-    return value
-}
-
 function ShortenDotDotDot(text, lenn = 12){
     let len = text.length; let len2 = len/2
     let ret = text
@@ -1000,49 +771,6 @@ function ChangeLastChar(inputString, newChar) {
 
     return resultString;
   }
-
-
-// ################################################################
-// test                                                           #
-// ################################################################
-
-function test_TextFunctions() {
-    test_Basis_RetStringBetween()   
-    test_Basis_FileNameFromPath() 
-    test_Basis_myReplace() 
-
-    return 0 // 32 assertions in this file (and should all be catched)
-}
-
-
-
-function test_Basis_RetStringBetween() {
-    let fname = arguments.callee.name;
-    text = "R:1029C:23H:header"
-
-    testEqual(RetStringBetween(text, "R:", "C:"), "1029", fname)
-    testEqual(RetStringBetween(text, "R:", ""), "1029C:23H:header", fname)
-    testEqual(RetStringBetween(text, "H:", ""), "header", fname)
-}
-
-function test_Basis_FileNameFromPath() {
-    let fname = arguments.callee.name;
-
-    text = "file:///C:/A/B/World/FileName.pdf"
-    testEqual(FileNameFromPath(text), "FileName.pdf", fname)
-    text = "file:///C:/A/B/World\\FileName.pdf"
-    testEqual(FileNameFromPath(text), "FileName.pdf", fname)
-}
-
-function test_Basis_myReplace() {
-    let fname = arguments.callee.name;
-
-    textRe = "Lorem Ipsum Apsum Ma"
-    textPLACE = "Lorem IpSum ApSum Ma"
-    testEqual(myReplace(textRe, "s", "S"), textPLACE, fname)
-}
-
-
 function PatternsInText(text, patternL) {
     if (text === undefined) return false;
     if (patternL === undefined) return false;

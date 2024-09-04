@@ -81,14 +81,6 @@ function myTrim(input) {
         return input.replace(/ /g, '');
     }
 
-function myReplace(val,re,place) {
-    let value = val
-    if (value.includes(re)) {
-        value = value.replace(new RegExp(re, "g") , place)
-    }
-    return value
-}
-
 function ShortenDotDotDot(text, lenn = 12){
     let len = text.length; let len2 = len/2
     let ret = text
@@ -109,45 +101,3 @@ function ChangeLastChar(inputString, newChar) {
 
     return resultString;
   }
-
-
-// ################################################################
-// test                                                           #
-// ################################################################
-
-function test_TextFunctions() {
-    test_Basis_RetStringBetween()   
-    test_Basis_FileNameFromPath() 
-    test_Basis_myReplace() 
-
-    return 0 // 32 assertions in this file (and should all be catched)
-}
-
-
-
-function test_Basis_RetStringBetween() {
-    let fname = arguments.callee.name;
-    text = "R:1029C:23H:header"
-
-    testEqual(RetStringBetween(text, "R:", "C:"), "1029", fname)
-    testEqual(RetStringBetween(text, "R:", ""), "1029C:23H:header", fname)
-    testEqual(RetStringBetween(text, "H:", ""), "header", fname)
-}
-
-function test_Basis_FileNameFromPath() {
-    let fname = arguments.callee.name;
-
-    text = "file:///C:/A/B/World/FileName.pdf"
-    testEqual(FileNameFromPath(text), "FileName.pdf", fname)
-    text = "file:///C:/A/B/World\\FileName.pdf"
-    testEqual(FileNameFromPath(text), "FileName.pdf", fname)
-}
-
-function test_Basis_myReplace() {
-    let fname = arguments.callee.name;
-
-    textRe = "Lorem Ipsum Apsum Ma"
-    textPLACE = "Lorem IpSum ApSum Ma"
-    testEqual(myReplace(textRe, "s", "S"), textPLACE, fname)
-}
-
