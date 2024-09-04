@@ -24,7 +24,7 @@ const XCSV = {
     for (let key of Object.keys(FILES_UPLOAD_CONFIG) ) {
         cFileReaders[key] = new FileReader()
     }
-    XCSV["main"].XFormat.Read(myTrim(XCSV_DATA["WorkingItems"]["X"]))
+    // XCSV["main"].XFormat.Read(myTrim(XCSV_DATA["WorkingItems"]["X"]))
     XCSV["main"].XHTML.Print()
                 
 

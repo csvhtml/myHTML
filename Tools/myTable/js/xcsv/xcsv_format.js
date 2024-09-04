@@ -11,7 +11,7 @@ class clsFormat {
 
     Read(text) {
         /**
-         * Reads in a text file and saves its data to the parent
+         * Reads in a text (formatted acc to this.config) and saves its data to the parent
          */
         this.xRead(text)}
 

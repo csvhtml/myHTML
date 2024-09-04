@@ -11,13 +11,15 @@ class clsXCSV {
             this.XFormat = new clsFormat(this)  // OK
             this.XWorkingItems = new clsDataCollection(this, "XWorkingItems")  // Skip
             this.XConfigItems = new clsDataCollection(this, "XConfigItems")  // Skip
-            this.XData = new clsData(this, this.config["WorkingItems"].key(0), "XWorkingItems", true)   // OPEN -> Test
+            this.XData = new clsData(this, this.config["WorkingItems"].key(0), "XWorkingItems", true)
             
             this.XHTML = new clsHTML(this)  // OK
 
             this.XNames = new clsXCSV_Names(this)  // OK
             this.XClick = new clsXCSV_Clickhandler(this)  // OK
             this.XSelection = new clsXCSV_Selectionhandler(this)  // OK
+
+            this.XFormat.Read(XCSV_DATA_ITEMS) 
         }
 
         AddRow() {

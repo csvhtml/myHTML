@@ -18,6 +18,8 @@ class clsXCSV {
             this.XNames = new clsXCSV_Names(this)  // OK
             this.XClick = new clsXCSV_Clickhandler(this)  // OK
             this.XSelection = new clsXCSV_Selectionhandler(this)  // OK
+
+            this.XFormat.Read(myTrim(XCSV_DATA_ITEMS))
         }
 
         AddRow() {
