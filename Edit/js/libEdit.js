@@ -91,8 +91,28 @@ class libEdit {
         textarea.select();}
 
     _textareaSize(div, size = "normal") {
+        let computedStyle = window.getComputedStyle(div)
+        let paddingLeft = parseFloat(computedStyle.paddingLeft);
+        let paddingRight = parseFloat(computedStyle.paddingRight);   
+        let paddingTop = parseFloat(computedStyle.paddingTop);
+        let paddingBottom = parseFloat(computedStyle.paddingBottom)
+        let height = parseFloat(computedStyle.height)
+        let width = parseFloat(computedStyle.width);
+        let borderwidth = parseFloat(computedStyle.borderWidth)
+        let display = computedStyle.display
+        let offsett = 30
+        if (display == 'block') offsett = 0 
+
+        // div.getBoundingClientRect()["width"] = width + 2 * borderwidth
+
+        let a = 1
         if (size == "normal") {
-            return [(div.getBoundingClientRect()["width"])+"px", (div.getBoundingClientRect()["height"]-30)+"px"]}     
+            let WidthWithoutPadding = String(0.95*width)+ 'px'
+            // let WidthWithoutPadding = String(width - paddingLeft - paddingRight) + 'px'
+            // let HeightWithoutPadding = String(height - paddingTop - paddingBottom-offsett) + 'px'
+            return [WidthWithoutPadding, (maxx(div.getBoundingClientRect()["height"] - offsett, 20))+"px"]
+            // return [(div.getBoundingClientRect()["width"])+"px", ]
+        }     
         if (size == "small") {
             return [(div.getBoundingClientRect()["width"]-40)+"px", (div.getBoundingClientRect()["height"])+"px"]}}
 

@@ -82,12 +82,18 @@
 textarea {
     display: block;
     border-radius: .25rem;
+    margin: 2px;
     width: 100%;
-    padding: .375rem .75rem;
+    /* padding: .375rem .75rem; */
     font-size: 1rem;
     /* font-weight: 400; */
     line-height: 1.5;
     color: #212529;
     background-color: #fff;
-    border: 1px solid #aaa;
+    border: 1px solid #4b71d1;
+}
+
+textarea:focus {
+    outline: none;
+    border: 0.5px solid #4b71d1;
 }

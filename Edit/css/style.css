@@ -1,3 +1,9 @@
+.myEdit {
+    min-height: 50px;
+    line-height: 1.5;
+    border: 1pt solid black;
+}
+
 textarea {
     resize: none;
     overflow: hidden;
