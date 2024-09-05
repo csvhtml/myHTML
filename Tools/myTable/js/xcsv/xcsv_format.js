@@ -27,8 +27,14 @@ class clsFormat {
     xRead(text) {
         if (text == undefined) {
             return}
-        let files = text.split(this.config["file-seperator"]); files.removeAll("")
-        let headers_data = this._HeadersDataName(files[0])
+        if (text.includes(this.config["file-seperator"])) {
+            let files = text.split(this.config["file-seperator"]); files.removeAll("")
+            let textfile = files[0]
+            let name = textfile.until('\n').trim()  // not yet used
+            text = textfile.substring(textfile.indexOf('\n')+1)
+            text = text.trimPlus([' |'])}
+        
+        let headers_data = this._HeadersData(text)
 
         this.parent.XData.Init(headers_data[0], headers_data[1])
     }
@@ -61,12 +67,7 @@ class clsFormat {
         return ret
     }
 
-    _HeadersDataName(textfile) {
-        let name = ''
-        if (!textfile.startsWith(this.config["line-starter"])) {
-            name = textfile.until('\n')
-            textfile = textfile.substring(textfile.indexOf('\n')+1)
-        }
+    _HeadersData(textfile) {
         assert(textfile.startsWith(this.config["line-starter"]))
 
         let lines = textfile.split(this.config["line-starter"]); lines.removeAll("")

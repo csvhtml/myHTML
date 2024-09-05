@@ -20,14 +20,6 @@ const XCSV_DATA = {
     }
 }
 
-const XCSV_DATA_ITEMS = '\
-            ||||X\
-            ||A|B|C\n\
-            ||1|2|3\n\
-            ||5 Leerzeichen|Neue\nZeile|[Link::URL]\n\
-            ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
-    '
-
 // CSS for HTML Export
 const CSS_HTMLEXPORT = 
     "<style>" + 

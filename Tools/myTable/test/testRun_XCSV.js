@@ -1,5 +1,5 @@
 function test_XCSV(divID, myTest) {
-	test_XCSV(myTest)
+	test_clsData(myTest)
 
 	myTest.PrintResult(divID)
 }

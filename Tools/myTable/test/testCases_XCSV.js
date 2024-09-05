@@ -1,6 +1,6 @@
 function test_clsData(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id", XCSV_DATA)
+    let ted = new clsXCSV("div-id")
 
 //     // new 
 //     myTest.Assertion(ted, {}, fname)

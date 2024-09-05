@@ -11,7 +11,7 @@ class clsXCSV {
             this.XFormat = new clsFormat(this)  // OK
             this.XWorkingItems = new clsDataCollection(this, "XWorkingItems")  // Skip
             this.XConfigItems = new clsDataCollection(this, "XConfigItems")  // Skip
-            this.XData = new clsData(this, this.config["WorkingItems"].key(0), "XWorkingItems", true)   // OPEN -> Test
+            this.XData = new clsData(this, this.config["WorkingItems"].key(0), "XWorkingItems", true)
             
             this.XHTML = new clsHTML(this)  // OK
 
@@ -19,7 +19,7 @@ class clsXCSV {
             this.XClick = new clsXCSV_Clickhandler(this)  // OK
             this.XSelection = new clsXCSV_Selectionhandler(this)  // OK
 
-            this.XFormat.Read(myTrim(XCSV_DATA_ITEMS))
+            this.XFormat.Read(XCSV_DATA_ITEMS.trimPlus()) 
         }
 
         AddRow() {
@@ -286,7 +286,7 @@ class clsDataCollection {
         for (let key of Object.keys(Config)) {
             this[key] = new clsData(parent, key, ItemsType)
             if (ItemsType == "XConfigItems") {
-                let hd = this.parent.XFormat._HeadersDataName(myTrim(Config[key]))
+                let hd = this.parent.XFormat._HeadersData(myTrim(Config[key]))
                 this[key].Init(hd[0], hd[1])
             }
         }
@@ -342,6 +342,13 @@ class clsDataIs {
         return false
     }
 }
+const XCSV_DATA_ITEMS = '\
+            ||||X\n\
+            ||A|B|C\n\
+            ||1|2|3\n\
+            ||5 Leerzeichen|Neue\nZeile|[Link::URL]\n\
+            ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
+    '
 class clsFormat {
     constructor(parent, config) {
         this.parent = parent
@@ -355,7 +362,7 @@ class clsFormat {
 
     Read(text) {
         /**
-         * Reads in a text file and saves its data to the parent
+         * Reads in a text (formatted acc to this.config) and saves its data to the parent
          */
         this.xRead(text)}
 
@@ -371,8 +378,14 @@ class clsFormat {
     xRead(text) {
         if (text == undefined) {
             return}
-        let files = text.split(this.config["file-seperator"]); files.removeAll("")
-        let headers_data = this._HeadersDataName(files[0])
+        if (text.includes(this.config["file-seperator"])) {
+            let files = text.split(this.config["file-seperator"]); files.removeAll("")
+            let textfile = files[0]
+            let name = textfile.until('\n').trim()  // not yet used
+            text = textfile.substring(textfile.indexOf('\n')+1)
+            text = text.trimPlus([' |'])}
+        
+        let headers_data = this._HeadersData(text)
 
         this.parent.XData.Init(headers_data[0], headers_data[1])
     }
@@ -405,12 +418,7 @@ class clsFormat {
         return ret
     }
 
-    _HeadersDataName(textfile) {
-        let name = ''
-        if (!textfile.startsWith(this.config["line-starter"])) {
-            name = textfile.until('\n')
-            textfile = textfile.substring(textfile.indexOf('\n')+1)
-        }
+    _HeadersData(textfile) {
         assert(textfile.startsWith(this.config["line-starter"]))
 
         let lines = textfile.split(this.config["line-starter"]); lines.removeAll("")

@@ -350,19 +350,39 @@ function proto_stringCount(myTest) {
     myTest.Equal(text.count('ipsum'), 3, arguments.callee.name)
 }
 
+function proto_stringRepalceN(myTest) {
 
-function proto_stringTrimPlus(myTest) {
+    myTest.Equal('abababa'.replaceN('a', ''), 'bbb', arguments.callee.name)
+    myTest.Equal(' | | | | | | |'.replaceN(' |', '|'), '|||||||', arguments.callee.name)
+}
+
+function proto_stringTrimPlus1(myTest) {
     test = [
          [' ', ''],
          ['  ', ''],
          ['   ', ''],
          [' Hallo ', 'Hallo'],
          [' Hallo Welt ', 'Hallo Welt'],
-         [' Hallo  Welt ', 'Hallo Welt']
+         [' Hallo  Welt ', 'Hallo Welt'],
+         [' Hallo   Welt ', 'Hallo Welt'],
+         [' Hallo \nWelt ', 'Hallo \nWelt'],
     ]
 
     for (let t of test) {
         myTest.Equal(t[0].trimPlus(), t[1], arguments.callee.name)}
+}
+
+function proto_stringTrimPlus2(myTest) {
+    test = [
+        [' X ', 'X'],
+        [' HalXlo ', 'HalXlo'],
+        [' Hallo XWelt', 'HalloXWelt'],
+        [' Hallo Welt X', 'Hallo WeltX'],
+        [' Hallo \nXWelt ', 'Hallo \nXWelt'],
+    ]
+
+    for (let t of test) {
+        myTest.Equal(t[0].trimPlus([' X']), t[1], arguments.callee.name)}
 }
 
 function proto_DOMIsDescendantOf(myTest) {

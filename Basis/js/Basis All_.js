@@ -1128,7 +1128,7 @@ Object.defineProperties(Object.prototype, {
 Object.defineProperties(String.prototype, {
     until: {
         value: function(n) {
-            if (n == '') {return this.substring(0)}     // return this will return the wrong data type 'String()'
+            if (n == '') {return this.substring(0)}     // return this will return the wrong data type 'String()'. Equvivalent to String(this)
 
             let idx = this.indexOf(n)
             if (idx == -1) { 
@@ -1165,13 +1165,43 @@ Object.defineProperties(String.prototype, {
     } 
 });
 
+// Whenever regex for some reason doesnt work
+Object.defineProperties(String.prototype, {
+    replaceN: {
+        value: function(re, place, n = 1000) {
+            let ret = String(this)
+            for (let i = 0; i < n; i++) {
+                if (ret.includes(re)) {
+                    ret = ret.replace(re,place)}
+                else {
+                    break}
+            }
+            return ret;
+        }
+    } 
+});
+
 Object.defineProperties(String.prototype, {
     trimPlus: {
-        value: function() {
-            let ret = this.trim()               // removes starting and ending spaces
-            ret = ret.replace(/\s+/g, ' ');      // Plus replaces all multi spaces inside with normal blank space. 
+        value: function(plusList) {
+            let ret = String(this)
+            // Plus: specifically will remove all spaces if seen in specifc pattern 
+            if (typOf(plusList) == 'list') {
+                for (element of plusList) {
+                    if (element.includes(' ')){
+                        let rpl = element.replace(RegExp(' ', 'g'), '')
+                        // ret = ret.replace(RegExp(element, 'g'), rpl)       will lead to failue
+                        ret = ret.replaceN(element, rpl)
+                    } 
+                }
+            }
+            // Plus: generically will remove all multi spaces inside with normal blank space. 
+            ret = ret.replace(/  +/g, ' ');
+            // Standard: removes starting and ending spaces
+            ret = ret.trim()               
             return ret
         }
+
     } 
 });
 
