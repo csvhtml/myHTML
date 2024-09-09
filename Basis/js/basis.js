@@ -96,6 +96,10 @@ function minn(a, b) {
     return (a < b) ? a : b;
 }
 
+function wenn(condition, trueValue, falseValue) {
+    return condition ? trueValue : falseValue;
+}
+
 function IsEqual(a,b, max_iterations = 100) {
     if (max_iterations<1) {
         return false}

@@ -69,6 +69,12 @@ function test_minn(myTest) {
     myTest.Equal(BASIS.minn(10,30), 10, arguments.callee.name)
 }
 
+function test_wenn(myTest) {
+
+    myTest.Equal(wenn(true, "A", "B"),"A", arguments.callee.name)
+    myTest.Equal(wenn(false, "A", "B"),"B", arguments.callee.name)
+}
+
 function test_IsListEqualSize(myTest) {
     let a = [[1,2], [[3,4],[5,6]]]
     let b = [["1","2"], [["3","4"],["5","6"]]]
@@ -354,6 +360,11 @@ function proto_stringRepalceN(myTest) {
 
     myTest.Equal('abababa'.replaceN('a', ''), 'bbb', arguments.callee.name)
     myTest.Equal(' | | | | | | |'.replaceN(' |', '|'), '|||||||', arguments.callee.name)
+}
+
+function proto_stringAsList(myTest) {
+
+    myTest.Equal('X'.AsList(5), ['X','X','X','X','X'], arguments.callee.name)
 }
 
 function proto_stringTrimPlus1(myTest) {

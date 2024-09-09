@@ -3,16 +3,20 @@
 // ################################################################
 
 class clsXCSV {
-        constructor(egoDivID, config) {     
-            this.egoDivID = egoDivID
-            this.config = config
+        constructor(egoDivID, config) {   
+            this.config = {}  
+            this.config["Ego Div ID"] = egoDivID
+            // this.config = config
+            
             this.XAssert = new clsXCSV_assert(this)  // OK
 
             this.XFormat = new clsFormat(this)  // OK
-            this.XWorkingItems = new clsDataCollection(this, "XWorkingItems")  // Skip
-            this.XConfigItems = new clsDataCollection(this, "XConfigItems")  // Skip
-            this.XData = new clsData(this, this.config["WorkingItems"].key(0), "XWorkingItems", true)
-            
+            this.config['activeItems'] = this.XFormat.Name(XCSV_DATA_ITEMS)
+            this.XItems = {
+                [this.config['activeItems']] : new clsData(this, this.config['activeItems'])
+            }
+            this.XData = this.XItems[this.config['activeItems']]        // internal reference 
+
             this.XHTML = new clsHTML(this)  // OK
 
             this.XNames = new clsXCSV_Names(this)  // OK
@@ -50,6 +54,20 @@ const CLSXCSV_NAMES = {
     }
 }
 
+// ################################################################
+// XCSV - default values                                          #
+// ################################################################
+
+const XCSV_DATA_ITEMS = '\
+            ||||Default Data\n\
+            ||A|B|C\n\
+            ||1|2|3\n\
+            ||5 Leerzeichen|Neue\nZeile|[Link::URL]\n\
+            ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
+    '
+
+const XCSV_DATA_DEFAULT_VALUE = '..'
+
 // ###################################################
 // asserts the init parameters (egoDivID and config) 
 // makes assert functions available (central handling)
@@ -59,7 +77,7 @@ class clsXCSV_assert {
     constructor(parent) {
         this.parent = parent
         this.name()
-        this.config()
+        // this.config()
     }
 
     HeadersData(headers, data) {
@@ -81,15 +99,20 @@ class clsXCSV_assert {
     }
 
     name() {
-        assert(typOf(this.parent.egoDivID) == "str")
+        assert(typOf(this.parent.config["Ego Div ID"]) == "str")
     }
 
-    config() {
-        assert(this.parent.config.key(0) == "WorkingItems")
-        assert(this.parent.config.key(1) == "ConfigItems")
-        assert(this.parent.config.key(2) == null)
-        assert(this.parent.config["ConfigItems"].key(0) == "Link")
-    }
+    AddRow(atPosition, newRow) {
+        assert(atPosition > -2, "atPosition index below -1")
+        assert(atPosition < this.parent.XData.data.length+1, "atPosition above data length")
+        assert(newRow.length == this.parent.XData.headers.length || newRow.length == 0, "values length not equal to data length")}
+
+    // config() {
+    //     assert(this.parent.config.key(0) == "WorkingItems")
+    //     assert(this.parent.config.key(1) == "ConfigItems")
+    //     assert(this.parent.config.key(2) == null)
+    //     assert(this.parent.config["ConfigItems"].key(0) == "Link")
+    // }
     
     
 }
@@ -139,42 +162,25 @@ class clsXCSV_Clickhandler {
 class clsData {
     constructor(parent, name, ItemsType = "XWorkingItems", IsRef = false) {
         this.parent = parent
-        this.name = name
+        this.name = null
         this.headers = null
         this.data = null
-        this.functions = {
-            "Is": new clsDataIs(this)
-        }
-        this.config = {
-            "ItemsType": ItemsType,  // "XWorkingItems" or "XConfigItems"
-            "IsReference" : IsRef,
-        }
     }
 
-    Init(headers, data) {
+    Init(headers, data, name) {
         this.parent.XAssert.HeadersData(headers, data)
-
+        this.name = name
+        this.parent.config['activeItems'] = name
         this.InitHeaders(headers)
-        this._InitData(data)
+        this.InitData(data)
+        
     }
 
     Clear() {
-        this._loop(function() {return ""})
+        this._forAllCellsValue(function() {return ""})
     }
 
-    RowsDelete() {
-        if (this.config["IsReference"]) {
-            this.parent[this.config["ItemsType"]][this.name].data = [[]]
-            this._BondIfReference()}
-        else {
-            this.data = [[]]}
-        
-        for (let h of this.headers) {
-            this.data[0].push("")
-        }
-    }
-
-    _loop(func) {
+    _forAllCellsValue(func) {
         for (let i = 0; i < this.data.length; i++) {
             for (let j = 0; j < this.data[i].length; j++) {
                 this.data[i][j] = func(this.data[i][j]);}
@@ -183,82 +189,39 @@ class clsData {
 
     InitHeaders(headers) {
         this.parent.XAssert.HeaderIs1D(headers)
-
-        if (this.config["IsReference"]) {
-            this.parent[this.config["ItemsType"]][this.name].InitHeaders(headers)
-            this._BondIfReference()
-        } else 
-        {
-            this.headers = headers
-        }
+        this.headers = headers
     }
 
-    _InitData(data) {
+    InitData(data) {
         this.parent.XAssert.DataIs2D(data)
-
-        if (this.config["IsReference"]) {
-            this.parent[this.config["ItemsType"]][this.name]._InitData(data)
-            this._BondIfReference()
-        } else 
-        {
-            this.data = data
-        }
-    }
-
-    _BondIfReference() {
-        if (this.config["IsReference"]) {
-            this.headers = this.parent[this.config["ItemsType"]][this.name].headers
-            this.data = this.parent[this.config["ItemsType"]][this.name].data
-        }
-
+        this.data = data
     }
 
     AddRow(newRow = []) {
-        if (this.functions.Is.Empty()) {
-
-        }
         let atPosition = this.parent.XSelection.Row()       // -1 in case no row is selected
-        this.xAddRow(atPosition, newRow)}
+        this.xAddRow(atPosition, newRow)
+    }
 
     xAddRow(atPosition = -1, newRow = []) {
-            this._xAddRow_assert(atPosition, newRow)
-        
-            let targetPosition = this._targetPosition(atPosition)
-            let targetRow = this._DefaultRow(targetPosition, newRow)
+            this.parent.XAssert.AddRow(atPosition, newRow)
+
+            let targetPosition = wenn(atPosition == -1, this.data.length, atPosition)
+            let targetRow = wenn(IsEqual(newRow, []), this._DefaultRow(), newRow)
             this.data.splice(targetPosition, 0, targetRow)               
             this._UpdateNumberCol()
+    }
+
+    _DefaultRow() {     
+        return XCSV_DATA_DEFAULT_VALUE.AsList(this.headers.length)
+    }
+
+    _UpdateNumberCol() {
+        if (this.headers.indexOf("No") >-1) {
+            let colIdx = this.headers.indexOf("No")
+            for (let i = 0; i < this.data.length; i++) {
+                this.data[i][colIdx] = String(i+1)}
         }
-
-    _targetPosition(atPosition) {
-        if (atPosition == -1) {
-            return this.data.length}
-        return atPosition}
-
-        _xAddRow_assert(atPosition, newRow) {
-            assert(atPosition > -2, "atPosition index below -1")
-            assert(atPosition < this.data.length+1, "atPosition above data length")
-            assert(newRow.length == this.headers.length || newRow.length == 0, "values length not equal to data length")}
-
-        _DefaultRow(n = 0, newRow) {    
-            if (newRow.length > 0) {
-                return newRow}   
-            let ret = []      
-            for (let col of this.headers) {
-                ret.push(this._DefaultVal(col))}
-            return ret}
-
-        _DefaultVal(col, n = 0) {
-            if (col == "No.") {
-                return String(n+1)}
-            return ".."}
-
-        _UpdateNumberCol() {
-            if (this.headers.indexOf("No") >-1) {
-                let colIdx = this.headers.indexOf("No")
-                for (let i = 0; i < this.data.length; i++) {
-                    this.data[i][colIdx] = String(i+1)}
-            }
-        }
+    }
     
     ColAsList(colName) {
         assert (typOf(colName) == "str")
@@ -271,84 +234,6 @@ class clsData {
         return ret
     }
 }
-class clsDataCollection {
-    constructor(parent, ItemsType = "XWorkingItems") {
-        this.parent = parent
-        assert (["XWorkingItems", "XConfigItems"].indexOf(ItemsType) >-1)
-
-        let Config = {}
-        if (ItemsType == "XWorkingItems") {
-            Config = this.parent.config["WorkingItems"]}
-        if (ItemsType == "XConfigItems") {
-            Config = this.parent.config["ConfigItems"]}
-        
-        
-        for (let key of Object.keys(Config)) {
-            this[key] = new clsData(parent, key, ItemsType)
-            if (ItemsType == "XConfigItems") {
-                let hd = this.parent.XFormat._HeadersData(myTrim(Config[key]))
-                this[key].Init(hd[0], hd[1])
-            }
-        }
-    }
-
-    CreateConfigItems() {
-        for (let key of Object.keys(this)) {
-            if (key == "parent") {continue}
-
-            if (key == "Link") {
-                this[key].RowsDelete()
-                this.CreateItemList_Link(key)}
-        }    
-    }
-
-    CreateItemList_Link(key) {
-        let items = []
-        for (let row of this.parent.XData.data) {
-            for (let val of row) {
-                items = PatternsInText(val,["[", "::", "]"])
-                if (items.length > 0) {
-                    this.AddLinksToConfigList(items)}}}  // key information actually redundant
-    }
-
-    AddLinksToConfigList(items) {
-        let key = "Link"
-        let name = ""; let descp = ""; let ref = "";let status = "", tags = ""
-        for (let item of items) {
-            name = RetStringBetween(item, "[", "::")
-            descp = RetStringBetween(item, "::", "]") 
-            if (this._IsItemInList(key, name)) {
-                // do nothing
-            } else {
-                this[key].AddRow([name, descp])
-            }
-        }
-    } 
-
-    _IsItemInList(key, item) {
-        if (this[key].ColAsList("Name").indexOf(item) > -1) {
-            return true}
-        return false
-    }
-}
-class clsDataIs {
-    constructor(parentOne) {
-        this.pOne = parentOne
-    }
-
-    Empty() {
-        if(this.pOne.headers == null && this.pOne.data == null) {
-            return true}
-        return false
-    }
-}
-const XCSV_DATA_ITEMS = '\
-            ||||X\n\
-            ||A|B|C\n\
-            ||1|2|3\n\
-            ||5 Leerzeichen|Neue\nZeile|[Link::URL]\n\
-            ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
-    '
 class clsFormat {
     constructor(parent, config) {
         this.parent = parent
@@ -374,20 +259,30 @@ class clsFormat {
         ret += this._AsCSV_HeaderLine()
         ret += this._AsCSV_RowsLine()
         return ret}
+
+    Name(text) {
+        if (!text.includes(this.config["file-seperator"])) { 
+            return }
+        text = text.after(this.config["file-seperator"])
+        return text.until('\n').trim()
+    }
     
     xRead(text) {
         if (text == undefined) {
             return}
+        let name = 'X'
         if (text.includes(this.config["file-seperator"])) {
-            let files = text.split(this.config["file-seperator"]); files.removeAll("")
+            let files = text.split('\n' + this.config["file-seperator"]); files.removeAll("")
+            files[0] = files[0].after(this.config["file-seperator"])
             let textfile = files[0]
-            let name = textfile.until('\n').trim()  // not yet used
+            name = textfile.until('\n').trim()
             text = textfile.substring(textfile.indexOf('\n')+1)
             text = text.trimPlus([' |'])}
         
         let headers_data = this._HeadersData(text)
 
-        this.parent.XData.Init(headers_data[0], headers_data[1])
+        this.parent.XData.Init(headers_data[0], headers_data[1], name)
+        
     }
 
     _AsCSV_HeaderLine() {
@@ -396,7 +291,10 @@ class clsFormat {
         let n = this.config["line-end"]
 
         let ret = ll 
+        let key = this.parent.config['activeItems']
         for (let header of this.parent.XData.headers) {
+            ret += header + l}
+        for (let header of this.parent.XItems['active'].headers) {
             ret += header + l}
         ret = ret.slice(0, -1*l.length) + n
         
@@ -421,7 +319,8 @@ class clsFormat {
     _HeadersData(textfile) {
         assert(textfile.startsWith(this.config["line-starter"]))
 
-        let lines = textfile.split(this.config["line-starter"]); lines.removeAll("")
+        let lines = textfile.split('\n' + this.config["line-starter"]); lines.removeAll("")
+        lines[0] = lines[0].after(this.config["line-starter"])
         for (let i = 0; i< lines.length; i++) {
             lines[i] = lines[i].replace(/\n+$/, '')} // "at the end.\n\n\n" ->"at the end."
         let headers = lines[0]; headers = headers.split(this.config["cell-seperator"])        
@@ -430,19 +329,9 @@ class clsFormat {
         for (let row of rows){
             data.push(row.split(this.config["cell-seperator"]))}
     
-        return [headers, data, name]
+        return [headers, data]
     }
 }
-
-
-// ||||<name>
-// ||<header1>|<header2>|<header3>|<header4>
-// ||<data 11>|<data 12>|<data 13>|<data 14>
-// ||<data 21>|<data 22>|<data 23>|<data 24>
-// ||||<name>
-// ||<header1>|<header2>|<header3>|<header4>
-// ||<data 11>|<data 12>|<data 13>|<data 14>
-// ||<data 21>|<data 22>|<data 23>|<data 24>
 class clsHTML {
     constructor(parent) {
         this.parent = parent
@@ -461,25 +350,13 @@ class clsHTML {
     }
 
     _Print() {
-        // document.getElementById(this.parent.egoDivID).innerHTML = HMTL.Table({
-        //     tableID: "id-table-" + this.parent.egoDivID,
-        //     tableClass: "table",
-        //     tableStyle: "margin-bottom:0;",
-        //     thsText: this.parent.XData.headers,
-        //     thsID: this.parent.XNames.IDs.headers(),
-        //     rowsID: this.parent.XNames.IDs.rows(),
-        //     // cellsText: this.parent.XData.data,
-        //     cellsText: this.DataAsHTML(),
-        //     cellsID: this.parent.XNames.IDs.cells(),
-        // })
-
-        document.getElementById(this.parent.egoDivID).innerHTML = this.DataAsHTML()
+        document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.DataAsHTML()
     }
 
     _PrintConfig(key) {
         this.parent.XSelection.unset()
-        document.getElementById(this.parent.egoDivID).innerHTML = HMTL.Table({
-            tableID: "id-table-" + this.parent.egoDivID,
+        document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = HMTL.Table({
+            tableID: "id-table-" + this.parent.config["Ego Div ID"],
             tableClass: "table",
             tableStyle: "margin-bottom:0;",
             thsText: this.parent.XConfigItems["Link"].headers,
@@ -509,7 +386,7 @@ class clsHTML {
     DataAsHTML(pre = "") {
         return pre + 
             HTMLTable_FromConfig({
-            tableID: "id-table-" + this.parent.egoDivID,
+            tableID: "id-table-" + this.parent.config["Ego Div ID"],
             tableClass: "table",
             tableStyle: "margin-bottom:0;",
             thsText: this.parent.XData.headers,
@@ -559,33 +436,33 @@ class clsXCSV_Names {
     constructor(parent) {
         this.parent = parent
         this.IDs = new clsXCSV_Names_ID(parent, this.parent.XData)
-        this.ConfigIDs = {
-            "Link": new clsXCSV_Names_ID(parent, this.parent.XConfigItems["Link"])
-        }
+        // this.ConfigIDs = {
+        //     "Link": new clsXCSV_Names_ID(parent, this.parent.XConfigItems["Link"])
+        // }
 
     }
 
     IsHeader (divID) {
         if (this.IDs.IsHeader(divID)) {
             return true}
-        if (this.ConfigIDs["Link"].IsHeader(divID)) {
-            return true}
+        // if (this.ConfigIDs["Link"].IsHeader(divID)) {
+        //     return true}
         return false
     }
 
     IsRow (divID) {
         if (this.IDs.IsRow(divID)) {
             return true}
-        if (this.ConfigIDs["Link"].IsRow(divID)) {
-            return true}
+        // if (this.ConfigIDs["Link"].IsRow(divID)) {
+        //     return true}
         return false
     }
 
     IsCell (divID) {
         if (this.IDs.IsCell(divID)) {
             return true}
-        if (this.ConfigIDs["Link"].IsCell(divID)) {
-            return true}
+        // if (this.ConfigIDs["Link"].IsCell(divID)) {
+        //     return true}
         return false
     }
 
@@ -656,7 +533,7 @@ class clsXCSV_Names_ID {
     }
 
     _egoprefix() {
-        return '[' + this.parent.egoDivID + '] '
+        return '[' + this.parent.config["Ego Div ID"] + '] '
     }
 
     IsHeader(headerID) {

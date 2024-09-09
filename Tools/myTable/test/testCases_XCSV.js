@@ -1,6 +1,47 @@
-function test_clsData(myTest) {
+function test_clsXSCV_Init(myTest) {
     let fname = arguments.callee.name;
     let ted = new clsXCSV("div-id")
+
+    let expectedConfig = {
+        'Ego Div ID': "div-id",
+        'activeItems': "Default Data"
+    }
+
+    myTest.Equal(ted.config, expectedConfig, fname)
+    myTest.IsTrue(ted.XData === ted.XItems["Default Data"], fname)
+    myTest.Equal(ted.XData.name, "Default Data", fname)
+    myTest.Equal(ted.XData.headers,['A', 'B', 'C'], fname)
+}
+
+function test_clsXSCV_forAllCellsValue(myTest) {
+    let fname = arguments.callee.name;
+    let ted = new clsXCSV("div-id")
+
+    ted.XData._forAllCellsValue(function (val) {return val + 'X'})
+
+    let ted2 = new clsXCSV("div-id")
+    flag = true
+    for (i of [0,1,2]) {
+        for (j of [0,1,2]) {
+            if (!IsEqual(ted.XData.data[i][j], ted2.XData.data[i][j] + 'X')) {
+                flag = false}
+        }
+    }
+    myTest.IsTrue(flag, fname)
+
+    ted.XData.Clear()
+    flag = true
+    for (i of [0,1,2]) {
+        for (j of [0,1,2]) {
+            if (!IsEqual(ted.XData.data[i][j], '')) {
+                flag = false}
+        }
+    }
+    myTest.IsTrue(flag, fname)
+}
+
+
+
 
 //     // new 
 //     myTest.Assertion(ted, {}, fname)
@@ -42,4 +83,3 @@ function test_clsData(myTest) {
 //     myTest.Equal(ted.XData.data, [["", ""]])
 //     myTest.Equal(ted.XWorkingItems[XCSV_DATA["WorkingItems"].key(0)].headers, ["A", "B"])
 //     myTest.Equal(ted.XWorkingItems[XCSV_DATA["WorkingItems"].key(0)].data, [["", ""]])
-}

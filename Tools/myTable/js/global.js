@@ -72,7 +72,7 @@ function Edit_Save(divID, value) {
         let RC = XCSV["main"].XNames.IDs.RC_fromID(divID)
         XCSV["main"].XData.data[RC[0]][RC[1]] = value
         // dataconfig
-        XCSV["main"].XConfigItems.CreateConfigItems()
+        // XCSV["main"].XConfigItems.CreateConfigItems()
         //style
         _Edit_MinHeight_Undo(divID)
 

@@ -23,20 +23,30 @@ class clsFormat {
         ret += this._AsCSV_HeaderLine()
         ret += this._AsCSV_RowsLine()
         return ret}
+
+    Name(text) {
+        if (!text.includes(this.config["file-seperator"])) { 
+            return }
+        text = text.after(this.config["file-seperator"])
+        return text.until('\n').trim()
+    }
     
     xRead(text) {
         if (text == undefined) {
             return}
+        let name = 'X'
         if (text.includes(this.config["file-seperator"])) {
-            let files = text.split(this.config["file-seperator"]); files.removeAll("")
+            let files = text.split('\n' + this.config["file-seperator"]); files.removeAll("")
+            files[0] = files[0].after(this.config["file-seperator"])
             let textfile = files[0]
-            let name = textfile.until('\n').trim()  // not yet used
+            name = textfile.until('\n').trim()
             text = textfile.substring(textfile.indexOf('\n')+1)
             text = text.trimPlus([' |'])}
         
         let headers_data = this._HeadersData(text)
 
-        this.parent.XData.Init(headers_data[0], headers_data[1])
+        this.parent.XData.Init(headers_data[0], headers_data[1], name)
+        
     }
 
     _AsCSV_HeaderLine() {
@@ -45,7 +55,10 @@ class clsFormat {
         let n = this.config["line-end"]
 
         let ret = ll 
+        let key = this.parent.config['activeItems']
         for (let header of this.parent.XData.headers) {
+            ret += header + l}
+        for (let header of this.parent.XItems['active'].headers) {
             ret += header + l}
         ret = ret.slice(0, -1*l.length) + n
         
@@ -70,7 +83,8 @@ class clsFormat {
     _HeadersData(textfile) {
         assert(textfile.startsWith(this.config["line-starter"]))
 
-        let lines = textfile.split(this.config["line-starter"]); lines.removeAll("")
+        let lines = textfile.split('\n' + this.config["line-starter"]); lines.removeAll("")
+        lines[0] = lines[0].after(this.config["line-starter"])
         for (let i = 0; i< lines.length; i++) {
             lines[i] = lines[i].replace(/\n+$/, '')} // "at the end.\n\n\n" ->"at the end."
         let headers = lines[0]; headers = headers.split(this.config["cell-seperator"])        
@@ -79,16 +93,6 @@ class clsFormat {
         for (let row of rows){
             data.push(row.split(this.config["cell-seperator"]))}
     
-        return [headers, data, name]
+        return [headers, data]
     }
 }
-
-
-// ||||<name>
-// ||<header1>|<header2>|<header3>|<header4>
-// ||<data 11>|<data 12>|<data 13>|<data 14>
-// ||<data 21>|<data 22>|<data 23>|<data 24>
-// ||||<name>
-// ||<header1>|<header2>|<header3>|<header4>
-// ||<data 11>|<data 12>|<data 13>|<data 14>
-// ||<data 21>|<data 22>|<data 23>|<data 24>

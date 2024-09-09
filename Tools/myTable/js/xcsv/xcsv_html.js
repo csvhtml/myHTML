@@ -16,25 +16,13 @@ class clsHTML {
     }
 
     _Print() {
-        // document.getElementById(this.parent.egoDivID).innerHTML = HMTL.Table({
-        //     tableID: "id-table-" + this.parent.egoDivID,
-        //     tableClass: "table",
-        //     tableStyle: "margin-bottom:0;",
-        //     thsText: this.parent.XData.headers,
-        //     thsID: this.parent.XNames.IDs.headers(),
-        //     rowsID: this.parent.XNames.IDs.rows(),
-        //     // cellsText: this.parent.XData.data,
-        //     cellsText: this.DataAsHTML(),
-        //     cellsID: this.parent.XNames.IDs.cells(),
-        // })
-
-        document.getElementById(this.parent.egoDivID).innerHTML = this.DataAsHTML()
+        document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.DataAsHTML()
     }
 
     _PrintConfig(key) {
         this.parent.XSelection.unset()
-        document.getElementById(this.parent.egoDivID).innerHTML = HMTL.Table({
-            tableID: "id-table-" + this.parent.egoDivID,
+        document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = HMTL.Table({
+            tableID: "id-table-" + this.parent.config["Ego Div ID"],
             tableClass: "table",
             tableStyle: "margin-bottom:0;",
             thsText: this.parent.XConfigItems["Link"].headers,
@@ -64,7 +52,7 @@ class clsHTML {
     DataAsHTML(pre = "") {
         return pre + 
             HTMLTable_FromConfig({
-            tableID: "id-table-" + this.parent.egoDivID,
+            tableID: "id-table-" + this.parent.config["Ego Div ID"],
             tableClass: "table",
             tableStyle: "margin-bottom:0;",
             thsText: this.parent.XData.headers,

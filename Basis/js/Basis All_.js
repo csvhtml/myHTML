@@ -8,6 +8,7 @@ const BASIS = {
 	ListDepth: function(ListVariable) {return ListDepth(ListVariable)},
 	maxx: function(a, b) {return maxx(a, b)},
 	minn: function(a, b) {return minn(a, b)},
+	wenn: function(condition, trueValue, falseValue) {return wenn(condition, trueValue, falseValue)},
 	IsEqual: function(a,b, max_iterations = 100) {return IsEqual(a,b, max_iterations)},
 	IsListEqualSize: function(a,b, flag = false) {return IsListEqualSize(a,b, flag)},
 	ElementInArrayN: function(array, element) {return ElementInArrayN(array, element)},
@@ -144,6 +145,10 @@ function maxx(a, b) {
 
 function minn(a, b) {
     return (a < b) ? a : b;
+}
+
+function wenn(condition, trueValue, falseValue) {
+    return condition ? trueValue : falseValue;
 }
 
 function IsEqual(a,b, max_iterations = 100) {
@@ -1175,6 +1180,18 @@ Object.defineProperties(String.prototype, {
                     ret = ret.replace(re,place)}
                 else {
                     break}
+            }
+            return ret;
+        }
+    } 
+});
+
+Object.defineProperties(String.prototype, {
+    AsList: {
+        value: function(n) {
+            let ret = []
+            for (let i = 0; i < n; i++) {
+                ret.push(String(this))
             }
             return ret;
         }

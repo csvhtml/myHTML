@@ -158,6 +158,18 @@ Object.defineProperties(String.prototype, {
 });
 
 Object.defineProperties(String.prototype, {
+    AsList: {
+        value: function(n) {
+            let ret = []
+            for (let i = 0; i < n; i++) {
+                ret.push(String(this))
+            }
+            return ret;
+        }
+    } 
+});
+
+Object.defineProperties(String.prototype, {
     trimPlus: {
         value: function(plusList) {
             let ret = String(this)

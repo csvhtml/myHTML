@@ -35,33 +35,33 @@ class clsXCSV_Names {
     constructor(parent) {
         this.parent = parent
         this.IDs = new clsXCSV_Names_ID(parent, this.parent.XData)
-        this.ConfigIDs = {
-            "Link": new clsXCSV_Names_ID(parent, this.parent.XConfigItems["Link"])
-        }
+        // this.ConfigIDs = {
+        //     "Link": new clsXCSV_Names_ID(parent, this.parent.XConfigItems["Link"])
+        // }
 
     }
 
     IsHeader (divID) {
         if (this.IDs.IsHeader(divID)) {
             return true}
-        if (this.ConfigIDs["Link"].IsHeader(divID)) {
-            return true}
+        // if (this.ConfigIDs["Link"].IsHeader(divID)) {
+        //     return true}
         return false
     }
 
     IsRow (divID) {
         if (this.IDs.IsRow(divID)) {
             return true}
-        if (this.ConfigIDs["Link"].IsRow(divID)) {
-            return true}
+        // if (this.ConfigIDs["Link"].IsRow(divID)) {
+        //     return true}
         return false
     }
 
     IsCell (divID) {
         if (this.IDs.IsCell(divID)) {
             return true}
-        if (this.ConfigIDs["Link"].IsCell(divID)) {
-            return true}
+        // if (this.ConfigIDs["Link"].IsCell(divID)) {
+        //     return true}
         return false
     }
 
@@ -132,7 +132,7 @@ class clsXCSV_Names_ID {
     }
 
     _egoprefix() {
-        return '[' + this.parent.egoDivID + '] '
+        return '[' + this.parent.config["Ego Div ID"] + '] '
     }
 
     IsHeader(headerID) {

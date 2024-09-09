@@ -3,16 +3,20 @@
 // ################################################################
 
 class clsXCSV {
-        constructor(egoDivID, config) {     
-            this.egoDivID = egoDivID
-            this.config = config
+        constructor(egoDivID, config) {   
+            this.config = {}  
+            this.config["Ego Div ID"] = egoDivID
+            // this.config = config
+            
             this.XAssert = new clsXCSV_assert(this)  // OK
 
             this.XFormat = new clsFormat(this)  // OK
-            this.XWorkingItems = new clsDataCollection(this, "XWorkingItems")  // Skip
-            this.XConfigItems = new clsDataCollection(this, "XConfigItems")  // Skip
-            this.XData = new clsData(this, this.config["WorkingItems"].key(0), "XWorkingItems", true)
-            
+            this.config['activeItems'] = this.XFormat.Name(XCSV_DATA_ITEMS)
+            this.XItems = {
+                [this.config['activeItems']] : new clsData(this, this.config['activeItems'])
+            }
+            this.XData = this.XItems[this.config['activeItems']]        // internal reference 
+
             this.XHTML = new clsHTML(this)  // OK
 
             this.XNames = new clsXCSV_Names(this)  // OK
@@ -49,3 +53,17 @@ const CLSXCSV_NAMES = {
         }
     }
 }
+
+// ################################################################
+// XCSV - default values                                          #
+// ################################################################
+
+const XCSV_DATA_ITEMS = '\
+            ||||Default Data\n\
+            ||A|B|C\n\
+            ||1|2|3\n\
+            ||5 Leerzeichen|Neue\nZeile|[Link::URL]\n\
+            ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
+    '
+
+const XCSV_DATA_DEFAULT_VALUE = '..'
