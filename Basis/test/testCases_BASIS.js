@@ -52,13 +52,21 @@ function test_ValidChars(myTest) {
 
 function test_typOf(myTest) {
     let test =  [
-        [1, 'int'], ['a', 'str'], [true, 'bool'], [[1,2,3], 'list'], [{'a':1, 'b':2}, 'dict']]
+        [1, 'int'], ['a', 'str'], [true, 'bool'], [[1,2,3], 'list'], [{'a':1, 'b':2}, 'dict'], 
+        [null, 'null'], [undefined, 'undefined']
+    ]
 
     for (let t of test) {
         myTest.Equal(BASIS.typOf(t[0]), t[1], arguments.callee.name)}
 
     myTest.Equal(BASIS.typOf([1,2,3], true), 'list-1D', arguments.callee.name)
     myTest.Equal(BASIS.typOf([[1,2], [3,4]], true), 'list-2D', arguments.callee.name)
+}
+
+function test_ListDepth(myTest) {
+    myTest.Equal(ListDepth([]), 1, arguments.callee.name)
+    myTest.Equal(ListDepth([[]]), 2, arguments.callee.name)
+    myTest.Equal(ListDepth([[[]]]), 3, arguments.callee.name)
 }
 
 function test_maxx(myTest) {
@@ -90,6 +98,8 @@ function test_IsEqual(myTest) {
     let test_true = [
         [true, true, true],
         [false, false, true],
+        [null, null, true],
+        [undefined, undefined, true],
         [1, 1, true],
         ["1", "1", true],
         ["Hello", "Hello", true],
@@ -102,6 +112,7 @@ function test_IsEqual(myTest) {
     let test_false = [
         [false, true, false],
         [true, false, false],
+        [undefined, null, false],
         [1, 2, false],
         [1, "1", false],
         ["Hello", "World", false],
@@ -323,13 +334,46 @@ function proto_listPushX(myTest) {
     myTest.Equal(liste, expected, arguments.callee.name)
 }
 
-function proto_listPreFix(myTest) {
+// functionn proto_listPreFix(myTest) {
+//     let liste = ["a", "b", "c", "d"]
+//     let expected = ["xxa", "xxb", "xxc", "xxd"]
+    
+//     myTest.Equal(liste.preFix('xx'), expected, arguments.callee.name)
+// }
+
+function proto_listApplyToItems(myTest) {
+    let func = function (val) {return 'xx'+val}
+    
     let liste = ["a", "b", "c", "d"]
     let expected = ["xxa", "xxb", "xxc", "xxd"]
-    
-    myTest.Equal(liste.preFix('xx'), expected, arguments.callee.name)
+    liste.applyToItems(func)
+    myTest.Equal(liste, expected, arguments.callee.name)
+
+    liste = [["a", "b", "c", "d"], ["A"]]
+    expected = [["xxa", "xxb", "xxc", "xxd"], ["xxA"]]
+    liste.applyToItems(func)
+    myTest.Equal(liste, expected, arguments.callee.name)
+
+    // myTest.Equal(liste.preFix('xx'), expected, arguments.callee.name)
 }
 
+function proto_insertColum(myTest) {
+    let liste = [["1", "2", "3", "4"], ["A", "B", "C", "D"], ["a", "b", "c", "d"]]
+    let expected = [["1", "2", "3", "4", "X"], ["A", "B", "C", "D", "X"], ["a", "b", "c", "d", "X"]]
+    
+    liste.insertColum(["X", "X", "X"])
+    myTest.Equal(liste, expected, arguments.callee.name)
+
+    // do nothing in case provided list does not match
+    liste.insertColum(["Y", "Y", "Y", "Y"])
+    myTest.Equal(liste, expected, arguments.callee.name)
+
+    // do nothing in case ego list is not 2D
+    liste = ["X", "X", "X"]
+    liste.insertColum(["Y", "Y", "Y"])
+    myTest.Equal(liste, ["X", "X", "X"], arguments.callee.name)
+
+}
 
 function proto_stringUntil(myTest) {
     let text = "Hallo Welt"

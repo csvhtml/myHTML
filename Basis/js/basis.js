@@ -71,9 +71,9 @@ function typOf(variable, extendedInfo = false) {
         return 'int'}
     if (typeof variable === 'boolean') {
         return 'bool'}
-    if (variable == null) {
+    if (variable === null) {
         return 'null'}
-    if (variable == undefined) {
+    if (variable === undefined) {
         return 'undefined'}
 
     assert(false, String(variable))

@@ -165,7 +165,7 @@ class clsXCSV_Names_ID {
     }
 
     R_fromRowID(divID, FirstIndexisOne = false) {
-        if (!this.IsRow(divID)) {assert(false)}
+        if (!this.IsRow(divID)) {return -1}
 
         let X = CLSXCSV_NAMES["id"]["row"]
         let ret = Number(RetStringBetween(divID, X["prefix"], X["postfix"])) 
@@ -174,8 +174,8 @@ class clsXCSV_Names_ID {
         return  ret
     }
 
-    H_fromHeaderID(divID) {
-        if (!this.IsHeader(divID)) {assert(false)}
+    C_fromHeaderID(divID) {
+        if (!this.IsHeader(divID)) {return -1}
 
         let X = CLSXCSV_NAMES["id"]["header"]
         let headerName = RetStringBetween(divID, X["prefix"], X["postfix"])

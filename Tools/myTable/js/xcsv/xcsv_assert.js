@@ -33,9 +33,13 @@ class clsXCSV_assert {
     }
 
     AddRow(atPosition, newRow) {
-        assert(atPosition > -2, "atPosition index below -1")
-        assert(atPosition < this.parent.XData.data.length+1, "atPosition above data length")
+        assert(-2 < atPosition  && atPosition < this.parent.XData.data.length+1)
         assert(newRow.length == this.parent.XData.headers.length || newRow.length == 0, "values length not equal to data length")}
+
+    AddCol(atPosition, colName, newCol) {
+        assert(-2 < atPosition  && atPosition < this.parent.XData.headers.length+1)
+        assert(typOf(colName) == "str")
+        assert(newCol.length == this.parent.XData.data.length || newCol.length == 0)}
 
     // config() {
     //     assert(this.parent.config.key(0) == "WorkingItems")

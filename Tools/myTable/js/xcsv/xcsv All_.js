@@ -22,13 +22,46 @@ class clsXCSV {
             this.XNames = new clsXCSV_Names(this)  // OK
             this.XClick = new clsXCSV_Clickhandler(this)  // OK
             this.XSelection = new clsXCSV_Selectionhandler(this)  // OK
+            this.XInfo = new clsXCSV_Infohandler(this)
 
+
+            // Apply
+            this.__config()
             this.XFormat.Read(XCSV_DATA_ITEMS.trimPlus()) 
+        }
+
+        __config() {
+            let keys = [
+                "Ego Div ID",           // the DOM element id where the content fo this class are printed
+                'activeItems',          // the name of the this.XItems (clsdata) that is currently active, i. e. is represented by this.XData
+                'infoblocks',           // list of div ids where feedback information from this class shall be dieplayed. Max 3 divs. The first in the list has highest prio.
+                                        // Each info has a importance level and will overwrite the innerHTML of that div when it reaches the prio level.
+            ]
+            for (let k of keys) {
+                if (this.config[k] === undefined) this.config[k] = null}
         }
 
         AddRow() {
             this.XData.AddRow()
             this.XHTML.Print()
+        }
+
+        AddCol() {
+            let lastHeaderName = this.XData.headers[this.XData.headers.length-1]
+            this.XData.AddCol(lastHeaderName + '-copy')
+            this.XHTML.Print()
+        }
+
+        Config(cfg) {
+            let keys = Object.keys(this.config)
+
+            if (typOf(cfg) == 'str')
+                if (keys.includes(cfg)) return this.config[cfg]
+            if (typOf(cfg) != 'dict') return -1
+            for (let k in cfg) {
+                if (!keys.includes(k)) return -1
+                if (cfg[k] == -1) return -1
+                this.config[k] = cfg[k]} // set config
         }
     }
 
@@ -103,9 +136,13 @@ class clsXCSV_assert {
     }
 
     AddRow(atPosition, newRow) {
-        assert(atPosition > -2, "atPosition index below -1")
-        assert(atPosition < this.parent.XData.data.length+1, "atPosition above data length")
+        assert(-2 < atPosition  && atPosition < this.parent.XData.data.length+1)
         assert(newRow.length == this.parent.XData.headers.length || newRow.length == 0, "values length not equal to data length")}
+
+    AddCol(atPosition, colName, newCol) {
+        assert(-2 < atPosition  && atPosition < this.parent.XData.headers.length+1)
+        assert(typOf(colName) == "str")
+        assert(newCol.length == this.parent.XData.data.length || newCol.length == 0)}
 
     // config() {
     //     assert(this.parent.config.key(0) == "WorkingItems")
@@ -176,15 +213,8 @@ class clsData {
         
     }
 
-    Clear() {
-        this._forAllCellsValue(function() {return ""})
-    }
-
-    _forAllCellsValue(func) {
-        for (let i = 0; i < this.data.length; i++) {
-            for (let j = 0; j < this.data[i].length; j++) {
-                this.data[i][j] = func(this.data[i][j]);}
-          }
+    Clear(val = '') {
+        this.data.applyToItems(function() {return val})
     }
 
     InitHeaders(headers) {
@@ -211,8 +241,21 @@ class clsData {
             this._UpdateNumberCol()
     }
 
+    AddCol(colName, newCol = []) {
+        let atPosition = this.parent.XSelection.Col()      
+        this.parent.XAssert.AddCol(atPosition, colName, newCol)
+        // let targetPosition = wenn(atPosition == -1, this.headers.length, atPosition)
+        let targetCol = wenn(IsEqual(newCol, []), this._DefaultCol(), newCol)
+        this.headers.push(colName)
+        this.data.insertColum(targetCol)
+    }
+
     _DefaultRow() {     
         return XCSV_DATA_DEFAULT_VALUE.AsList(this.headers.length)
+    }
+
+    _DefaultCol() {     
+        return XCSV_DATA_DEFAULT_VALUE.AsList(this.data.length)
     }
 
     _UpdateNumberCol() {
@@ -337,37 +380,9 @@ class clsHTML {
         this.parent = parent
     }
 
-    Print(key="data") {
-        if (key == "data") {
-            this._Print()
-            infoblock("Working Items", "m")}
-        else {
-            this._PrintConfig(key)
-            infoblock("Config Items: " + key, "m")
-        }
-        this.parent.XSelection.unset()
-        
-    }
-
-    _Print() {
+    Print() {
         document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.DataAsHTML()
-    }
-
-    _PrintConfig(key) {
         this.parent.XSelection.unset()
-        document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = HMTL.Table({
-            tableID: "id-table-" + this.parent.config["Ego Div ID"],
-            tableClass: "table",
-            tableStyle: "margin-bottom:0;",
-            thsText: this.parent.XConfigItems["Link"].headers,
-            cellsText: this.parent.XConfigItems["Link"].data,
-
-            // thsText: this.parent.XNames.ConfigIDs["Link"].XData.headers,
-            thsID: this.parent.XNames.ConfigIDs["Link"].headers(),
-            rowsID: this.parent.XNames.ConfigIDs["Link"].rows(),
-            
-            cellsID: this.parent.XNames.ConfigIDs["Link"].cells(),
-        })
     }
 
     _MarkupToX() {
@@ -377,7 +392,6 @@ class clsHTML {
             for (let cell of row) {
                 let value = cell
                 value = MyMarkDowntoHTML(value)
-                // value = MyMarkDowntoSVG(value)
                 tmp.push(value)}
             ret.push(tmp)}
         return ret
@@ -396,6 +410,32 @@ class clsHTML {
             cellsText: this._MarkupToX(),
             cellsID: this.parent.XNames.IDs.cells(),
         })
+    }
+
+}
+class clsXCSV_Infohandler {
+    constructor(parent) {
+        this.parent = parent
+    }
+
+    Level1(msg) {
+        let infoblocks = this.parent.config['infoblocks']
+        if (typOf(infoblocks) == 'list')
+            if (infoblocks.length > 0) 
+                document.getElementById(infoblocks[0]).innerHTML = msg 
+    }
+
+    Level2(msg) {
+        let infoblocks = this.parent.config['infoblocks']
+        if (typOf(infoblocks) == 'list') {
+            if (infoblocks.length > 1) {
+                document.getElementById(infoblocks[1]).innerHTML = msg
+                return }
+            if (infoblocks.length == 1) {
+                document.getElementById(infoblocks[0]).innerHTML = msg 
+                return }
+        }
+
     }
 
 }
@@ -566,7 +606,7 @@ class clsXCSV_Names_ID {
     }
 
     R_fromRowID(divID, FirstIndexisOne = false) {
-        if (!this.IsRow(divID)) {assert(false)}
+        if (!this.IsRow(divID)) {return -1}
 
         let X = CLSXCSV_NAMES["id"]["row"]
         let ret = Number(RetStringBetween(divID, X["prefix"], X["postfix"])) 
@@ -575,8 +615,8 @@ class clsXCSV_Names_ID {
         return  ret
     }
 
-    H_fromHeaderID(divID) {
-        if (!this.IsHeader(divID)) {assert(false)}
+    C_fromHeaderID(divID) {
+        if (!this.IsHeader(divID)) {return -1}
 
         let X = CLSXCSV_NAMES["id"]["header"]
         let headerName = RetStringBetween(divID, X["prefix"], X["postfix"])
@@ -586,48 +626,62 @@ class clsXCSV_Names_ID {
 class clsXCSV_Selectionhandler {
     constructor(parent) {
             this.parent = parent
-            this.EgoID = ""
+            this.SelectedID = ""
         }
 
     set(divID) {
-        this.EgoID = divID
+        this.SelectedID = divID
         document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")
         
-        let X = this.parent.XNames.IDs
+        let X = this.parent.XNames.IDs; let msg = ''
         if (X.IsRow(divID)) {
-            infoblock("Selected Row: " + String(this.parent.XNames.IDs.R_fromRowID(this.EgoID, true))); return}
+            msg = "Selected Row: " + String(this.parent.XNames.IDs.R_fromRowID(this.SelectedID, true))
+            this.parent.XInfo.Level2(msg); return}
+            // infoblock.innerHTML = "Selected Row: " + String(this.parent.XNames.IDs.R_fromRowID(this.SelectedID, true)); return}
         if (X.IsCell(divID)) {
-            infoblock("Selected Cell: " + String(this.parent.XNames.IDs.RC_fromID(this.EgoID, true))); return}
+            msg = "Selected Cell: " + String(this.parent.XNames.IDs.RC_fromID(this.SelectedID, true))
+            this.parent.XInfo.Level2(msg); return}
+            // infoblock.innerHTML = "Selected Cell: " + String(this.parent.XNames.IDs.RC_fromID(this.SelectedID, true)); return}
         if (X.IsHeader(divID)) {
-            infoblock("Selected Header: " + this.parent.XData.headers[this.parent.XNames.IDs.H_fromHeaderID(this.EgoID)]); return}
+            msg = "Selected Header: " + this.parent.XData.headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]
+            this.parent.XInfo.Level2(msg); return}
+            // infoblock.innerHTML = "Selected Header: " + this.parent.XData.headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]; return}
         
     }
 
     unset() {
-        if (this.EgoID != "") {
-            if (document.getElementById(this.EgoID)) {
+        if (this.SelectedID != "") {
+            if (document.getElementById(this.SelectedID)) {
                 EDIT.Init_Undo()
-                document.getElementById(this.EgoID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
+                document.getElementById(this.SelectedID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
             }
         }
-        this.EgoID = ""
-        infoblock(this.EgoID)
+        this.SelectedID = ""
+        this.parent.XInfo.Level2(this.SelectedID)
     }
 
     edit(divID) {
-        this.EgoID = divID
+        this.SelectedID = divID
         document.getElementById(divID).classList.add("myEdit")
         EDIT.Init()
     }
 
     currentSelection() {
-        return this.EgoID
+        return this.SelectedID
     }
     
     Row() {
-        if (this.parent.XNames.IDs.IsRow(this.currentSelection())) {
-            return this.parent.XNames.IDs.R_fromRowID(this.currentSelection())}
-        return -1
+        let X = this.parent.XNames.IDs
+        let id = this.currentSelection()
+        return wenn(X.IsRow(id), X.R_fromRowID(id), -1)
     }
+
+    Col() {
+        let X = this.parent.XNames.IDs
+        let id = this.currentSelection()
+        return wenn(X.IsHeader(id), X.C_fromHeaderID(id), -1)
+    }
+
+
 
 }

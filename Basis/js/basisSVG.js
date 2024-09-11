@@ -44,8 +44,8 @@ class clsSVG {
     }
 
     CreateAll_BasedOnDivClasses(tags) {
-        let svgKeys = Object.keys(this)
-        var svgKeyClasses = svgKeys.preFix('svg:')
+        let svgKeyClasses = Object.keys(this)
+        svgKeyClasses.applyToItems(function (val) { return 'svg:' + val})
         let listDIVS = ListOfDivs(tags)
 
         for (let div of listDIVS) {

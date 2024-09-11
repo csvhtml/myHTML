@@ -3,37 +3,9 @@ class clsHTML {
         this.parent = parent
     }
 
-    Print(key="data") {
-        if (key == "data") {
-            this._Print()
-            infoblock("Working Items", "m")}
-        else {
-            this._PrintConfig(key)
-            infoblock("Config Items: " + key, "m")
-        }
-        this.parent.XSelection.unset()
-        
-    }
-
-    _Print() {
+    Print() {
         document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.DataAsHTML()
-    }
-
-    _PrintConfig(key) {
         this.parent.XSelection.unset()
-        document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = HMTL.Table({
-            tableID: "id-table-" + this.parent.config["Ego Div ID"],
-            tableClass: "table",
-            tableStyle: "margin-bottom:0;",
-            thsText: this.parent.XConfigItems["Link"].headers,
-            cellsText: this.parent.XConfigItems["Link"].data,
-
-            // thsText: this.parent.XNames.ConfigIDs["Link"].XData.headers,
-            thsID: this.parent.XNames.ConfigIDs["Link"].headers(),
-            rowsID: this.parent.XNames.ConfigIDs["Link"].rows(),
-            
-            cellsID: this.parent.XNames.ConfigIDs["Link"].cells(),
-        })
     }
 
     _MarkupToX() {
@@ -43,7 +15,6 @@ class clsHTML {
             for (let cell of row) {
                 let value = cell
                 value = MyMarkDowntoHTML(value)
-                // value = MyMarkDowntoSVG(value)
                 tmp.push(value)}
             ret.push(tmp)}
         return ret

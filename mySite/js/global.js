@@ -22,7 +22,8 @@ function ParseFromFileReader() {
     // XCSV["main"].XReader.ReadXCSV(text)
     XCSV["main"].XFormat.Read(text)
     XCSV["main"].XHTML.Print()
-    infoblock(FileNameFromPath(cFileReaders_File["nav-input"].value) ,"l")
+    // infoblock(FileNameFromPath(cFileReaders_File["nav-input"].value) ,"l")
+    XCSV["main"].Info.level1(FileNameFromPath(cFileReaders_File["nav-input"].value))
 }
 
 function DownloadCSV() {
@@ -73,7 +74,7 @@ function Edit_Save(divID, value) {
     }
 
     if (XCSV["main"].XNames.IDs.IsHeader(divID)) {
-        let h = XCSV["main"].XNames.IDs.H_fromHeaderID(divID)
+        let h = XCSV["main"].XNames.IDs.C_fromHeaderID(divID)
         XCSV["main"].XWorkingItems[dataName].headers[h] = value
     }
         let value_modified = value

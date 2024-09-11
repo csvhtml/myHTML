@@ -15,15 +15,8 @@ class clsData {
         
     }
 
-    Clear() {
-        this._forAllCellsValue(function() {return ""})
-    }
-
-    _forAllCellsValue(func) {
-        for (let i = 0; i < this.data.length; i++) {
-            for (let j = 0; j < this.data[i].length; j++) {
-                this.data[i][j] = func(this.data[i][j]);}
-          }
+    Clear(val = '') {
+        this.data.applyToItems(function() {return val})
     }
 
     InitHeaders(headers) {
@@ -50,8 +43,21 @@ class clsData {
             this._UpdateNumberCol()
     }
 
+    AddCol(colName, newCol = []) {
+        let atPosition = this.parent.XSelection.Col()      
+        this.parent.XAssert.AddCol(atPosition, colName, newCol)
+        // let targetPosition = wenn(atPosition == -1, this.headers.length, atPosition)
+        let targetCol = wenn(IsEqual(newCol, []), this._DefaultCol(), newCol)
+        this.headers.push(colName)
+        this.data.insertColum(targetCol)
+    }
+
     _DefaultRow() {     
         return XCSV_DATA_DEFAULT_VALUE.AsList(this.headers.length)
+    }
+
+    _DefaultCol() {     
+        return XCSV_DATA_DEFAULT_VALUE.AsList(this.data.length)
     }
 
     _UpdateNumberCol() {

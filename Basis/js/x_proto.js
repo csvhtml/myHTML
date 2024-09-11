@@ -74,16 +74,46 @@ Object.defineProperties(Array.prototype, {
         }
 });
 
+// // MOHI: should modify this, not return 
+// Object.defineProperties(Array.prototype, {
+//     preFix: {
+//         value: function(preFix) {
+//             ret = []
+//             for(let i=0; i<this.length; i++)
+//                 if (typeof this[i] === "string")
+//                     ret.push(preFix + this[i])
+//             return ret
+//         }
+//     }
+// });
+
+// MOHI: should modify this, not return 
 Object.defineProperties(Array.prototype, {
-    preFix: {
-        value: function(preFix) {
-            ret = []
-            for(let i=0; i<this.length; i++)
-                if (typeof this[i] === "string")
-                    ret.push(preFix + this[i])
-            return ret
+    applyToItems: {
+        value: function(func, n = 0) {
+            if (n < 0 || 5 < n) return
+            for(let i=0; i<this.length; i++) {
+                if (typOf(this[i]) == "list") {
+                    this[i].applyToItems(func, n+1)
+                } else {
+                    this[i] = func(this[i])
+                }
+            }
         }
+    }
+});
+
+Object.defineProperties(Array.prototype, {
+    insertColum: {
+        value: function(liste) {
+            if (ListDepth(this) == 2) {
+                if (this.length == liste.length) {
+                    for (let i = 0; i < liste.length; i++) {
+                        this[i].push(liste[i])}
+                }
+            }
         }
+    }
 });
 
 // MOHI: To be reworked

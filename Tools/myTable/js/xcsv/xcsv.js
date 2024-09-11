@@ -22,13 +22,46 @@ class clsXCSV {
             this.XNames = new clsXCSV_Names(this)  // OK
             this.XClick = new clsXCSV_Clickhandler(this)  // OK
             this.XSelection = new clsXCSV_Selectionhandler(this)  // OK
+            this.XInfo = new clsXCSV_Infohandler(this)
 
+
+            // Apply
+            this.__config()
             this.XFormat.Read(XCSV_DATA_ITEMS.trimPlus()) 
+        }
+
+        __config() {
+            let keys = [
+                "Ego Div ID",           // the DOM element id where the content fo this class are printed
+                'activeItems',          // the name of the this.XItems (clsdata) that is currently active, i. e. is represented by this.XData
+                'infoblocks',           // list of div ids where feedback information from this class shall be dieplayed. Max 3 divs. The first in the list has highest prio.
+                                        // Each info has a importance level and will overwrite the innerHTML of that div when it reaches the prio level.
+            ]
+            for (let k of keys) {
+                if (this.config[k] === undefined) this.config[k] = null}
         }
 
         AddRow() {
             this.XData.AddRow()
             this.XHTML.Print()
+        }
+
+        AddCol() {
+            let lastHeaderName = this.XData.headers[this.XData.headers.length-1]
+            this.XData.AddCol(lastHeaderName + '-copy')
+            this.XHTML.Print()
+        }
+
+        Config(cfg) {
+            let keys = Object.keys(this.config)
+
+            if (typOf(cfg) == 'str')
+                if (keys.includes(cfg)) return this.config[cfg]
+            if (typOf(cfg) != 'dict') return -1
+            for (let k in cfg) {
+                if (!keys.includes(k)) return -1
+                if (cfg[k] == -1) return -1
+                this.config[k] = cfg[k]} // set config
         }
     }
 

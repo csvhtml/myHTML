@@ -3,22 +3,22 @@
 // #################################################
 
 // also includes the Config (= dict structure of "WorkingItems" and CofigItems)
-const XCSV_DATA = {
-    "WorkingItems": {
-        "X": "\
-            ||A|B|C\n\
-            ||1|2|3\n\
-            ||5 Leerzeichen|Neue\nZeile|[Link::URL]\n\
-            ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
-            "
-    },
-    "ConfigItems": {
-        "Link": "\
-            ||Name|Description\n\
-            || | \n\
-            "
-    }
-}
+// const XCSV_DATA = {
+//     "WorkingItems": {
+//         "X": "\
+//             ||A|B|C\n\
+//             ||1|2|3\n\
+//             ||5 Leerzeichen|Neue\nZeile|[Link::URL]\n\
+//             ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
+//             "
+//     },
+//     "ConfigItems": {
+//         "Link": "\
+//             ||Name|Description\n\
+//             || | \n\
+//             "
+//     }
+// }
 
 // CSS for HTML Export
 const CSS_HTMLEXPORT = 
