@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <!-- <div id="id-frontend"></div> -->
+    <div id="id-frontend"></div>
     <div id="id"></div>
     
 </body>
@@ -23,11 +23,12 @@
 <script src="../js/xcsv/xcsv All_.js"></script>
 <script src="testCases_XCSV.js"></script>
 <script src="testCases_XCSV_data.js"></script>
+<script src="testCases_XCSV_Save.js"></script>
 <script src="testRun_XCSV.js"></script>
 <script>
     (function () {
-        // let frontTest = new clsXCSV("id-frontend")
-        // frontTest.XHTML.Print()
+        let frontTest = new clsXCSV("id-frontend")
+        frontTest.XHTML.Print()
         let myTest = new clsTest()
         test_XCSV('id', myTest)
     })();

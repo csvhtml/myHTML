@@ -4,14 +4,42 @@ function test_clsXSCV_Init(myTest) {
 
     let expectedConfig = {
         'Ego Div ID': "div-id",
-        'activeItems': "Default Data",
         'infoblocks': null,
     }
 
     myTest.Equal(ted.config, expectedConfig, fname)
-    myTest.IsTrue(ted.XData === ted.XItems["Default Data"], fname)
+    myTest.IsTrue(ted.XData === ted.XItems[0], fname)
     myTest.Equal(ted.XData.name, "Default Data", fname)
     myTest.Equal(ted.XData.headers,['A', 'B', 'C'], fname)
+}
+
+function test_clsXSCV_Init2(myTest) {
+    let fname = arguments.callee.name;
+    let ted = new clsXCSV("div-id")
+
+    ted.XData.Init(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test')
+
+    myTest.Equal(ted.XData.headers, ["Header 1", "Header 2"], fname)
+    myTest.Equal(ted.XData.data, [["1", "2"],["3", "4"],["5", "6"]], fname)
+    myTest.Equal(ted.XData.name, 'test', fname)
+}
+
+
+function test_clsXSCV_Type(myTest) {
+    let fname = arguments.callee.name;
+    let ted = new clsXCSV("div-id")
+
+    myTest.Equal(ted.XData.Type(), 'table', fname)
+
+    ted.XData.Init(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test')
+    myTest.Equal(ted.XData.Type(), 'table', fname)
+
+    ted.Add(["Header 1"], [["1"], ["2"], ["3"]], 'test')
+    myTest.Equal(ted.XItems[1].Type(), 'gallery', fname)
+
+    ted.Add(["[text]Header 1"], [["1"]], 'test')
+    myTest.Equal(ted.XItems[1].Type(), 'gallery', fname)
+
 }
 
 

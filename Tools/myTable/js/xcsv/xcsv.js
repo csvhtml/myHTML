@@ -11,11 +11,10 @@ class clsXCSV {
             this.XAssert = new clsXCSV_assert(this)  // OK
 
             this.XFormat = new clsFormat(this)  // OK
-            this.config['activeItems'] = this.XFormat.Name(XCSV_DATA_ITEMS)
-            this.XItems = {
-                [this.config['activeItems']] : new clsData(this, this.config['activeItems'])
-            }
-            this.XData = this.XItems[this.config['activeItems']]        // internal reference 
+            this.XItems = [
+                new clsData(this, this.XFormat.Name(XCSV_DATA_ITEMS))
+            ]
+            this.XData = this.XItems[0]        // internal reference to active XItems set
 
             this.XHTML = new clsHTML(this)  // OK
 
@@ -33,23 +32,11 @@ class clsXCSV {
         __config() {
             let keys = [
                 "Ego Div ID",           // the DOM element id where the content fo this class are printed
-                'activeItems',          // the name of the this.XItems (clsdata) that is currently active, i. e. is represented by this.XData
                 'infoblocks',           // list of div ids where feedback information from this class shall be dieplayed. Max 3 divs. The first in the list has highest prio.
                                         // Each info has a importance level and will overwrite the innerHTML of that div when it reaches the prio level.
             ]
             for (let k of keys) {
                 if (this.config[k] === undefined) this.config[k] = null}
-        }
-
-        AddRow() {
-            this.XData.AddRow()
-            this.XHTML.Print()
-        }
-
-        AddCol() {
-            let lastHeaderName = this.XData.headers[this.XData.headers.length-1]
-            this.XData.AddCol(lastHeaderName + '-copy')
-            this.XHTML.Print()
         }
 
         Config(cfg) {
@@ -62,6 +49,30 @@ class clsXCSV {
                 if (!keys.includes(k)) return -1
                 if (cfg[k] == -1) return -1
                 this.config[k] = cfg[k]} // set config
+        }
+
+        ActiveIndex() {
+            for (let i = 0; i < this.XItems.length; i++) {
+                if (this.XItems[i] === this.XData) return i
+            }
+        }
+
+        Add(headers, data, name) {
+            let x = new clsData(this)
+            x.Init(headers, data, name)
+            this.XItems.push(x)
+        }
+
+        
+        AddRow() {
+            this.XData.AddRow()
+            this.XHTML.Print()
+        }
+
+        AddCol() {
+            let lastHeaderName = this.XData.headers[this.XData.headers.length-1]
+            this.XData.AddCol(lastHeaderName + '-copy')
+            this.XHTML.Print()
         }
     }
 

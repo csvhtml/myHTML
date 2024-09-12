@@ -636,6 +636,19 @@ const dictSVG = {
             L 0 2 Q 0 0 2 0" fill="#E2574C"></path> \
             <text x="1" y="12" fill="white" font-size="9">pdf</text> \
             </svg>',
+            
+    'folder-icon': '<svg id="folder-icon" width="16" height="20" viewBox="0 0 16 20" fill="none"> \
+            <path fill="#FFA000" d="M 2 3  \
+                    L 8 3  Q 10 3 10 5  \
+                    L 10 8   \
+                    L 0 8  \
+                    L 0 5 Q 0 3 2 3"/> \
+            <path fill="#FFCA28" d="M 2 6 \
+                    L 22 6  Q 24 6 24 8 \
+                    L 24 18 Q 24 20 22 20 \
+                    L 2 20 Q 0 20 0 18 \
+                    L 0 8 Q 0 6 2 6"/> \
+                    </svg>',
 
     'a-x': '<svg id="a-x" width="20" height="20" fill="currentColor" class="m-1" viewBox="2 2 18 18">\
             <line x1="4" y1="4" x2="16" y2="16" stroke="currentColor" stroke-width="2"/>\
@@ -845,7 +858,8 @@ const CLASS_SVG_FOR_MARKDOWN = new clsSVG()
 const CONFIG_SVG_FOR_MARKDOWN_REPLACE = [
     // ['Markdown String', svg string, key]
     ["[(SVG)pdf]", CLASS_SVG_FOR_MARKDOWN['pdf-img'], 'pdf-img'],
-    ["[(svg)pdf]", CLASS_SVG_FOR_MARKDOWN['pdf-icon'], 'pdf-icon']
+    ["[(svg)pdf]", CLASS_SVG_FOR_MARKDOWN['pdf-icon'], 'pdf-icon'],
+    ["[(svg)folder]", CLASS_SVG_FOR_MARKDOWN['folder-icon'], 'folder-icon'],
 ]
 
 const CONFIG_MYMARKDOWN_FEATURES_ACTIVE = {

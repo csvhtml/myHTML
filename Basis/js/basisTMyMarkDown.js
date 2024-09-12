@@ -7,7 +7,8 @@ const CLASS_SVG_FOR_MARKDOWN = new clsSVG()
 const CONFIG_SVG_FOR_MARKDOWN_REPLACE = [
     // ['Markdown String', svg string, key]
     ["[(SVG)pdf]", CLASS_SVG_FOR_MARKDOWN['pdf-img'], 'pdf-img'],
-    ["[(svg)pdf]", CLASS_SVG_FOR_MARKDOWN['pdf-icon'], 'pdf-icon']
+    ["[(svg)pdf]", CLASS_SVG_FOR_MARKDOWN['pdf-icon'], 'pdf-icon'],
+    ["[(svg)folder]", CLASS_SVG_FOR_MARKDOWN['folder-icon'], 'folder-icon'],
 ]
 
 const CONFIG_MYMARKDOWN_FEATURES_ACTIVE = {

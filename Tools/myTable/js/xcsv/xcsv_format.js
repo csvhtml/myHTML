@@ -55,10 +55,7 @@ class clsFormat {
         let n = this.config["line-end"]
 
         let ret = ll 
-        let key = this.parent.config['activeItems']
         for (let header of this.parent.XData.headers) {
-            ret += header + l}
-        for (let header of this.parent.XItems['active'].headers) {
             ret += header + l}
         ret = ret.slice(0, -1*l.length) + n
         

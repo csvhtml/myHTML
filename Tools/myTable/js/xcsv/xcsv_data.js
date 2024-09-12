@@ -1,5 +1,5 @@
 class clsData {
-    constructor(parent, name, ItemsType = "XWorkingItems", IsRef = false) {
+    constructor(parent) {
         this.parent = parent
         this.name = null
         this.headers = null
@@ -7,12 +7,24 @@ class clsData {
     }
 
     Init(headers, data, name) {
-        this.parent.XAssert.HeadersData(headers, data)
         this.name = name
-        this.parent.config['activeItems'] = name
         this.InitHeaders(headers)
         this.InitData(data)
+        this.parent.XAssert.Generic()
+    }
+
+    Type() {
+        this.parent.XAssert.Generic()
+        let type = ['table', 'gallery', 'text']
+
+        if (this.headers.length == 1) type.removeX('table')                         // a table has at least two colums (but can have only one row)
+        if (this.data.length == 1 ) type.removeX('gallery')                         // a gallery has at least two items (one colum, at least two rows)
+        if (this.headers.length > 1) type.removeItems(['gallery', 'text'])          // a gallery and a text have only one single header
+        if (this.data.length > 1) type.removeItems(['text'])                        // a text and a single item, where the text is (one colum, one row)
+        if (this.data[0].length > 1) type.removeItems(['text'])  
         
+        this.parent.XAssert.Generic(type[0])   
+        return type[0]
     }
 
     Clear(val = '') {
@@ -20,11 +32,18 @@ class clsData {
     }
 
     InitHeaders(headers) {
+        // Table -> headers is a 1D list, at least two columns
+        // Text/Gallery -> headers is a 1D list, with one entry only
         this.parent.XAssert.HeaderIs1D(headers)
         this.headers = headers
     }
 
     InitData(data) {
+        // Table -> Data is a 2D list
+
+        // Gallery -> Data is a 1D list, at least two items
+
+        // Text -> Data is a 1D list, with on entry only
         this.parent.XAssert.DataIs2D(data)
         this.data = data
     }

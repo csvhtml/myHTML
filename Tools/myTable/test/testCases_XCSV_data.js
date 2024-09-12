@@ -5,7 +5,7 @@ function test_clsXSCV_AddRow(myTest) {
     ted.XData.AddRow(["Das", "ist", "gut"])
 
     myTest.Equal(ted.XData.data[ted.XData.data.length-1], ["Das", "ist", "gut"], fname)
-    myTest.Equal(ted.XItems['Default Data'].data[ted.XData.data.length-1], ["Das", "ist", "gut"], fname)    
+    myTest.Equal(ted.XItems[ted.ActiveIndex()].data[ted.XData.data.length-1], ["Das", "ist", "gut"], fname)    
 }
 
 function test_clsXSCV_AddCol(myTest) {

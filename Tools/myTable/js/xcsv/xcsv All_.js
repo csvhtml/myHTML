@@ -11,11 +11,10 @@ class clsXCSV {
             this.XAssert = new clsXCSV_assert(this)  // OK
 
             this.XFormat = new clsFormat(this)  // OK
-            this.config['activeItems'] = this.XFormat.Name(XCSV_DATA_ITEMS)
-            this.XItems = {
-                [this.config['activeItems']] : new clsData(this, this.config['activeItems'])
-            }
-            this.XData = this.XItems[this.config['activeItems']]        // internal reference 
+            this.XItems = [
+                new clsData(this, this.XFormat.Name(XCSV_DATA_ITEMS))
+            ]
+            this.XData = this.XItems[0]        // internal reference to active XItems set
 
             this.XHTML = new clsHTML(this)  // OK
 
@@ -33,23 +32,11 @@ class clsXCSV {
         __config() {
             let keys = [
                 "Ego Div ID",           // the DOM element id where the content fo this class are printed
-                'activeItems',          // the name of the this.XItems (clsdata) that is currently active, i. e. is represented by this.XData
                 'infoblocks',           // list of div ids where feedback information from this class shall be dieplayed. Max 3 divs. The first in the list has highest prio.
                                         // Each info has a importance level and will overwrite the innerHTML of that div when it reaches the prio level.
             ]
             for (let k of keys) {
                 if (this.config[k] === undefined) this.config[k] = null}
-        }
-
-        AddRow() {
-            this.XData.AddRow()
-            this.XHTML.Print()
-        }
-
-        AddCol() {
-            let lastHeaderName = this.XData.headers[this.XData.headers.length-1]
-            this.XData.AddCol(lastHeaderName + '-copy')
-            this.XHTML.Print()
         }
 
         Config(cfg) {
@@ -62,6 +49,30 @@ class clsXCSV {
                 if (!keys.includes(k)) return -1
                 if (cfg[k] == -1) return -1
                 this.config[k] = cfg[k]} // set config
+        }
+
+        ActiveIndex() {
+            for (let i = 0; i < this.XItems.length; i++) {
+                if (this.XItems[i] === this.XData) return i
+            }
+        }
+
+        Add(headers, data, name) {
+            let x = new clsData(this)
+            x.Init(headers, data, name)
+            this.XItems.push(x)
+        }
+
+        
+        AddRow() {
+            this.XData.AddRow()
+            this.XHTML.Print()
+        }
+
+        AddCol() {
+            let lastHeaderName = this.XData.headers[this.XData.headers.length-1]
+            this.XData.AddCol(lastHeaderName + '-copy')
+            this.XHTML.Print()
         }
     }
 
@@ -110,13 +121,36 @@ class clsXCSV_assert {
     constructor(parent) {
         this.parent = parent
         this.name()
-        // this.config()
     }
 
-    HeadersData(headers, data) {
-        assert(IsNotUndefined(headers), "Undefined headers")
-        assert(IsNotUndefined(data), "Undefined data")
-        assert(headers.length == data[0].length, "HeadersData failed")
+    Generic() {
+        for (let X of this.parent.XItems) {
+            assert(typOf(X.headers, true) == 'list-1D')
+            assert(typOf(X.data, true) == 'list-2D')
+            assert(typOf(X.name) == 'str')
+        }
+        assert(this.parent.XData === this.parent.XItems[this.parent.ActiveIndex()])
+    }
+
+    Type(type) {
+        for (let X of this.parent.XItems) {
+            assert(this._TypeX(X, type))}
+    }
+
+    _TypeX(XData, type) {
+        // verify via headers
+        if (XData.headers.length == 1) {
+            if (XData.headers[0].startWith('[text]')) assert(type == 'text') 
+            if (!XData.headers[0].startWith('[text]')) assert(type == 'gallery') }
+        if (XData.headers.length > 1) assert(type == 'table') 
+        
+        // verify via data (independent)
+        if (XData.data.length == 1) {
+            if (XData.data[0].length == 1) assert(type == 'text') 
+            if (XData.data[0].length > 1) assert(type == 'table') }       // special case of a table with only one row
+        if (XData.data.length > 1) {
+            if (XData.data[0].length == 1) assert(type == 'gallery') 
+            if (XData.data[0].length > 1) assert(type == 'table')   }     
     }
     
     HeaderIs1D (headers) {
@@ -197,7 +231,7 @@ class clsXCSV_Clickhandler {
     }
 }
 class clsData {
-    constructor(parent, name, ItemsType = "XWorkingItems", IsRef = false) {
+    constructor(parent) {
         this.parent = parent
         this.name = null
         this.headers = null
@@ -205,12 +239,24 @@ class clsData {
     }
 
     Init(headers, data, name) {
-        this.parent.XAssert.HeadersData(headers, data)
         this.name = name
-        this.parent.config['activeItems'] = name
         this.InitHeaders(headers)
         this.InitData(data)
+        this.parent.XAssert.Generic()
+    }
+
+    Type() {
+        this.parent.XAssert.Generic()
+        let type = ['table', 'gallery', 'text']
+
+        if (this.headers.length == 1) type.removeX('table')                         // a table has at least two colums (but can have only one row)
+        if (this.data.length == 1 ) type.removeX('gallery')                         // a gallery has at least two items (one colum, at least two rows)
+        if (this.headers.length > 1) type.removeItems(['gallery', 'text'])          // a gallery and a text have only one single header
+        if (this.data.length > 1) type.removeItems(['text'])                        // a text and a single item, where the text is (one colum, one row)
+        if (this.data[0].length > 1) type.removeItems(['text'])  
         
+        this.parent.XAssert.Generic(type[0])   
+        return type[0]
     }
 
     Clear(val = '') {
@@ -218,11 +264,18 @@ class clsData {
     }
 
     InitHeaders(headers) {
+        // Table -> headers is a 1D list, at least two columns
+        // Text/Gallery -> headers is a 1D list, with one entry only
         this.parent.XAssert.HeaderIs1D(headers)
         this.headers = headers
     }
 
     InitData(data) {
+        // Table -> Data is a 2D list
+
+        // Gallery -> Data is a 1D list, at least two items
+
+        // Text -> Data is a 1D list, with on entry only
         this.parent.XAssert.DataIs2D(data)
         this.data = data
     }
@@ -334,10 +387,7 @@ class clsFormat {
         let n = this.config["line-end"]
 
         let ret = ll 
-        let key = this.parent.config['activeItems']
         for (let header of this.parent.XData.headers) {
-            ret += header + l}
-        for (let header of this.parent.XItems['active'].headers) {
             ret += header + l}
         ret = ret.slice(0, -1*l.length) + n
         
