@@ -1161,20 +1161,6 @@ Object.defineProperties(Array.prototype, {
         }
 });
 
-// // MOHI: should modify this, not return 
-// Object.defineProperties(Array.prototype, {
-//     preFix: {
-//         value: function(preFix) {
-//             ret = []
-//             for(let i=0; i<this.length; i++)
-//                 if (typeof this[i] === "string")
-//                     ret.push(preFix + this[i])
-//             return ret
-//         }
-//     }
-// });
-
-// MOHI: should modify this, not return 
 Object.defineProperties(Array.prototype, {
     applyToItems: {
         value: function(func, n = 0) {
@@ -1198,6 +1184,17 @@ Object.defineProperties(Array.prototype, {
                     for (let i = 0; i < liste.length; i++) {
                         this[i].push(liste[i])}
                 }
+            }
+        }
+    }
+});
+
+Object.defineProperties(Array.prototype, {
+    convert2: {
+        value: function() {
+            if (ListDepth(this) == 1) {
+                for (let i = 0; i < this.length; i++) {
+                    this[i] = [this[i]]}
             }
         }
     }

@@ -1,5 +1,5 @@
 /* Base table styling */
-table {
+table.table {
     margin-top: 40px;
     width: 100%;
     table-layout: fixed;
@@ -12,55 +12,59 @@ table {
 }
 
 /* Table header styling */
-th, td {
+.table th, td {
     padding: 12px 15px;
     border: 1px solid #ddd;
     word-wrap: break-word;
 }
 
 /* Table header specific styling */
-th {
+.table th {
     background-color: #f2f2f2;
     color: #333;
 }
 
-/* Table row hover effect */
-tr:nth-child(even) {
-    background-color: #f9f9f9;
+.table tr {
+    background-color: #fafafa;
 }
+
+.table tr:nth-child(even) {
+    background-color: #f5fcff;
+}
+
 
 /* tr:hover {
     background-color: #f1f1f1;
 } */
 
 /* Table caption styling */
-caption {
+/* caption {
     caption-side: bottom;
     padding: 10px;
     font-style: italic;
     color: #777;
-}
+} */
 
-th:first-child {
+.table th:first-child {
     border-top-left-radius: 8px;
 }
 
-th:last-child {
+.table th:last-child {
     border-top-right-radius: 8px;
 }
 
-td:first-child {
+.table td:first-child {
     border-bottom-left-radius: 8px;
 }
 
-td:last-child {
+.table td:last-child {
     border-bottom-right-radius: 8px;
 }
 
 
   /* Uncomment for Sticky Table */
 
-  th {
+  .table th {
     font-weight: bold;
     background-color: lightgray !important;
     position: sticky;
@@ -68,6 +72,24 @@ td:last-child {
     z-index: 2;
   }
 
+    /* 
+  ###########################################################################
+  # Gallery                                                                 #
+  ########################################################################### 
+  */
+
+  .image-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .image-gallery img {
+    height: 200px;
+    object-fit: cover;
+    margin: 10px;
+    border: 1px solid #ccc;
+  }
 
 
   /* 
@@ -79,15 +101,15 @@ td:last-child {
 /* table {max-height: 500pt;}  will be overwritten  */
 
 @media (max-height: 799px) {
-table {height: 600px;}
+    table.table {max-height: 600px;}
 }
 
 /* For screens with height between 800px and 1000px */
 @media (min-height: 800px) and (max-height: 999px) {
-    table {height: 700px;}
+    table.table {max-height: 700px;}
 }
 
 /* For screens with height greater than 1000px */
 @media (min-height: 1000px) {
-    table {height: 900px;}
+    table.table {max-height: 900px;}
 }

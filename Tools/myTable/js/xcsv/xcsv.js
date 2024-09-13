@@ -52,6 +52,8 @@ class clsXCSV {
         }
 
         Activate(name) {
+            if (name === undefined) name = this.XItems[0].name
+            
             let index = -1
             for (let i = 0; i < this.XItems.length; i++) {
                 if (this.XItems[i].name === name) index = i

@@ -25,6 +25,7 @@ function test_BASIS(divID, myTest) {
 	proto_listPushX(myTest)
 	proto_listApplyToItems(myTest)
 	proto_insertColum(myTest)
+	proto_convert2(myTest)
 	proto_stringUntil(myTest)
 	proto_stringAfter(myTest)
 	proto_stringCount(myTest)

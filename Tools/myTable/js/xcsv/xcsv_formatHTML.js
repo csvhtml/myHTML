@@ -8,8 +8,10 @@ class clsFormatHTML {
             document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.DataAsHTML()
             this.parent.XSelection.unset()}
         
-        if (this.parent.XData.Type() == 'gallery')
-            document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = String(this.parent.XData.headers) + '\n' + String(this.parent.XData.data)
+        if (this.parent.XData.Type() == 'gallery') {
+            document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.Gallery(this.parent.ActiveIndex())
+        }
+            
     }
 
     _MarkupToX() {
@@ -21,6 +23,17 @@ class clsFormatHTML {
                 value = MyMarkDowntoHTML(value)
                 tmp.push(value)}
             ret.push(tmp)}
+        return ret
+    }
+
+    Gallery(ItemsIndex) {
+        assert(this.parent.XItems[ItemsIndex].Type() == 'gallery')
+        let ret = ''
+        ret +=  '<b>' + String(this.parent.XItems[ItemsIndex].headers[0]) + '</b><br/>\n' 
+        ret += '<div class="image-gallery">'
+        for (let item of this.parent.XItems[ItemsIndex].data) {
+            ret += '<a href="' + item + '" target = "_blank"><img src="' + item + '"></a>'}
+        ret += '</div>'
         return ret
     }
 

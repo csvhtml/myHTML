@@ -34,7 +34,7 @@ const LAYOUT_CLASSNAME = {
 class clsXCSV_Names {
     constructor(parent) {
         this.parent = parent
-        this.IDs = new clsXCSV_Names_ID(parent, this.parent.XData)
+        this.IDs = new clsXCSV_Names_ID(parent)
         // this.ConfigIDs = {
         //     "Link": new clsXCSV_Names_ID(parent, this.parent.XConfigItems["Link"])
         // }
@@ -74,30 +74,29 @@ class clsXCSV_Names {
     }
 
 class clsXCSV_Names_ID {
-    constructor(parent, XData) {
+    constructor(parent) {
         this.parent = parent
-        this.XData = XData
     }
 
     headers() {
         let ret = []
-        for (let header of this.XData.headers) {
+        for (let header of this.parent.XData.headers) {
             ret.push(this._header(header))}
         return ret
     }
 
     rows() {
         let ret = []; let r = 0
-        for (let row of this.XData.data) {
+        for (let row of this.parent.XData.data) {
             ret.push(this._row(String(r)))
             r +=1}
         return ret
     }
 
     cells() {
-        let headers = this.XData.headers
+        let headers = this.parent.XData.headers
         let ret = []; let tmp = []; let r = 0; let c = 0
-        for (let row of this.XData.data) {
+        for (let row of this.parent.XData.data) {
             tmp = []
             c = 0
             for (let cell of row) {

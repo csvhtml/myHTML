@@ -334,13 +334,6 @@ function proto_listPushX(myTest) {
     myTest.Equal(liste, expected, arguments.callee.name)
 }
 
-// functionn proto_listPreFix(myTest) {
-//     let liste = ["a", "b", "c", "d"]
-//     let expected = ["xxa", "xxb", "xxc", "xxd"]
-    
-//     myTest.Equal(liste.preFix('xx'), expected, arguments.callee.name)
-// }
-
 function proto_listApplyToItems(myTest) {
     let func = function (val) {return 'xx'+val}
     
@@ -372,6 +365,15 @@ function proto_insertColum(myTest) {
     liste = ["X", "X", "X"]
     liste.insertColum(["Y", "Y", "Y"])
     myTest.Equal(liste, ["X", "X", "X"], arguments.callee.name)
+
+}
+
+function proto_convert2(myTest) {
+    let liste = ["1", "2", "3", "4"]
+    let expected = [["1"], ["2"], ["3"], ["4"]]
+    
+    liste.convert2()
+    myTest.Equal(liste, expected, arguments.callee.name)
 
 }
 

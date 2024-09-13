@@ -52,6 +52,8 @@ class clsXCSV {
         }
 
         Activate(name) {
+            if (name === undefined) name = this.XItems[0].name
+            
             let index = -1
             for (let i = 0; i < this.XItems.length; i++) {
                 if (this.XItems[i].name === name) index = i
@@ -444,8 +446,10 @@ class clsFormatHTML {
             document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.DataAsHTML()
             this.parent.XSelection.unset()}
         
-        if (this.parent.XData.Type() == 'gallery')
-            document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = String(this.parent.XData.headers) + '\n' + String(this.parent.XData.data)
+        if (this.parent.XData.Type() == 'gallery') {
+            document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.Gallery(this.parent.ActiveIndex())
+        }
+            
     }
 
     _MarkupToX() {
@@ -457,6 +461,17 @@ class clsFormatHTML {
                 value = MyMarkDowntoHTML(value)
                 tmp.push(value)}
             ret.push(tmp)}
+        return ret
+    }
+
+    Gallery(ItemsIndex) {
+        assert(this.parent.XItems[ItemsIndex].Type() == 'gallery')
+        let ret = ''
+        ret +=  '<b>' + String(this.parent.XItems[ItemsIndex].headers[0]) + '</b><br/>\n' 
+        ret += '<div class="image-gallery">'
+        for (let item of this.parent.XItems[ItemsIndex].data) {
+            ret += '<a href="' + item + '" target = "_blank"><img src="' + item + '"></a>'}
+        ret += '</div>'
         return ret
     }
 
@@ -538,7 +553,7 @@ const LAYOUT_CLASSNAME = {
 class clsXCSV_Names {
     constructor(parent) {
         this.parent = parent
-        this.IDs = new clsXCSV_Names_ID(parent, this.parent.XData)
+        this.IDs = new clsXCSV_Names_ID(parent)
         // this.ConfigIDs = {
         //     "Link": new clsXCSV_Names_ID(parent, this.parent.XConfigItems["Link"])
         // }
@@ -578,30 +593,29 @@ class clsXCSV_Names {
     }
 
 class clsXCSV_Names_ID {
-    constructor(parent, XData) {
+    constructor(parent) {
         this.parent = parent
-        this.XData = XData
     }
 
     headers() {
         let ret = []
-        for (let header of this.XData.headers) {
+        for (let header of this.parent.XData.headers) {
             ret.push(this._header(header))}
         return ret
     }
 
     rows() {
         let ret = []; let r = 0
-        for (let row of this.XData.data) {
+        for (let row of this.parent.XData.data) {
             ret.push(this._row(String(r)))
             r +=1}
         return ret
     }
 
     cells() {
-        let headers = this.XData.headers
+        let headers = this.parent.XData.headers
         let ret = []; let tmp = []; let r = 0; let c = 0
-        for (let row of this.XData.data) {
+        for (let row of this.parent.XData.data) {
             tmp = []
             c = 0
             for (let cell of row) {

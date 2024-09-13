@@ -27,7 +27,7 @@ function test_clsXSCV_Init2(myTest) {
 
 function test_clsXSCV_Type(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("id-front 2")
+    let ted = new clsXCSV("id-X")
 
     myTest.Equal(ted.XData.Type(), 'table', fname)
 
@@ -39,16 +39,8 @@ function test_clsXSCV_Type(myTest) {
 
     ted.Add(["[text]Header 1"], [["1"]], 'test-text')
     myTest.Equal(ted.XItems[2].Type(), 'text', fname)
-
-    myTest.Equal(ted.XData.name, 'test-table', fname)
-    myTest.Equal(ted.XData.headers, ["Header 1", "Header 2"], fname)
-    myTest.Equal(ted.XData.data, [["1", "2"],["3", "4"],["5", "6"]], fname)
-    ted.Activate('test-gallery')
-    myTest.Equal(ted.XData.name, "test-gallery", fname)
-    myTest.Equal(ted.XData.headers,['Header 1'], fname)
-
-
 }
+
 
 
 

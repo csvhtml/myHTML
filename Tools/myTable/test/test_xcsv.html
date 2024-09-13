@@ -5,18 +5,29 @@
     <title>Test Cases XCSV</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">   
+    <link rel="stylesheet" href="../css/xcsv.css">
     <style>
         body {
             background-color: #222;
+        }
+
+        .test {
             color: #ddd;
         }
     </style>
 </head>
 
 <body>
-    <div id="id-front 1"></div>
-    <div id="id-front 2"></div>
-    <div id="id"></div>
+    <div id="id-front 1"></div> <br/>
+    <div id="id-front 2"></div> <br/>
+    <div id="id-front 3" class="test"></div> <br/>
+    <div id="id-front 5" class="test"></div>
+    <div id="id-front 6"></div>
+    <div id="id-front 7"></div>
+    <div id="id-front 8"></div>
+    <div id="id-front 9"></div>
+    <div id="id-front 10"></div>  <br/>
+    <div id="id" class="test"></div>
     
 </body>
 <script src="../../../Basis/js/Basis All_.js"></script>
@@ -25,11 +36,12 @@
 <script src="testCases_XCSV.js"></script>
 <script src="testCases_XCSV_data.js"></script>
 <script src="testCases_XCSV_Save.js"></script>
+<script src="testCases_XCSV_Front.js"></script>
 <script src="testRun_XCSV.js"></script>
 <script>
     (function () {
-        let frontTest = new clsXCSV("id-front 1")
-        frontTest.XHTML.Print()
+        // let frontTest = new clsXCSV("id-front 1")
+        // frontTest.XHTML.Print()
         let myTest = new clsTest()
         test_XCSV('id', myTest)
     })();
