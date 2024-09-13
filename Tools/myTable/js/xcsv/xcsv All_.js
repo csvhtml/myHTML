@@ -10,13 +10,13 @@ class clsXCSV {
             
             this.XAssert = new clsXCSV_assert(this)  // OK
 
-            this.XFormat = new clsFormat(this)  // OK
+            this.XFormat = new clsFormatFile(this)  // OK
             this.XItems = [
                 new clsData(this, this.XFormat.Name(XCSV_DATA_ITEMS))
             ]
             this.XData = this.XItems[0]        // internal reference to active XItems set
 
-            this.XHTML = new clsHTML(this)  // OK
+            this.XHTML = new clsFormatHTML(this)  // OK
 
             this.XNames = new clsXCSV_Names(this)  // OK
             this.XClick = new clsXCSV_Clickhandler(this)  // OK
@@ -49,6 +49,15 @@ class clsXCSV {
                 if (!keys.includes(k)) return -1
                 if (cfg[k] == -1) return -1
                 this.config[k] = cfg[k]} // set config
+        }
+
+        Activate(name) {
+            let index = -1
+            for (let i = 0; i < this.XItems.length; i++) {
+                if (this.XItems[i].name === name) index = i
+            }
+            if (index >-1) this.XData = this.XItems[index]
+            this.XHTML.Print()
         }
 
         ActiveIndex() {
@@ -330,7 +339,7 @@ class clsData {
         return ret
     }
 }
-class clsFormat {
+class clsFormatFile {
     constructor(parent, config) {
         this.parent = parent
         this.config = {
@@ -425,14 +434,18 @@ class clsFormat {
         return [headers, data]
     }
 }
-class clsHTML {
+class clsFormatHTML {
     constructor(parent) {
         this.parent = parent
     }
 
     Print() {
-        document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.DataAsHTML()
-        this.parent.XSelection.unset()
+        if (this.parent.XData.Type() == 'table') {
+            document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.DataAsHTML()
+            this.parent.XSelection.unset()}
+        
+        if (this.parent.XData.Type() == 'gallery')
+            document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = String(this.parent.XData.headers) + '\n' + String(this.parent.XData.data)
     }
 
     _MarkupToX() {

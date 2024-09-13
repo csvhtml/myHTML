@@ -36,7 +36,7 @@ function test_clsXSCV_Clear(myTest) {
 
 function test_clsXSCV_Config(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV("id-front 2")
 
 
     myTest.Equal(ted.Config(), -1, fname)

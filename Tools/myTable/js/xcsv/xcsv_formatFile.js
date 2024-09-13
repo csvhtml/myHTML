@@ -1,4 +1,4 @@
-class clsFormat {
+class clsFormatFile {
     constructor(parent, config) {
         this.parent = parent
         this.config = {

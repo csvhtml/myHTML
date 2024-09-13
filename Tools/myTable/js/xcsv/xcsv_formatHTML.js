@@ -1,11 +1,15 @@
-class clsHTML {
+class clsFormatHTML {
     constructor(parent) {
         this.parent = parent
     }
 
     Print() {
-        document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.DataAsHTML()
-        this.parent.XSelection.unset()
+        if (this.parent.XData.Type() == 'table') {
+            document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.DataAsHTML()
+            this.parent.XSelection.unset()}
+        
+        if (this.parent.XData.Type() == 'gallery')
+            document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = String(this.parent.XData.headers) + '\n' + String(this.parent.XData.data)
     }
 
     _MarkupToX() {
