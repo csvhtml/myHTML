@@ -697,7 +697,7 @@ class clsXCSV_Names_ID {
 
         let X = CLSXCSV_NAMES["id"]["header"]
         let headerName = RetStringBetween(divID, X["prefix"], X["postfix"])
-        return Number(this.XData.headers.indexOf(headerName))  
+        return Number(this.parent.XData.headers.indexOf(headerName))  
     }
 }
 class clsXCSV_Selectionhandler {

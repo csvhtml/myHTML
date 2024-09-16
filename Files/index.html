@@ -12,16 +12,21 @@
 
 <body>
     <!-- Input Form in html page -->
-    <b> Upload Field</b>
+    <b> Upload/Input Button</b>
 
     <form id="form-csv" class="">
         <input id="Input 1" type="file" class="" accept=" .csv" onchange="UploadFile(event)">  
-        This does not work due to the files.css, which males the default label invislbe 
+        In the Dropdown css the file input element is made invisble (looks bad) and it is intended to add a dedicated label. So in the browser you dont see a button here.
     </form>
     <br/>
     <form id="form-csv" class="">
         <input id="Input 2" type="file" class="" accept=" .csv" onchange="UploadFile(event)">  
-        <label for="Input 2" class="btn">Input</label>
+        <label for="Input 2" class="btn">Input Single File</label>
+    </form>
+    <br/>
+    <form id="form-csv" class="">
+        <input id="Input 3" type="file" multiple class="" onchange="MultiFiles(event)">  
+        <label for="Input 3" class="btn">Input Files</label>
     </form>
 
     

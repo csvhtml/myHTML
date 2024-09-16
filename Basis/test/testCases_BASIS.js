@@ -350,7 +350,7 @@ function proto_listApplyToItems(myTest) {
     // myTest.Equal(liste.preFix('xx'), expected, arguments.callee.name)
 }
 
-function proto_insertColum(myTest) {
+function proto_listinsertColum(myTest) {
     let liste = [["1", "2", "3", "4"], ["A", "B", "C", "D"], ["a", "b", "c", "d"]]
     let expected = [["1", "2", "3", "4", "X"], ["A", "B", "C", "D", "X"], ["a", "b", "c", "d", "X"]]
     
@@ -368,11 +368,20 @@ function proto_insertColum(myTest) {
 
 }
 
-function proto_convert2(myTest) {
+function proto_listconvert2(myTest) {
     let liste = ["1", "2", "3", "4"]
     let expected = [["1"], ["2"], ["3"], ["4"]]
     
     liste.convert2()
+    myTest.Equal(liste, expected, arguments.callee.name)
+
+}
+
+function proto_dictAsList(myTest) {
+    let dict = {"A": 1, "B": 2, "C": "Hallo", "D": ["other", "list"]}
+    let expected = [1, 2, "Hallo", ["other", "list"]]
+    
+    liste = dict.AsList()
     myTest.Equal(liste, expected, arguments.callee.name)
 
 }

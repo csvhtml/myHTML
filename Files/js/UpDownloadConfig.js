@@ -1,5 +1,10 @@
-// the stuff here actually is only needed for the Upload function
+// config for multi files
+const cFileMulti = {}; 
+const FILES_MULTI_CONFIG = {
+    "Input 3": "TestFunctionMulti()" ,
+};
 
+// config for Single Upload function
 const cFileReaders = {}; 
 const cFileReaders_File = {};
 const FILES_UPLOAD_CONFIG = {

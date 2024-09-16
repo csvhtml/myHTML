@@ -1117,6 +1117,7 @@ Object.defineProperties(Array.prototype, {
         }
 });
 
+// very simliar to map function
 Object.defineProperties(Array.prototype, {
     applyToItems: {
         value: function(func, n = 0) {
@@ -1167,6 +1168,15 @@ Object.defineProperties(Object.prototype, {
                 count += 1
               }
               return null;
+            }  
+    } 
+}); 
+
+// key information gets lost here
+Object.defineProperties(Object.prototype, {
+    AsList: {
+        value: function() {
+            return Object.values(this)
             }  
     } 
 }); 
