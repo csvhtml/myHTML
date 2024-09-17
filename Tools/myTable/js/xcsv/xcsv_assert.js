@@ -10,34 +10,29 @@ class clsXCSV_assert {
     }
 
     Generic() {
-        for (let X of this.parent.XItems) {
-            assert(typOf(X.headers, true) == 'list-1D')
-            assert(typOf(X.data, true) == 'list-2D')
-            assert(typOf(X.name) == 'str')
-        }
-        assert(this.parent.XData === this.parent.XItems[this.parent.ActiveIndex()])
+        // assert(this.parent.XData === this.parent.XItems[this.parent.ActiveIndex()])
     }
 
-    Type(type) {
-        for (let X of this.parent.XItems) {
-            assert(this._TypeX(X, type))}
-    }
+    // Type(type) {
+    //     for (let X of this.parent.XItems) {
+    //         assert(this._TypeX(X, type))}
+    // }
 
-    _TypeX(XData, type) {
-        // verify via headers
-        if (XData.headers.length == 1) {
-            if (XData.headers[0].startWith('[text]')) assert(type == 'text') 
-            if (!XData.headers[0].startWith('[text]')) assert(type == 'gallery') }
-        if (XData.headers.length > 1) assert(type == 'table') 
+    // _TypeX(XData, type) {
+    //     // verify via headers
+    //     if (XData.headers.length == 1) {
+    //         if (XData.headers[0].startWith('[text]')) assert(type == 'text') 
+    //         if (!XData.headers[0].startWith('[text]')) assert(type == 'gallery') }
+    //     if (XData.headers.length > 1) assert(type == 'table') 
         
-        // verify via data (independent)
-        if (XData.data.length == 1) {
-            if (XData.data[0].length == 1) assert(type == 'text') 
-            if (XData.data[0].length > 1) assert(type == 'table') }       // special case of a table with only one row
-        if (XData.data.length > 1) {
-            if (XData.data[0].length == 1) assert(type == 'gallery') 
-            if (XData.data[0].length > 1) assert(type == 'table')   }     
-    }
+    //     // verify via data (independent)
+    //     if (XData.data.length == 1) {
+    //         if (XData.data[0].length == 1) assert(type == 'text') 
+    //         if (XData.data[0].length > 1) assert(type == 'table') }       // special case of a table with only one row
+    //     if (XData.data.length > 1) {
+    //         if (XData.data[0].length == 1) assert(type == 'gallery') 
+    //         if (XData.data[0].length > 1) assert(type == 'table')   }     
+    // }
     
     HeaderIs1D (headers) {
         assert(IsNotUndefined(headers), "Undefined headers")

@@ -6,8 +6,25 @@ function IsString(variable) {
     return typeof variable === 'string';
   }
 
-function IsUndefined(variable) {
-    return typeof variable === 'undefined';
+function IsUndefined(variables) {
+    assert(typOf(variables) == 'list')
+
+    for (let v of variables) {
+        if (typOf(v) != 'undefined') return false}
+    return true
+  }
+
+function IsPartlyUndefined(variables) {
+    assert(typOf(variables) == 'list')
+
+    let undefinedSeen = false;
+    let definedSeen = false;
+    for (let v of variables) {
+        if (typOf(v) != 'undefined') definedSeen = true
+        if (typOf(v) == 'undefined') undefinedSeen = true}
+
+    if (undefinedSeen && definedSeen) return true
+    return false
   }
 
 function IsNotUndefined(variable) {

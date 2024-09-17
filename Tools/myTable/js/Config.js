@@ -3,6 +3,12 @@
 // #################################################
 
 const DROPDOWN_CONFIG = {
+    "nav-Start": [
+        {"Add Table": "XCSV['main'].Add()"},
+        {"Add Gallery": "XCSV['main'].Add_Gallery()"},   
+        {"Add Text": "XCSV['main'].Add_Text()"},
+        {"Remove": "XCSV['main'].Remove()"} 
+    ],
     "nav-Edit": [
         {"Add Row": "XCSV['main'].AddRow()"},
         {"Add Col": "XCSV['main'].AddCol()"},   

@@ -1,13 +1,17 @@
 /* Base table styling */
+.xcsv {
+    min-width: 600pt;
+}
+
 table.table {
     margin-top: 40px;
-    width: 100%;
+    /* width: 100%; */
     table-layout: fixed;
     border-collapse: collapse;
     font-size: 18px;
     text-align: left;
     table-layout: auto;
-    display: block;
+    /* display: block; */
     overflow-y: scroll;
 }
 
@@ -74,7 +78,7 @@ table.table {
 
     /* 
   ###########################################################################
-  # Gallery                                                                 #
+  # Gallery Items                                                           #
   ########################################################################### 
   */
 
@@ -91,6 +95,23 @@ table.table {
     border: 1px solid #ccc;
   }
 
+      /* 
+  ###########################################################################
+  # Text Items                                                              #
+  ########################################################################### 
+  */
+
+  .xcsv-text {
+    border: 1px solid #ccc;
+  }
+
+  .xcsv-text-summary {
+    border: 1px solid #ccc;
+  }
+
+  .xcsv-text-description {
+    border: 1px solid #ccc;
+  }
 
   /* 
   ###########################################################################

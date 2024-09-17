@@ -4,7 +4,8 @@
 // Left Menu
 function DownloadHTML() {
     // DownloadFile(XCSV["main"].XHTML.AsCSV())
-    DownloadFile(XCSV["main"].XHTML.DataAsHTML(CSS_HTMLEXPORT))
+    // DownloadFile(XCSV["main"].XHTML.DataAsHTML(CSS_HTMLEXPORT))
+    DownloadFile(XCSV["main"].XHTML.PrintPreview(CSS_HTMLEXPORT))
 }
 
 
@@ -60,19 +61,18 @@ function Gloabl_Edit_Textarea(div) {
 function Edit_Save(divID, value) {
     if (value == "") {value = ".."}
     if (XCSV["main"].XNames.IDs.IsCell(divID)) {
-        //data
         let RC = XCSV["main"].XNames.IDs.RC_fromID(divID)
         XCSV["main"].XData.data[RC[0]][RC[1]] = value
-        // dataconfig
-        // XCSV["main"].XConfigItems.CreateConfigItems()
-        //style
         _Edit_MinHeight_Undo(divID)
-
     }
 
     if (XCSV["main"].XNames.IDs.IsHeader(divID)) {
         let h = XCSV["main"].XNames.IDs.C_fromHeaderID(divID)
-        XCSV["main"].XData.headers[h] = value
+        if (XCSV["main"].XData.Type() == 'text') {
+            XCSV["main"].XData.headers[h] = '[text]'+ value} 
+        else {
+            XCSV["main"].XData.headers[h] = value}
+        
     }
         let value_modified = value
         value_modified = MyMarkDowntoHTML(value_modified, ignore1 = ["[("])

@@ -10,11 +10,11 @@ class clsData {
         this.name = name
         this.InitHeaders(headers)
         this.InitData(data)
-        this.parent.XAssert.Generic()
+        this.assertIntegrity()
     }
 
     Type() {
-        this.parent.XAssert.Generic()
+        this.assertIntegrity()
         let type = ['table', 'gallery', 'text']
 
         if (this.headers.length == 1) type.removeX('table')                         // a table has at least two colums (but can have only one row)
@@ -23,7 +23,7 @@ class clsData {
         if (this.data.length > 1) type.removeItems(['text'])                        // a text and a single item, where the text is (one colum, one row)
         if (this.data[0].length > 1) type.removeItems(['text'])  
         
-        this.parent.XAssert.Generic(type[0])   
+        this.assertType(type[0])   
         return type[0]
     }
 
@@ -96,5 +96,28 @@ class clsData {
         for (let row of this.data) {
             ret.push(byVal(row[idx]))}
         return ret
+    }
+
+
+    assertIntegrity() {
+            assert(typOf(this.headers, true) == 'list-1D')
+            assert(typOf(this.data, true) == 'list-2D')
+            assert(typOf(this.name) == 'str')
+        }
+
+    assertType(type) {
+        // verify via headers
+        if (this.headers.length == 1) {
+            if (this.headers[0].startsWith('[text]')) assert(type == 'text') 
+            if (!this.headers[0].startsWith('[text]')) assert(type == 'gallery') }
+        if (this.headers.length > 1) assert(type == 'table') 
+        
+        // verify via data (independent)
+        if (this.data.length == 1) {
+            if (this.data[0].length == 1) assert(type == 'text') 
+            if (this.data[0].length > 1) assert(type == 'table') }       // special case of a table with only one row
+        if (this.data.length > 1) {
+            if (this.data[0].length == 1) assert(type == 'gallery') 
+            if (this.data[0].length > 1) assert(type == 'table')   }     
     }
 }

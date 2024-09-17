@@ -23,4 +23,13 @@ class clsXCSV_Infohandler {
 
     }
 
+    Level3(msg) {
+        let infoblocks = this.parent.config['infoblocks']
+        if (typOf(infoblocks) == 'list') {
+            if (infoblocks.length > 2) {
+                document.getElementById(infoblocks[2]).innerHTML = msg
+                return }
+        }
+    }
+
 }

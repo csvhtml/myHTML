@@ -34,11 +34,21 @@ function test_clsXSCV_Type(myTest) {
     ted.XData.Init(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test-table')
     myTest.Equal(ted.XData.Type(), 'table', fname)
 
-    ted.Add(["Header 1"], [["1"], ["2"], ["3"]], 'test-gallery')
+    ted.xAdd(["Header 1"], [["1"], ["2"], ["3"]], 'test-gallery')
     myTest.Equal(ted.XItems[1].Type(), 'gallery', fname)
 
-    ted.Add(["[text]Header 1"], [["1"]], 'test-text')
+    ted.xAdd(["[text]Header 1"], [["1"]], 'test-text')
     myTest.Equal(ted.XItems[2].Type(), 'text', fname)
+}
+
+function test_clsXSCV_ItemNameAvailable(myTest) {
+    let fname = arguments.callee.name;
+    let ted = new clsXCSV("id-X")
+
+    ted.xAdd(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test-table')
+    ted.xAdd(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test-table')
+    ted.xAdd(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test-table')
+    myTest.Equal(ted.ItemsNamesList(), ['Default Data', 'test-table', 'test-table-copy', 'test-table-copy-copy'], fname)
 }
 
 

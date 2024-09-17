@@ -133,7 +133,9 @@ class libEdit {
         let a = document.createElement('a');
         a.id = "id-" + type + "-" + div.id,
         a.href = "#"
-        a.classList.add("xsvg-link")
+        a.classList.add("xsvg-link"); 
+        a.addEventListener("click", (event) => {
+            event.preventDefault();})
         a.setAttribute('onclick', functionString[type]);
         div.append(a)
         CSVG.Create_ToDIV(a.id, svgString[type])

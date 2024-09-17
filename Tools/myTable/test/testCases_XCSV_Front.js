@@ -23,14 +23,16 @@ function test_clsXSCV_Front_Gallery(myTest) {
 
     let picList = ["pic1.png", "pic2.png", "pic3.png", "pic1.png", "pic2.png", "pic3.png"]
     picList.convert2()
-    myTest.Equal(picList, [["pic1.png"], ["pic2.png"], ["pic3.png"], ["pic1.png"], ["pic2.png"], ["pic3.png"]]) // just for undersanding what convert2 does
+    myTest.Equal(picList, [["pic1.png"], ["pic2.png"], ["pic3.png"], ["pic1.png"], ["pic2.png"], ["pic3.png"]], fname) // just for undersanding what convert2 does
 
-    ted.Add(["My Gallery"], picList, 'test-gallery')
     document.getElementById(id).innerHTML += '<b> ' + fname + '</b>'
+    ted.Add(["My Gallery"], picList, 'test-gallery')
+    myTest.Equal(ted.XItems[1].Type(), 'gallery', fname)
+    myTest.Equal(ted.XItems[1].name, "test-gallery", fname)
+    myTest.Equal(ted.XItems[1].headers,['My Gallery'], fname)
+    
+    myTest.IsFalse(ted.XItems[1] === ted.XData, fname)
     ted.Activate('test-gallery')
     myTest.IsTrue(ted.XItems[1] === ted.XData, fname)
-    myTest.Equal(ted.XItems[1].Type(), 'gallery', fname)
-    myTest.Equal(ted.XData.name, "test-gallery", fname)
-    myTest.Equal(ted.XData.headers,['Header 1'], fname)
-    myTest.Equal(ted.XData.data, [["1"], ["2"], ["3"]], fname)  
+
 }

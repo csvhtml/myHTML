@@ -7,6 +7,9 @@
 class libDropDowns {
     constructor() {
         this.Item = this.constuctor_init()
+
+        // apply
+        this.preventDefault()
     }
 
     constuctor_init() {
@@ -19,6 +22,15 @@ class libDropDowns {
             ret[key].InnerHTML_AddDropDown()
         }
         return ret
+    }
+
+    preventDefault() {
+        // when clicking on a link, prevents teh browser from scolling back to top (where teh link is)
+        let aElem = document.querySelectorAll('a.preventDefault')
+        for (let a of aElem) {
+            a.addEventListener("click", (event) => {
+                event.preventDefault();})
+        }
     }
 }
 

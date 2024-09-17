@@ -3,6 +3,7 @@ function test_BASIS(divID, myTest) {
 	test_ByVal(myTest)
 	test_ValidChars(myTest)
 	test_typOf(myTest)
+	test_Undefined(myTest)
 	test_ListDepth(myTest)
 	test_maxx(myTest)
 	test_minn(myTest)

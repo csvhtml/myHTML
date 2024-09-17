@@ -4,8 +4,12 @@ class clsXCSV_Clickhandler {
         }
 
     ClickEvent(div) {
-        // let divID = ReturnParentUntilID(div).id
         let divID = div.GetParentWithID().id
+
+        if(!this.parent.XNames.IDs.IsItems(divID)) return
+
+        let ItemsName = this.parent.XNames.IDs.ItemsName(divID)
+        this.parent.Activate(ItemsName); this.parent.XInfo.Level2(ItemsName)
 
         if (this.parent.XNames.IsHeader(divID)){
             this._HeaderCell(divID)

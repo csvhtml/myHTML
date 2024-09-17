@@ -2,8 +2,10 @@ class clsXCSV_Selectionhandler {
     constructor(parent) {
             this.parent = parent
             this.SelectedID = ""
+            this.ActiveItemsName = ""
         }
 
+    // set elemenets inside
     set(divID) {
         this.SelectedID = divID
         document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")
@@ -11,16 +13,15 @@ class clsXCSV_Selectionhandler {
         let X = this.parent.XNames.IDs; let msg = ''
         if (X.IsRow(divID)) {
             msg = "Selected Row: " + String(this.parent.XNames.IDs.R_fromRowID(this.SelectedID, true))
-            this.parent.XInfo.Level2(msg); return}
-            // infoblock.innerHTML = "Selected Row: " + String(this.parent.XNames.IDs.R_fromRowID(this.SelectedID, true)); return}
+            this.parent.XInfo.Level3(msg); return}
         if (X.IsCell(divID)) {
             msg = "Selected Cell: " + String(this.parent.XNames.IDs.RC_fromID(this.SelectedID, true))
-            this.parent.XInfo.Level2(msg); return}
-            // infoblock.innerHTML = "Selected Cell: " + String(this.parent.XNames.IDs.RC_fromID(this.SelectedID, true)); return}
+            this.parent.XInfo.Level3(msg); return}
         if (X.IsHeader(divID)) {
-            msg = "Selected Header: " + this.parent.XData.headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]
-            this.parent.XInfo.Level2(msg); return}
-            // infoblock.innerHTML = "Selected Header: " + this.parent.XData.headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]; return}
+            let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
+            msg = "Selected Header: " + this.parent.XItems[ItemsIndex].headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]
+            this.parent.XInfo.Level3(msg); return}
+            
         
     }
 
@@ -32,7 +33,7 @@ class clsXCSV_Selectionhandler {
             }
         }
         this.SelectedID = ""
-        this.parent.XInfo.Level2(this.SelectedID)
+        this.parent.XInfo.Level3(this.SelectedID)
     }
 
     edit(divID) {

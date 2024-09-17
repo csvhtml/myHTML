@@ -3,20 +3,38 @@ class clsFormatHTML {
         this.parent = parent
     }
 
+    
     Print() {
-        if (this.parent.XData.Type() == 'table') {
-            document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.DataAsHTML()
-            this.parent.XSelection.unset()}
-        
-        if (this.parent.XData.Type() == 'gallery') {
-            document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.Gallery(this.parent.ActiveIndex())
+        document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.PrintPreview()
+        this.parent.XSelection.unset()    
+    }
+    
+    PrintPreview(prefix = '') {
+        let ret = prefix
+        for (let i = 0; i < this.parent.XItems.length; i++) {
+            ret += this.PrintItems(i)
         }
-            
+        return ret
     }
 
-    _MarkupToX() {
+    PrintItems(idx) {
+        if (this.parent.XItems[idx].Type() == 'table') {
+            // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.DataAsHTML("", idx)
+            return this.DataAsHTML("", idx)}
+        
+        if (this.parent.XItems[idx].Type() == 'gallery') {
+            // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.Gallery(idx)
+            return this.Gallery(idx)}
+
+        if (this.parent.XItems[idx].Type() == 'text') {
+            // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.Text(idx)
+            return this.Text(idx)}
+     
+    }
+
+    _MarkupToX(ItemsIndex) {
         let ret = []
-        for (let row of this.parent.XData.data) {
+        for (let row of this.parent.XItems[ItemsIndex].data) {
             let tmp = []
             for (let cell of row) {
                 let value = cell
@@ -37,18 +55,33 @@ class clsFormatHTML {
         return ret
     }
 
-    DataAsHTML(pre = "") {
+    Text(ItemsIndex) {
+        assert(this.parent.XItems[ItemsIndex].Type() == 'text')
+
+        return '' +
+            HTMLTable_FromConfig({
+            tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
+            tableClass: "table xcsv",
+            tableStyle: "margin-bottom:0;",
+            thsText: [this.parent.XItems[ItemsIndex].headers[0].after('[text]')],
+            thsID: this.parent.XNames.IDs.headers(ItemsIndex),
+            rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
+            cellsText: this._MarkupToX(ItemsIndex),
+            cellsID: this.parent.XNames.IDs.cells(ItemsIndex),
+        })
+    }
+
+    DataAsHTML(pre = "", ItemsIndex) {
         return pre + 
             HTMLTable_FromConfig({
-            tableID: "id-table-" + this.parent.config["Ego Div ID"],
-            tableClass: "table",
+            tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
+            tableClass: "table xcsv",
             tableStyle: "margin-bottom:0;",
-            thsText: this.parent.XData.headers,
-            thsID: this.parent.XNames.IDs.headers(),
-            rowsID: this.parent.XNames.IDs.rows(),
-            // cellsText: this.parent.XData.data,
-            cellsText: this._MarkupToX(),
-            cellsID: this.parent.XNames.IDs.cells(),
+            thsText: this.parent.XItems[ItemsIndex].headers,
+            thsID: this.parent.XNames.IDs.headers(ItemsIndex),
+            rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
+            cellsText: this._MarkupToX(ItemsIndex),
+            cellsID: this.parent.XNames.IDs.cells(ItemsIndex),
         })
     }
 

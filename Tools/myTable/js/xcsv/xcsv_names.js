@@ -65,12 +65,6 @@ class clsXCSV_Names {
         return false
     }
 
-    RowfromCellID(divID) {
-        if (this.IsRow(divID)) {
-            return divID}
-        let X = CLSXCSV_NAMES["id"]["cell"]
-        let r = RetStringBetween(divID, X["r"], X["c"])
-        return this._row(r)}
     }
 
 class clsXCSV_Names_ID {
@@ -78,29 +72,43 @@ class clsXCSV_Names_ID {
         this.parent = parent
     }
 
-    headers() {
+    ItemsName(divID) {
+        assert(this.IsItems(divID))
+        return RetStringBetween(divID, "[", "]")
+    }
+
+    ItemsIndex(divID) {
+        assert(this.IsItems(divID))
+
+        return this.parent.XItems.map(item => item.name).indexOf(this.ItemsName(divID))
+    }
+
+    headers(ItemsIndex) {
+        if (IsUndefined([ItemsIndex])) ItemsIndex = this.parent.ActiveIndex()
         let ret = []
-        for (let header of this.parent.XData.headers) {
-            ret.push(this._header(header))}
+        for (let header of this.parent.XItems[ItemsIndex].headers) {
+            ret.push(this._header(header, ItemsIndex))}
         return ret
     }
 
-    rows() {
+    rows(ItemsIndex) {
+        if (IsUndefined([ItemsIndex])) ItemsIndex = this.parent.ActiveIndex()
         let ret = []; let r = 0
-        for (let row of this.parent.XData.data) {
-            ret.push(this._row(String(r)))
+        for (let row of this.parent.XItems[ItemsIndex].data) {
+            ret.push(this._row(String(r), ItemsIndex))
             r +=1}
         return ret
     }
 
-    cells() {
-        let headers = this.parent.XData.headers
+    cells(ItemsIndex) {
+        if (IsUndefined([ItemsIndex])) ItemsIndex = this.parent.ActiveIndex()
+        let headers = this.parent.XItems[ItemsIndex].headers
         let ret = []; let tmp = []; let r = 0; let c = 0
-        for (let row of this.parent.XData.data) {
+        for (let row of this.parent.XItems[ItemsIndex].data) {
             tmp = []
             c = 0
             for (let cell of row) {
-                tmp.push(this._cell(r,c,headers[c]))
+                tmp.push(this._cell(r,c,headers[c], ItemsIndex))
                 c +=1}
             ret.push(tmp)
             r +=1}
@@ -113,25 +121,36 @@ class clsXCSV_Names_ID {
             return divID}
         let X = CLSXCSV_NAMES["id"]["cell"]
         let r = RetStringBetween(divID, X["r"], X["c"])
-        return this._row(r)}
+        let ItemsIndex = this.ItemsIndex(divID)
+        return this._row(r, ItemsIndex)}
 
-    _header(header) {
+    _header(header, ItemsIndex) {
         let X = CLSXCSV_NAMES["id"]["header"]
-        return this._egoprefix() + X["prefix"] + header + X["postfix"]
+        return this._egoprefix(ItemsIndex) + X["prefix"] + header + X["postfix"]
     }
 
-    _cell(r,c,header) {
+    _cell(r,c,header, ItemsIndex) {
         let X = CLSXCSV_NAMES["id"]["cell"]
-        return this._egoprefix() + X["r"] + r + X["c"] + c + X["h"] + header 
+        return this._egoprefix(ItemsIndex) + X["r"] + r + X["c"] + c + X["h"] + header 
     }
 
-    _row(r) {
+    _row(r, ItemsIndex) {
         let X = CLSXCSV_NAMES["id"]["row"]
-        return this._egoprefix() + X["prefix"] + r + X["postfix"]
+        return this._egoprefix(ItemsIndex) + X["prefix"] + r + X["postfix"]
     }
 
-    _egoprefix() {
-        return '[' + this.parent.config["Ego Div ID"] + '] '
+    _egoprefix(ItemsIndex) {
+        assert(!IsUndefined([ItemsIndex]))
+        // return '[' + this.parent.config["Ego Div ID"] + '] '
+        return '[' + this.parent.XItems[ItemsIndex].name + '] '
+    }
+
+    IsItems(divID) {
+        let name = RetStringBetween(divID, "[", "]")
+        let condition1 = this.parent.XItems.map(item => item.name).includes(name)    // is there a XItems dictionary with the name of the divID
+        let condition2 = divID.startsWith("[" + name + "]")
+
+        return condition1 && condition2
     }
 
     IsHeader(headerID) {
@@ -141,7 +160,8 @@ class clsXCSV_Names_ID {
     }
 
     IsCell(cellID) {
-        if (ElementInArrayN(this.cells(),cellID)) {
+        let ItemsIndex = this.ItemsIndex(cellID)
+        if (ElementInArrayN(this.cells(ItemsIndex),cellID)) {
             return true}
         return false
     }
@@ -174,10 +194,11 @@ class clsXCSV_Names_ID {
     }
 
     C_fromHeaderID(divID) {
-        if (!this.IsHeader(divID)) {return -1}
+        if (!this.IsHeader(divID)) return -1
 
         let X = CLSXCSV_NAMES["id"]["header"]
+        let ItemsIndex = this.ItemsIndex(divID)
         let headerName = RetStringBetween(divID, X["prefix"], X["postfix"])
-        return Number(this.parent.XData.headers.indexOf(headerName))  
+        return Number(this.parent.XItems[ItemsIndex].headers.indexOf(headerName))  
     }
 }

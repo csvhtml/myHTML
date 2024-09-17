@@ -12,10 +12,8 @@ class clsXCSV {
 
             this.XFormat = new clsFormatFile(this)  // OK
             this.XItems = [
-                new clsData(this, this.XFormat.Name(XCSV_DATA_ITEMS))
+                // new clsData()
             ]
-            this.XData = this.XItems[0]        // internal reference to active XItems set
-
             this.XHTML = new clsFormatHTML(this)  // OK
 
             this.XNames = new clsXCSV_Names(this)  // OK
@@ -26,7 +24,9 @@ class clsXCSV {
 
             // Apply
             this.__config()
-            this.XFormat.Read(XCSV_DATA_ITEMS.trimPlus()) 
+            this.XFormat.Read(XCSV_DATA_ITEMS['table'].trimPlus()) 
+            this.Activate()
+            // this.XData = this.XItems[0]        // internal reference to active XItems set
         }
 
         __config() {
@@ -37,6 +37,21 @@ class clsXCSV {
             ]
             for (let k of keys) {
                 if (this.config[k] === undefined) this.config[k] = null}
+        }
+
+        ItemsNamesList() {
+            return this.XItems.map(item => item.name)}
+
+        ItemsNamesExist(name) {
+            if (this.ItemsNamesList().includes(name)) return true
+            return false
+        }
+
+        ItemNameAvailable(proposal) {
+            while (this.ItemsNamesExist(proposal)) {
+                proposal += '-copy'
+            }
+            return proposal
         }
 
         Config(cfg) {
@@ -52,28 +67,68 @@ class clsXCSV {
         }
 
         Activate(name) {
-            if (name === undefined) name = this.XItems[0].name
+            if (IsUndefined([name])) {
+                this.XData = this.XItems[0]; 
+                this.XSelection.ActiveItemsName = this.XItems[0].name
+                return }
+                
+            assert(this.XItems.map(item => item.name).includes(name))
             
-            let index = -1
-            for (let i = 0; i < this.XItems.length; i++) {
-                if (this.XItems[i].name === name) index = i
-            }
-            if (index >-1) this.XData = this.XItems[index]
-            this.XHTML.Print()
+            let ItemsIndex = this.XItems.map(item => item.name).indexOf(name)
+            this.XSelection.ActiveItemsName = name
+            this.XData = this.XItems[ItemsIndex]
         }
 
         ActiveIndex() {
+            let ItemsIndex1 = -2; let ItemsIndex2 = -2
+            // Option 1
+            ItemsIndex1 = this.XItems.map(item => item.name).indexOf(this.XSelection.ActiveItemsName)
+
+
+            // Option 2
             for (let i = 0; i < this.XItems.length; i++) {
-                if (this.XItems[i] === this.XData) return i
-            }
+                if (this.XItems[i] === this.XData) ItemsIndex2 = i}
+
+            assert(ItemsIndex1 == ItemsIndex2)
+            return ItemsIndex1
         }
 
-        Add(headers, data, name) {
+        Add(headers, data, name) {  // when headers, data are defined, then also gallery and text are added here
+            if (IsPartlyUndefined[headers, data, name]) return false       // either compeltey defined or not
+            this.xAdd(headers,data, name)
+            this.XHTML.Print()
+        }
+
+        Add_Text() {
+            let nhd = this.XFormat._NameHeadersData(XCSV_DATA_ITEMS['text'])
+            if (nhd[0])
+            this.xAdd(nhd[0][1],nhd[0][2], nhd[0][0])
+            this.XHTML.Print()
+        }
+
+        Add_Gallery() {
+            //
+        }
+
+        Remove(ItemsIndex) {
+            if (IsUndefined([ItemsIndex])) ItemsIndex = this.ActiveIndex()
+            let flag = false
+            if (this.XData === this.XItems[ItemsIndex]) flag = true
+            this.XItems.splice(ItemsIndex,1)
+            if (flag) this.Activate()
+            this.XHTML.Print()
+        }
+
+        xAdd(headers, data, name, index) {
             let x = new clsData(this)
-            x.Init(headers, data, name)
-            this.XItems.push(x)
-        }
+            let nhd = [[name, headers, data]]
+            if (IsUndefined([headers, data, name])) nhd = this.XFormat._NameHeadersData(XCSV_DATA_ITEMS['table'])
+            nhd[0][0] = this.ItemNameAvailable(nhd[0][0])
+            x.Init(nhd[0][1], nhd[0][2], nhd[0][0])
 
+            if (IsUndefined([index])) index = this.XItems.length
+            this.XItems.splice(index, 0, x)
+        }
         
         AddRow() {
             this.XData.AddRow()
@@ -113,13 +168,25 @@ const CLSXCSV_NAMES = {
 // XCSV - default values                                          #
 // ################################################################
 
-const XCSV_DATA_ITEMS = '\
-            ||||Default Data\n\
-            ||A|B|C\n\
-            ||1|2|3\n\
-            ||5 Leerzeichen|Neue\nZeile|[Link::URL]\n\
-            ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
-    '
+const XCSV_DATA_ITEMS = {
+    'table': '\
+                ||||Default Data\n\
+                ||A|B|C\n\
+                ||1|2|3\n\
+                ||5 Leerzeichen|Neue\nZeile|[Link::URL]\n\
+                ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
+    ',
+    'text':     '\
+                ||||Default Text\n\
+                ||[text]Summary\n\
+                ||Desciption\n\n\n\n\n.\n\
+    ',
+    'gallery':     '\
+                ||||Default Gallery\n\
+                ||Summary\n\
+                ||pic1.png,pic2.png,pic3.png\n\
+'
+}
 
 const XCSV_DATA_DEFAULT_VALUE = '..'
 
@@ -135,34 +202,29 @@ class clsXCSV_assert {
     }
 
     Generic() {
-        for (let X of this.parent.XItems) {
-            assert(typOf(X.headers, true) == 'list-1D')
-            assert(typOf(X.data, true) == 'list-2D')
-            assert(typOf(X.name) == 'str')
-        }
-        assert(this.parent.XData === this.parent.XItems[this.parent.ActiveIndex()])
+        // assert(this.parent.XData === this.parent.XItems[this.parent.ActiveIndex()])
     }
 
-    Type(type) {
-        for (let X of this.parent.XItems) {
-            assert(this._TypeX(X, type))}
-    }
+    // Type(type) {
+    //     for (let X of this.parent.XItems) {
+    //         assert(this._TypeX(X, type))}
+    // }
 
-    _TypeX(XData, type) {
-        // verify via headers
-        if (XData.headers.length == 1) {
-            if (XData.headers[0].startWith('[text]')) assert(type == 'text') 
-            if (!XData.headers[0].startWith('[text]')) assert(type == 'gallery') }
-        if (XData.headers.length > 1) assert(type == 'table') 
+    // _TypeX(XData, type) {
+    //     // verify via headers
+    //     if (XData.headers.length == 1) {
+    //         if (XData.headers[0].startWith('[text]')) assert(type == 'text') 
+    //         if (!XData.headers[0].startWith('[text]')) assert(type == 'gallery') }
+    //     if (XData.headers.length > 1) assert(type == 'table') 
         
-        // verify via data (independent)
-        if (XData.data.length == 1) {
-            if (XData.data[0].length == 1) assert(type == 'text') 
-            if (XData.data[0].length > 1) assert(type == 'table') }       // special case of a table with only one row
-        if (XData.data.length > 1) {
-            if (XData.data[0].length == 1) assert(type == 'gallery') 
-            if (XData.data[0].length > 1) assert(type == 'table')   }     
-    }
+    //     // verify via data (independent)
+    //     if (XData.data.length == 1) {
+    //         if (XData.data[0].length == 1) assert(type == 'text') 
+    //         if (XData.data[0].length > 1) assert(type == 'table') }       // special case of a table with only one row
+    //     if (XData.data.length > 1) {
+    //         if (XData.data[0].length == 1) assert(type == 'gallery') 
+    //         if (XData.data[0].length > 1) assert(type == 'table')   }     
+    // }
     
     HeaderIs1D (headers) {
         assert(IsNotUndefined(headers), "Undefined headers")
@@ -204,8 +266,12 @@ class clsXCSV_Clickhandler {
         }
 
     ClickEvent(div) {
-        // let divID = ReturnParentUntilID(div).id
         let divID = div.GetParentWithID().id
+
+        if(!this.parent.XNames.IDs.IsItems(divID)) return
+
+        let ItemsName = this.parent.XNames.IDs.ItemsName(divID)
+        this.parent.Activate(ItemsName); this.parent.XInfo.Level2(ItemsName)
 
         if (this.parent.XNames.IsHeader(divID)){
             this._HeaderCell(divID)
@@ -253,11 +319,11 @@ class clsData {
         this.name = name
         this.InitHeaders(headers)
         this.InitData(data)
-        this.parent.XAssert.Generic()
+        this.assertIntegrity()
     }
 
     Type() {
-        this.parent.XAssert.Generic()
+        this.assertIntegrity()
         let type = ['table', 'gallery', 'text']
 
         if (this.headers.length == 1) type.removeX('table')                         // a table has at least two colums (but can have only one row)
@@ -266,7 +332,7 @@ class clsData {
         if (this.data.length > 1) type.removeItems(['text'])                        // a text and a single item, where the text is (one colum, one row)
         if (this.data[0].length > 1) type.removeItems(['text'])  
         
-        this.parent.XAssert.Generic(type[0])   
+        this.assertType(type[0])   
         return type[0]
     }
 
@@ -340,6 +406,29 @@ class clsData {
             ret.push(byVal(row[idx]))}
         return ret
     }
+
+
+    assertIntegrity() {
+            assert(typOf(this.headers, true) == 'list-1D')
+            assert(typOf(this.data, true) == 'list-2D')
+            assert(typOf(this.name) == 'str')
+        }
+
+    assertType(type) {
+        // verify via headers
+        if (this.headers.length == 1) {
+            if (this.headers[0].startsWith('[text]')) assert(type == 'text') 
+            if (!this.headers[0].startsWith('[text]')) assert(type == 'gallery') }
+        if (this.headers.length > 1) assert(type == 'table') 
+        
+        // verify via data (independent)
+        if (this.data.length == 1) {
+            if (this.data[0].length == 1) assert(type == 'text') 
+            if (this.data[0].length > 1) assert(type == 'table') }       // special case of a table with only one row
+        if (this.data.length > 1) {
+            if (this.data[0].length == 1) assert(type == 'gallery') 
+            if (this.data[0].length > 1) assert(type == 'table')   }     
+    }
 }
 class clsFormatFile {
     constructor(parent, config) {
@@ -356,15 +445,29 @@ class clsFormatFile {
         /**
          * Reads in a text (formatted acc to this.config) and saves its data to the parent
          */
-        this.xRead(text)}
+        if (text == undefined) return
+        if (!text.startsWith(this.config["file-seperator"])) {
+            text = this.config["file-seperator"] + '<define name>' + this.config["line-end"] + text} 
+        let textItems = this._NameHeadersData(text)
+
+        this.parent.XItems = [];
+        for (let i = 0; i < textItems.length; i++) {
+            this.ReadOne(i, textItems[i])
+        }
+        this.parent.Activate()
+    }
 
     DataAsCSV() {
         /**
          * Parses the data of the parent as a text file
          */
         let ret = '';
-        ret += this._AsCSV_HeaderLine()
-        ret += this._AsCSV_RowsLine()
+        for (let i = 0; i < this.parent.XItems.length; i++) {
+            ret += this._AsCSV_NameLine(i)
+            ret += this._AsCSV_HeaderLine(i)
+            ret += this._AsCSV_RowsLines(i)
+        }
+
         return ret}
 
     Name(text) {
@@ -374,49 +477,66 @@ class clsFormatFile {
         return text.until('\n').trim()
     }
     
-    xRead(text) {
-        if (text == undefined) {
-            return}
-        let name = 'X'
-        if (text.includes(this.config["file-seperator"])) {
-            let files = text.split('\n' + this.config["file-seperator"]); files.removeAll("")
-            files[0] = files[0].after(this.config["file-seperator"])
-            let textfile = files[0]
-            name = textfile.until('\n').trim()
-            text = textfile.substring(textfile.indexOf('\n')+1)
-            text = text.trimPlus([' |'])}
-        
-        let headers_data = this._HeadersData(text)
-
-        this.parent.XData.Init(headers_data[0], headers_data[1], name)
-        
+    ReadOne(ItemsIndex, texttriple) {
+        this.parent.xAdd(texttriple[1], texttriple[2], texttriple[0])
     }
 
-    _AsCSV_HeaderLine() {
+    _AsCSV_NameLine(ItemsIndex) {
+        let llll = this.config["file-seperator"]
+        let n = this.config["line-end"]
+
+        if (IsUndefined([ItemsIndex])) ItemsIndex = 0
+        return llll + this.parent.XItems[ItemsIndex].name + n
+    }
+
+    _AsCSV_HeaderLine(ItemsIndex) {
         let ll = this.config["line-starter"]
         let l = this.config["cell-seperator"]
         let n = this.config["line-end"]
-
         let ret = ll 
-        for (let header of this.parent.XData.headers) {
+
+        if (IsUndefined([ItemsIndex])) ItemsIndex = 0
+        for (let header of this.parent.XItems[ItemsIndex].headers) {
             ret += header + l}
         ret = ret.slice(0, -1*l.length) + n
         
         return ret
     }
     
-    _AsCSV_RowsLine() {
+    _AsCSV_RowsLines(ItemsIndex) {
         let ll = this.config["line-starter"]
         let l = this.config["cell-seperator"]
         let n = this.config["line-end"]
-
         let ret = ""
-        for (let row of this.parent.XData.data) {
+
+        if (IsUndefined([ItemsIndex])) ItemsIndex = 0
+        for (let row of this.parent.XItems[ItemsIndex].data) {
             ret += ll
             for (let cell of row) {
                 ret += cell + l}
             ret = ret.slice(0, -1*l.length) + n}
         
+        return ret
+    }
+
+    _NameHeadersData(textfile) {
+        // return a list of data Items in the following format:
+        //
+        // [[name, headers, data], [name, headers, data]]
+
+        let textParts = textfile.split('\n' + this.config["file-seperator"]); textParts.removeAll("")
+        textParts[0] = textParts[0].after(this.config["file-seperator"])
+        
+        let ret = []; let triple = []
+        for (let textPart of textParts) {
+            let name = textPart.until('\n').trim()
+            let textPart2 = textPart.substring(textPart.indexOf('\n')+1)
+            textPart2 = textPart2.trimPlus([' |'])
+            let headers_data = this._HeadersData(textPart2)
+            triple = [name, headers_data[0], headers_data[1]]
+            ret.push(triple)
+        }
+
         return ret
     }
 
@@ -441,20 +561,38 @@ class clsFormatHTML {
         this.parent = parent
     }
 
+    
     Print() {
-        if (this.parent.XData.Type() == 'table') {
-            document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.DataAsHTML()
-            this.parent.XSelection.unset()}
-        
-        if (this.parent.XData.Type() == 'gallery') {
-            document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.Gallery(this.parent.ActiveIndex())
+        document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.PrintPreview()
+        this.parent.XSelection.unset()    
+    }
+    
+    PrintPreview(prefix = '') {
+        let ret = prefix
+        for (let i = 0; i < this.parent.XItems.length; i++) {
+            ret += this.PrintItems(i)
         }
-            
+        return ret
     }
 
-    _MarkupToX() {
+    PrintItems(idx) {
+        if (this.parent.XItems[idx].Type() == 'table') {
+            // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.DataAsHTML("", idx)
+            return this.DataAsHTML("", idx)}
+        
+        if (this.parent.XItems[idx].Type() == 'gallery') {
+            // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.Gallery(idx)
+            return this.Gallery(idx)}
+
+        if (this.parent.XItems[idx].Type() == 'text') {
+            // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.Text(idx)
+            return this.Text(idx)}
+     
+    }
+
+    _MarkupToX(ItemsIndex) {
         let ret = []
-        for (let row of this.parent.XData.data) {
+        for (let row of this.parent.XItems[ItemsIndex].data) {
             let tmp = []
             for (let cell of row) {
                 let value = cell
@@ -475,18 +613,33 @@ class clsFormatHTML {
         return ret
     }
 
-    DataAsHTML(pre = "") {
+    Text(ItemsIndex) {
+        assert(this.parent.XItems[ItemsIndex].Type() == 'text')
+
+        return '' +
+            HTMLTable_FromConfig({
+            tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
+            tableClass: "table xcsv",
+            tableStyle: "margin-bottom:0;",
+            thsText: [this.parent.XItems[ItemsIndex].headers[0].after('[text]')],
+            thsID: this.parent.XNames.IDs.headers(ItemsIndex),
+            rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
+            cellsText: this._MarkupToX(ItemsIndex),
+            cellsID: this.parent.XNames.IDs.cells(ItemsIndex),
+        })
+    }
+
+    DataAsHTML(pre = "", ItemsIndex) {
         return pre + 
             HTMLTable_FromConfig({
-            tableID: "id-table-" + this.parent.config["Ego Div ID"],
-            tableClass: "table",
+            tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
+            tableClass: "table xcsv",
             tableStyle: "margin-bottom:0;",
-            thsText: this.parent.XData.headers,
-            thsID: this.parent.XNames.IDs.headers(),
-            rowsID: this.parent.XNames.IDs.rows(),
-            // cellsText: this.parent.XData.data,
-            cellsText: this._MarkupToX(),
-            cellsID: this.parent.XNames.IDs.cells(),
+            thsText: this.parent.XItems[ItemsIndex].headers,
+            thsID: this.parent.XNames.IDs.headers(ItemsIndex),
+            rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
+            cellsText: this._MarkupToX(ItemsIndex),
+            cellsID: this.parent.XNames.IDs.cells(ItemsIndex),
         })
     }
 
@@ -514,6 +667,15 @@ class clsXCSV_Infohandler {
                 return }
         }
 
+    }
+
+    Level3(msg) {
+        let infoblocks = this.parent.config['infoblocks']
+        if (typOf(infoblocks) == 'list') {
+            if (infoblocks.length > 2) {
+                document.getElementById(infoblocks[2]).innerHTML = msg
+                return }
+        }
     }
 
 }
@@ -584,12 +746,6 @@ class clsXCSV_Names {
         return false
     }
 
-    RowfromCellID(divID) {
-        if (this.IsRow(divID)) {
-            return divID}
-        let X = CLSXCSV_NAMES["id"]["cell"]
-        let r = RetStringBetween(divID, X["r"], X["c"])
-        return this._row(r)}
     }
 
 class clsXCSV_Names_ID {
@@ -597,29 +753,43 @@ class clsXCSV_Names_ID {
         this.parent = parent
     }
 
-    headers() {
+    ItemsName(divID) {
+        assert(this.IsItems(divID))
+        return RetStringBetween(divID, "[", "]")
+    }
+
+    ItemsIndex(divID) {
+        assert(this.IsItems(divID))
+
+        return this.parent.XItems.map(item => item.name).indexOf(this.ItemsName(divID))
+    }
+
+    headers(ItemsIndex) {
+        if (IsUndefined([ItemsIndex])) ItemsIndex = this.parent.ActiveIndex()
         let ret = []
-        for (let header of this.parent.XData.headers) {
-            ret.push(this._header(header))}
+        for (let header of this.parent.XItems[ItemsIndex].headers) {
+            ret.push(this._header(header, ItemsIndex))}
         return ret
     }
 
-    rows() {
+    rows(ItemsIndex) {
+        if (IsUndefined([ItemsIndex])) ItemsIndex = this.parent.ActiveIndex()
         let ret = []; let r = 0
-        for (let row of this.parent.XData.data) {
-            ret.push(this._row(String(r)))
+        for (let row of this.parent.XItems[ItemsIndex].data) {
+            ret.push(this._row(String(r), ItemsIndex))
             r +=1}
         return ret
     }
 
-    cells() {
-        let headers = this.parent.XData.headers
+    cells(ItemsIndex) {
+        if (IsUndefined([ItemsIndex])) ItemsIndex = this.parent.ActiveIndex()
+        let headers = this.parent.XItems[ItemsIndex].headers
         let ret = []; let tmp = []; let r = 0; let c = 0
-        for (let row of this.parent.XData.data) {
+        for (let row of this.parent.XItems[ItemsIndex].data) {
             tmp = []
             c = 0
             for (let cell of row) {
-                tmp.push(this._cell(r,c,headers[c]))
+                tmp.push(this._cell(r,c,headers[c], ItemsIndex))
                 c +=1}
             ret.push(tmp)
             r +=1}
@@ -632,25 +802,36 @@ class clsXCSV_Names_ID {
             return divID}
         let X = CLSXCSV_NAMES["id"]["cell"]
         let r = RetStringBetween(divID, X["r"], X["c"])
-        return this._row(r)}
+        let ItemsIndex = this.ItemsIndex(divID)
+        return this._row(r, ItemsIndex)}
 
-    _header(header) {
+    _header(header, ItemsIndex) {
         let X = CLSXCSV_NAMES["id"]["header"]
-        return this._egoprefix() + X["prefix"] + header + X["postfix"]
+        return this._egoprefix(ItemsIndex) + X["prefix"] + header + X["postfix"]
     }
 
-    _cell(r,c,header) {
+    _cell(r,c,header, ItemsIndex) {
         let X = CLSXCSV_NAMES["id"]["cell"]
-        return this._egoprefix() + X["r"] + r + X["c"] + c + X["h"] + header 
+        return this._egoprefix(ItemsIndex) + X["r"] + r + X["c"] + c + X["h"] + header 
     }
 
-    _row(r) {
+    _row(r, ItemsIndex) {
         let X = CLSXCSV_NAMES["id"]["row"]
-        return this._egoprefix() + X["prefix"] + r + X["postfix"]
+        return this._egoprefix(ItemsIndex) + X["prefix"] + r + X["postfix"]
     }
 
-    _egoprefix() {
-        return '[' + this.parent.config["Ego Div ID"] + '] '
+    _egoprefix(ItemsIndex) {
+        assert(!IsUndefined([ItemsIndex]))
+        // return '[' + this.parent.config["Ego Div ID"] + '] '
+        return '[' + this.parent.XItems[ItemsIndex].name + '] '
+    }
+
+    IsItems(divID) {
+        let name = RetStringBetween(divID, "[", "]")
+        let condition1 = this.parent.XItems.map(item => item.name).includes(name)    // is there a XItems dictionary with the name of the divID
+        let condition2 = divID.startsWith("[" + name + "]")
+
+        return condition1 && condition2
     }
 
     IsHeader(headerID) {
@@ -660,7 +841,8 @@ class clsXCSV_Names_ID {
     }
 
     IsCell(cellID) {
-        if (ElementInArrayN(this.cells(),cellID)) {
+        let ItemsIndex = this.ItemsIndex(cellID)
+        if (ElementInArrayN(this.cells(ItemsIndex),cellID)) {
             return true}
         return false
     }
@@ -693,19 +875,22 @@ class clsXCSV_Names_ID {
     }
 
     C_fromHeaderID(divID) {
-        if (!this.IsHeader(divID)) {return -1}
+        if (!this.IsHeader(divID)) return -1
 
         let X = CLSXCSV_NAMES["id"]["header"]
+        let ItemsIndex = this.ItemsIndex(divID)
         let headerName = RetStringBetween(divID, X["prefix"], X["postfix"])
-        return Number(this.parent.XData.headers.indexOf(headerName))  
+        return Number(this.parent.XItems[ItemsIndex].headers.indexOf(headerName))  
     }
 }
 class clsXCSV_Selectionhandler {
     constructor(parent) {
             this.parent = parent
             this.SelectedID = ""
+            this.ActiveItemsName = ""
         }
 
+    // set elemenets inside
     set(divID) {
         this.SelectedID = divID
         document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")
@@ -713,16 +898,15 @@ class clsXCSV_Selectionhandler {
         let X = this.parent.XNames.IDs; let msg = ''
         if (X.IsRow(divID)) {
             msg = "Selected Row: " + String(this.parent.XNames.IDs.R_fromRowID(this.SelectedID, true))
-            this.parent.XInfo.Level2(msg); return}
-            // infoblock.innerHTML = "Selected Row: " + String(this.parent.XNames.IDs.R_fromRowID(this.SelectedID, true)); return}
+            this.parent.XInfo.Level3(msg); return}
         if (X.IsCell(divID)) {
             msg = "Selected Cell: " + String(this.parent.XNames.IDs.RC_fromID(this.SelectedID, true))
-            this.parent.XInfo.Level2(msg); return}
-            // infoblock.innerHTML = "Selected Cell: " + String(this.parent.XNames.IDs.RC_fromID(this.SelectedID, true)); return}
+            this.parent.XInfo.Level3(msg); return}
         if (X.IsHeader(divID)) {
-            msg = "Selected Header: " + this.parent.XData.headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]
-            this.parent.XInfo.Level2(msg); return}
-            // infoblock.innerHTML = "Selected Header: " + this.parent.XData.headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]; return}
+            let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
+            msg = "Selected Header: " + this.parent.XItems[ItemsIndex].headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]
+            this.parent.XInfo.Level3(msg); return}
+            
         
     }
 
@@ -734,7 +918,7 @@ class clsXCSV_Selectionhandler {
             }
         }
         this.SelectedID = ""
-        this.parent.XInfo.Level2(this.SelectedID)
+        this.parent.XInfo.Level3(this.SelectedID)
     }
 
     edit(divID) {

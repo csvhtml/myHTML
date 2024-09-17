@@ -31,7 +31,8 @@ const BASIS = {
 	HTMLTable_Row: function(config) {return HTMLTable_Row(config)},
 	IsObject: function(variable) {return IsObject(variable)},
 	IsString: function(variable) {return IsString(variable)},
-	IsUndefined: function(variable) {return IsUndefined(variable)},
+	IsUndefined: function(variables) {return IsUndefined(variables)},
+	IsPartlyUndefined: function(variables) {return IsPartlyUndefined(variables)},
 	IsNotUndefined: function(variable) {return IsNotUndefined(variable)},
 	IsEmptyList: function(variable) {return IsEmptyList(variable)},
 	IsString1: function(variable) {return IsString1(variable)},
@@ -594,8 +595,25 @@ function IsString(variable) {
     return typeof variable === 'string';
   }
 
-function IsUndefined(variable) {
-    return typeof variable === 'undefined';
+function IsUndefined(variables) {
+    assert(typOf(variables) == 'list')
+
+    for (let v of variables) {
+        if (typOf(v) != 'undefined') return false}
+    return true
+  }
+
+function IsPartlyUndefined(variables) {
+    assert(typOf(variables) == 'list')
+
+    let undefinedSeen = false;
+    let definedSeen = false;
+    for (let v of variables) {
+        if (typOf(v) != 'undefined') definedSeen = true
+        if (typOf(v) == 'undefined') undefinedSeen = true}
+
+    if (undefinedSeen && definedSeen) return true
+    return false
   }
 
 function IsNotUndefined(variable) {

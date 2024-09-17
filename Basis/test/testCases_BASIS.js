@@ -63,6 +63,22 @@ function test_typOf(myTest) {
     myTest.Equal(BASIS.typOf([[1,2], [3,4]], true), 'list-2D', arguments.callee.name)
 }
 
+function test_Undefined(myTest) {
+    let test =  [[1], [1, undefined], [undefined, null], [null, null]]
+
+    for (let t of test) {
+        myTest.IsFalse(IsUndefined(t), arguments.callee.name)}
+
+    myTest.IsTrue(IsUndefined([]), arguments.callee.name)
+    myTest.IsTrue(IsUndefined([undefined, undefined, undefined]), arguments.callee.name)
+    
+    myTest.IsFalse(IsPartlyUndefined([]), arguments.callee.name)
+    myTest.IsFalse(IsPartlyUndefined([undefined, undefined, undefined]), arguments.callee.name)
+    myTest.IsFalse(IsPartlyUndefined([1,2]), arguments.callee.name)
+    myTest.IsTrue(IsPartlyUndefined([undefined, null]), arguments.callee.name)
+    myTest.IsTrue(IsPartlyUndefined([1, undefined]), arguments.callee.name)
+}
+
 function test_ListDepth(myTest) {
     myTest.Equal(ListDepth([]), 1, arguments.callee.name)
     myTest.Equal(ListDepth([[]]), 2, arguments.callee.name)
