@@ -25,6 +25,19 @@ function test_clsXSCV_AddCol(myTest) {
     myTest.Equal(ted.XData.data[2][4], "gut", fname) 
 }
 
+function test_clsXSCV_ChangeColName(myTest) {
+    let fname = arguments.callee.name;
+    let ted = new clsXCSV("div-id")
+
+    // ted.XData.AddCol()  // not allowed
+    ted.XData.AddCol("newCol 1")
+    ted.XData.AddCol("newCol 2", ["Das", "ist", "gut"])
+
+    ted.XData.ChangeColName("newCol 2", "changed Col")
+
+    myTest.Equal(ted.XData.headers, ["A", "B", "C", "newCol 1", "changed Col"], fname) 
+}
+
 function test_clsXSCV_Clear(myTest) {
     let fname = arguments.callee.name;
     let ted = new clsXCSV("div-id")

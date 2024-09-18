@@ -71,6 +71,15 @@ class clsData {
         this.data.insertColum(targetCol)
     }
 
+    ChangeColName(colName, newColname) {
+        assert (!IsUndefined([colName, newColname])) 
+
+        let idx = this.headers.indexOf(colName)
+        assert(idx > -1)
+
+        this.headers[idx] = newColname
+    }
+
     _DefaultRow() {     
         return XCSV_DATA_DEFAULT_VALUE.AsList(this.headers.length)
     }

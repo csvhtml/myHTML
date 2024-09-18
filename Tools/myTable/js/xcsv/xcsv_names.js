@@ -3,34 +3,6 @@
 // ################################################################
 // IDs
 
-const LAYOUT_ID = {
-    "header": {
-        "prefix":'header-',
-        "postfix": ''
-    },
-    // ID pattern for table headers:
-    // LAYOUT_ID['HeaderPrefix'] + headerString +  LAYOUT_ID['HeaderPostfix']
-    'HeaderPrefix': 'header-',
-    'HeaderPostfix': '',
-
-    // ID pattern for table rows
-    // LAYOUT_ID['RowPrefix'] + rowIndex + LAYOUT_ID['RowPostfix']
-    'RowPrefix': 'row:',
-    'RowPostfix':'!',
-
-    // ID pattern for table cells:
-    // "R:" + rowIndex + "C:" + colIndex + "H:" + headerString
-    'CellR': 'R:',
-    'CellC': 'C:',
-    'CellH': 'H:'
-}
-
-const LAYOUT_CLASSNAME = {
-    'Table': 'ecsvtable',
-    'Cell': 'ecsvcell',
-    'ColPrefix': 'col-'
-}
-
 class clsXCSV_Names {
     constructor(parent) {
         this.parent = parent
@@ -125,13 +97,16 @@ class clsXCSV_Names_ID {
         return this._row(r, ItemsIndex)}
 
     _header(header, ItemsIndex) {
+        let idxHeader = this.parent.XItems[ItemsIndex].headers.indexOf(header)
         let X = CLSXCSV_NAMES["id"]["header"]
-        return this._egoprefix(ItemsIndex) + X["prefix"] + header + X["postfix"]
+        return this._egoprefix(ItemsIndex) + X["prefix"] + idxHeader + X["postfix"]
+        // return this._egoprefix(ItemsIndex) + X["prefix"] + header + X["postfix"]
     }
 
     _cell(r,c,header, ItemsIndex) {
         let X = CLSXCSV_NAMES["id"]["cell"]
-        return this._egoprefix(ItemsIndex) + X["r"] + r + X["c"] + c + X["h"] + header 
+        return this._egoprefix(ItemsIndex) + X["r"] + r + X["c"] + c
+        // return this._egoprefix(ItemsIndex) + X["r"] + r + X["c"] + c + X["h"] + header 
     }
 
     _row(r, ItemsIndex) {
@@ -177,7 +152,8 @@ class clsXCSV_Names_ID {
 
         let X = CLSXCSV_NAMES["id"]["cell"]
         let r = Number(RetStringBetween(divID, X["r"], X["c"]))
-        let c = Number(RetStringBetween(divID, X["c"], X["h"]))
+        let c = Number(RetStringBetween(divID, X["c"], ''))
+        // let c = Number(RetStringBetween(divID, X["c"], X["h"]))
         if (FirstIndexisOne) {
             return [r+1, c+1]}
         return [r, c]

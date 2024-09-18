@@ -57,8 +57,7 @@ class libEdit {
         this._Delete_this_innerHTMLs_item(divID)}
 
     _Delete_this_innerHTMLs_item(divID) {
-        delete this.innerHTMLs[divID]
-        // add global function here if necessary
+        if (divID in this.innerHTMLs) delete this.innerHTMLs[divID]
     }
     
     _IsModeEdit(div) {

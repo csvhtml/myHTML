@@ -59,7 +59,7 @@ function Gloabl_Edit_Textarea(div) {
 }
 
 function Edit_Save(divID, value) {
-    if (value == "") {value = ".."}
+    if (value == "") {value = XCSV_DATA_DEFAULT_VALUE}
     if (XCSV["main"].XNames.IDs.IsCell(divID)) {
         let RC = XCSV["main"].XNames.IDs.RC_fromID(divID)
         XCSV["main"].XData.data[RC[0]][RC[1]] = value
@@ -74,11 +74,12 @@ function Edit_Save(divID, value) {
             XCSV["main"].XData.headers[h] = value}
         
     }
-        let value_modified = value
-        value_modified = MyMarkDowntoHTML(value_modified, ignore1 = ["[("])
-        // value_modified = MyMarkDowntoSVG(value_modified)
-        
-        return value_modified
+
+    let value_modified = value
+    value_modified = MyMarkDowntoHTML(value_modified, ignore1 = ["[("])
+    // value_modified = MyMarkDowntoSVG(value_modified)
+    
+    return value_modified
 }
 
 function Edit_Close(divID) {

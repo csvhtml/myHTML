@@ -5,6 +5,7 @@ function test_XCSV(divID, myTest) {
 	test_clsXSCV_ItemNameAvailable(myTest)
 	test_clsXSCV_AddRow(myTest)
 	test_clsXSCV_AddCol(myTest)
+	test_clsXSCV_ChangeColName(myTest)
 	test_clsXSCV_Clear(myTest)
 	test_clsXSCV_Config(myTest)
 	test_clsXSCV_Front_Default_Var2(myTest)
