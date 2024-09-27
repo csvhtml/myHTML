@@ -102,6 +102,8 @@ class clsTest {
         if (IsEqual(a,b)) {
             return this._passed(fname, InvertResult)}
         else {
+            if (typOf(a) == 'str') a = a.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            if (typOf(b) == 'str') b = b.replace(/</g, '&lt;').replace(/>/g, '&gt;')
             return this._failed(fname, " " + a + " not equal to " + b + ". ", InvertResult)}
     }
 

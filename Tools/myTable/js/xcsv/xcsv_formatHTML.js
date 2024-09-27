@@ -12,6 +12,7 @@ class clsFormatHTML {
     PrintPreview(prefix = '') {
         let ret = prefix
         for (let i = 0; i < this.parent.XItems.length; i++) {
+            ret += this.HeaderBox(i).outerHTML
             ret += this.PrintItems(i)
         }
         return ret
@@ -30,6 +31,16 @@ class clsFormatHTML {
             // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.Text(idx)
             return this.Text(idx)}
      
+    }
+
+    HeaderBox(idx) {
+        let ret = document.createElement('DIV')
+        ret.id = this.parent.XNames.IDs.namebox(idx)
+        ret.innerHTML = this.parent.XItems[idx].name
+        ret.className = "NameBox"
+        ret.style = "min-width:" + XCSV_CONFIG['min-width']+';'
+
+        return ret
     }
 
     _MarkupToX(ItemsIndex) {
@@ -62,7 +73,7 @@ class clsFormatHTML {
             HTMLTable_FromConfig({
             tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
             tableClass: "table xcsv",
-            tableStyle: "margin-bottom:0;",
+            tableStyle: "min-width:" + XCSV_CONFIG['min-width']+';',
             thsText: [this.parent.XItems[ItemsIndex].headers[0].after('[text]')],
             thsID: this.parent.XNames.IDs.headers(ItemsIndex),
             rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
@@ -72,17 +83,29 @@ class clsFormatHTML {
     }
 
     DataAsHTML(pre = "", ItemsIndex) {
-        return pre + 
-            HTMLTable_FromConfig({
-            tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
-            tableClass: "table xcsv",
-            tableStyle: "margin-bottom:0;",
-            thsText: this.parent.XItems[ItemsIndex].headers,
-            thsID: this.parent.XNames.IDs.headers(ItemsIndex),
-            rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
-            cellsText: this._MarkupToX(ItemsIndex),
-            cellsID: this.parent.XNames.IDs.cells(ItemsIndex),
-        })
+        let table = HTML_Table({cellsText:this._MarkupToX(ItemsIndex)})
+        table.id = "id-table-" + this.parent.XItems[ItemsIndex].name
+        table.className = "table"
+        table.style = "min-width:" + XCSV_CONFIG['min-width']+';'
+        
+        table.mySetHeaders(this.parent.XItems[ItemsIndex].headers)
+        table.mySetHeadersID(this.parent.XNames.IDs.headers(ItemsIndex))
+        // table.mySetHeadersClass() 
+        table.mySetRowsID(this.parent.XNames.IDs.rows(ItemsIndex))
+        table.mySetCellsID(this.parent.XNames.IDs.cells(ItemsIndex))
+        return pre + table.outerHTML
+
+        // return pre + 
+        //     HTMLTable_FromConfig({
+        //     tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
+        //     tableClass: "table xcsv",
+        //     tableStyle: "margin-bottom:0px;min-width:" + XCSV_CONFIG['min-width']+';',
+        //     thsText: this.parent.XItems[ItemsIndex].headers,
+        //     thsID: this.parent.XNames.IDs.headers(ItemsIndex),
+        //     rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
+        //     cellsText: this._MarkupToX(ItemsIndex),
+        //     cellsID: this.parent.XNames.IDs.cells(ItemsIndex),
+        // })
     }
 
 }

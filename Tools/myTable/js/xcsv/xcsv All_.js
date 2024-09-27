@@ -188,6 +188,11 @@ const XCSV_DATA_ITEMS = {
 '
 }
 
+const XCSV_CONFIG = {
+    'default value': '..',
+    'min-width': '600pt'
+}
+
 const XCSV_DATA_DEFAULT_VALUE = '..'
 
 // ###################################################
@@ -280,6 +285,10 @@ class clsXCSV_Clickhandler {
         if (this.parent.XNames.IsCell(divID)){
             this._Cell(divID)
             return}
+
+        if (this.parent.XNames.IsNameBox(divID)) {
+            this._Namebox(divID)
+        }
     }
 
     _HeaderCell(divID) {
@@ -301,6 +310,16 @@ class clsXCSV_Clickhandler {
         else {
             this.parent.XSelection.unset()
             this.parent.XSelection.set(rowID)}  
+    }
+
+    _Namebox(divID) {
+        if (this._AlreadyInFocus(divID)) {
+            this.parent.XSelection.unset()
+            this.parent.XSelection.set(divID)
+            this.parent.XSelection.edit(divID)}
+        else {
+            this.parent.XSelection.unset(divID)
+            this.parent.XSelection.set(divID)}  
     }
 
     _AlreadyInFocus(divID) {
@@ -389,12 +408,12 @@ class clsData {
         this.headers[idx] = newColname
     }
 
-    _DefaultRow() {     
-        return XCSV_DATA_DEFAULT_VALUE.AsList(this.headers.length)
+    _DefaultRow() {
+        return XCSV_CONFIG['default value'].AsList(this.headers.length)
     }
 
     _DefaultCol() {     
-        return XCSV_DATA_DEFAULT_VALUE.AsList(this.data.length)
+        return XCSV_CONFIG['default value'].AsList(this.data.length)
     }
 
     _UpdateNumberCol() {
@@ -579,6 +598,7 @@ class clsFormatHTML {
     PrintPreview(prefix = '') {
         let ret = prefix
         for (let i = 0; i < this.parent.XItems.length; i++) {
+            ret += this.HeaderBox(i).outerHTML
             ret += this.PrintItems(i)
         }
         return ret
@@ -597,6 +617,16 @@ class clsFormatHTML {
             // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.Text(idx)
             return this.Text(idx)}
      
+    }
+
+    HeaderBox(idx) {
+        let ret = document.createElement('DIV')
+        ret.id = this.parent.XNames.IDs.namebox(idx)
+        ret.innerHTML = this.parent.XItems[idx].name
+        ret.className = "NameBox"
+        ret.style = "min-width:" + XCSV_CONFIG['min-width']+';'
+
+        return ret
     }
 
     _MarkupToX(ItemsIndex) {
@@ -629,7 +659,7 @@ class clsFormatHTML {
             HTMLTable_FromConfig({
             tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
             tableClass: "table xcsv",
-            tableStyle: "margin-bottom:0;",
+            tableStyle: "min-width:" + XCSV_CONFIG['min-width']+';',
             thsText: [this.parent.XItems[ItemsIndex].headers[0].after('[text]')],
             thsID: this.parent.XNames.IDs.headers(ItemsIndex),
             rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
@@ -639,17 +669,29 @@ class clsFormatHTML {
     }
 
     DataAsHTML(pre = "", ItemsIndex) {
-        return pre + 
-            HTMLTable_FromConfig({
-            tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
-            tableClass: "table xcsv",
-            tableStyle: "margin-bottom:0;",
-            thsText: this.parent.XItems[ItemsIndex].headers,
-            thsID: this.parent.XNames.IDs.headers(ItemsIndex),
-            rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
-            cellsText: this._MarkupToX(ItemsIndex),
-            cellsID: this.parent.XNames.IDs.cells(ItemsIndex),
-        })
+        let table = HTML_Table({cellsText:this._MarkupToX(ItemsIndex)})
+        table.id = "id-table-" + this.parent.XItems[ItemsIndex].name
+        table.className = "table"
+        table.style = "min-width:" + XCSV_CONFIG['min-width']+';'
+        
+        table.mySetHeaders(this.parent.XItems[ItemsIndex].headers)
+        table.mySetHeadersID(this.parent.XNames.IDs.headers(ItemsIndex))
+        // table.mySetHeadersClass() 
+        table.mySetRowsID(this.parent.XNames.IDs.rows(ItemsIndex))
+        table.mySetCellsID(this.parent.XNames.IDs.cells(ItemsIndex))
+        return pre + table.outerHTML
+
+        // return pre + 
+        //     HTMLTable_FromConfig({
+        //     tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
+        //     tableClass: "table xcsv",
+        //     tableStyle: "margin-bottom:0px;min-width:" + XCSV_CONFIG['min-width']+';',
+        //     thsText: this.parent.XItems[ItemsIndex].headers,
+        //     thsID: this.parent.XNames.IDs.headers(ItemsIndex),
+        //     rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
+        //     cellsText: this._MarkupToX(ItemsIndex),
+        //     cellsID: this.parent.XNames.IDs.cells(ItemsIndex),
+        // })
     }
 
 }
@@ -727,6 +769,12 @@ class clsXCSV_Names {
         return false
     }
 
+    IsNameBox(divID) {
+        if (this.IDs.IsNameBox(divID)) {
+            return true}
+        return false
+    }
+
     }
 
 class clsXCSV_Names_ID {
@@ -776,6 +824,10 @@ class clsXCSV_Names_ID {
             r +=1}
 
         return ret
+    }
+
+    namebox (ItemsIndex) {
+        return this._egoprefix(ItemsIndex) + 'Namebox'
     }
 
     RowfromCellID (divID) {
@@ -837,6 +889,13 @@ class clsXCSV_Names_ID {
         return false
     }
 
+    IsNameBox(ID) {
+        for (i = 0; i< this.parent.XItems.length; i++) {
+            if (ID == this.namebox(i))  return true}
+        
+            return false
+    }
+
     RC_fromID(divID, FirstIndexisOne = false) {
         if (!this.IsCell(divID)) {assert(false)}
 
@@ -890,6 +949,10 @@ class clsXCSV_Selectionhandler {
         if (X.IsHeader(divID)) {
             let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
             msg = "Selected Header: " + this.parent.XItems[ItemsIndex].headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]
+            this.parent.XInfo.Level3(msg); return}
+        if (X.IsNameBox(divID)) {
+            let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
+            msg = "Selected Namebox: " + this.parent.XItems[ItemsIndex].headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]
             this.parent.XInfo.Level3(msg); return}
             
         

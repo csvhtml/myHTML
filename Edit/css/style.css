@@ -12,7 +12,7 @@ textarea {
 
 .xsvg-link {
     width: 30pt;
-    height: 30pt;
+    /* height: 30pt; */
     line-height: 10pt;
     display: block;
     float: left;

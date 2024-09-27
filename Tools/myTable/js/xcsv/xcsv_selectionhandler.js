@@ -21,6 +21,10 @@ class clsXCSV_Selectionhandler {
             let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
             msg = "Selected Header: " + this.parent.XItems[ItemsIndex].headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]
             this.parent.XInfo.Level3(msg); return}
+        if (X.IsNameBox(divID)) {
+            let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
+            msg = "Selected Namebox: " + this.parent.XItems[ItemsIndex].headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]
+            this.parent.XInfo.Level3(msg); return}
             
         
     }

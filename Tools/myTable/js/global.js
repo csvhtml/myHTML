@@ -50,7 +50,8 @@ function Gloabl_Edit_Textarea(div) {
         let rowID = XCSV["main"].XNames.IDs.RowfromCellID(div.id)
         // let row = document.getElementById(_Edit_RowID(rowID))
         let row = document.getElementById(rowID)
-        row.style.height = (row.getBoundingClientRect()["height"]+40)+"px"}
+        // row.style.height = (row.getBoundingClientRect()["height"]+40)+"px"
+    }
     
     let value_modified = div.innerHTML
     // value_modified = SVGtoMyMarkdown(value_modified)
@@ -59,7 +60,7 @@ function Gloabl_Edit_Textarea(div) {
 }
 
 function Edit_Save(divID, value) {
-    if (value == "") {value = XCSV_DATA_DEFAULT_VALUE}
+    if (value == "") {value = XCSV_CONFIG['default value']}
     if (XCSV["main"].XNames.IDs.IsCell(divID)) {
         let RC = XCSV["main"].XNames.IDs.RC_fromID(divID)
         XCSV["main"].XData.data[RC[0]][RC[1]] = value
@@ -71,8 +72,11 @@ function Edit_Save(divID, value) {
         if (XCSV["main"].XData.Type() == 'text') {
             XCSV["main"].XData.headers[h] = '[text]'+ value} 
         else {
-            XCSV["main"].XData.headers[h] = value}
-        
+            XCSV["main"].XData.headers[h] = value}  
+    }
+
+    if (XCSV["main"].XNames.IDs.IsNameBox(divID)) {
+        XCSV["main"].XData.name = value    
     }
 
     let value_modified = value

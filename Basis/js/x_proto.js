@@ -114,6 +114,30 @@ Object.defineProperties(Array.prototype, {
     }
 });
 
+// only up to depth of 3
+Object.defineProperties(Array.prototype, {
+    Shape: {
+        value: function() {
+            assert(typOf(this) == 'list')
+            if (ListDepth(this) == 1) return [this.length]
+            
+            if (ListDepth(this) == 2) {
+                let r = this.length
+                c = this[0].length
+                for (let i = 0; i <r; i++) {
+                    assert (this[i].length == c)}
+                return [r,c]}
+
+            if (ListDepth(this) == 3) {
+                let r = this.length
+                let s = this[0].Shape()
+                for (let i = 0; i <r; i++) {
+                    assert (IsEqual(s, this[i].Shape()))}
+                return [r, s[0], s[1]]}
+        }
+    }
+});
+
 // MOHI: To be reworked
 Object.defineProperties(Object.prototype, {
     key: {
@@ -129,9 +153,17 @@ Object.defineProperties(Object.prototype, {
     } 
 }); 
 
+Object.defineProperties(Object.prototype, {
+    keys: {
+        value: function() {
+              return Object.keys(this)
+            }  
+    } 
+}); 
+
 // key information gets lost here
 Object.defineProperties(Object.prototype, {
-    AsList: {
+    values: {
         value: function() {
             return Object.values(this)
             }  
@@ -233,6 +265,210 @@ Object.defineProperties(String.prototype, {
 
 // ################################################################
 // DOM /HTML Elements                                             #
+// ################################################################
+
+// ################################################################
+// DOM /HTML Elements  - Table                                    #
+// ################################################################
+
+Object.defineProperties(Object.prototype, {
+    mySetHeaders: {
+        value: function(liste) {
+            assert(this.tagName == 'TABLE')
+            assert(this.rows[0].cells.length == liste.length)
+
+            let headerRow = this.querySelector('thead tr');
+            let headerCells = headerRow.cells;
+
+            for (let i = 0; i < headerCells.length; i++) {
+                headerCells[i].innerHTML = liste[i]}
+        }
+    }
+});
+
+Object.defineProperties(Object.prototype, {
+    mySetHeadersID: {
+        value: function(liste) {
+            assert(this.tagName == 'TABLE')
+            assert(this.rows[0].cells.length == liste.length)
+
+            let headerRow = this.querySelector('thead tr');
+            let headerCells = headerRow.cells;
+
+            for (let i = 0; i < headerCells.length; i++) {
+                headerCells[i].id = liste[i]}
+        }
+    }
+});
+
+Object.defineProperties(Object.prototype, {
+    mySetHeadersClass: {
+        value: function(liste) {
+            assert(this.tagName == 'TABLE')
+            assert(this.rows[0].cells.length == liste.length)
+
+            let headerRow = this.querySelector('thead tr');
+            let headerCells = headerRow.cells;
+
+            for (let i = 0; i < headerCells.length; i++) {
+                headerCells[i].className = liste[i]}
+        }
+    }
+});
+
+Object.defineProperties(Object.prototype, {
+    mySetTHeadID: {
+        value: function(id) {
+            assert(this.tagName == 'TABLE')
+            assert(typOf(id) == 'str')
+
+            let thead = this.querySelector('thead');
+            thead.id = id
+        }
+    }
+});
+
+Object.defineProperties(Object.prototype, {
+    mySetTHeadClass: {
+        value: function(classString) {
+            assert(this.tagName == 'TABLE')
+            assert(typOf(classString) == 'str')
+
+            let thead = this.querySelector('thead');
+            thead.className = classString
+        }
+    }
+});
+
+Object.defineProperties(Object.prototype, {
+    mySetHRowID: {
+        value: function(id) {
+            assert(this.tagName == 'TABLE')
+            assert(typOf(id) == 'str')
+
+            let hrow = this.querySelector('thead tr');
+            hrow.id = id
+        }
+    }
+});
+
+Object.defineProperties(Object.prototype, {
+    mySetHRowClass: {
+        value: function(classString) {
+            assert(this.tagName == 'TABLE')
+            assert(typOf(classString) == 'str')
+
+            let hrow = this.querySelector('thead tr');
+            hrow.className = classString
+        }
+    }
+});
+
+Object.defineProperties(Object.prototype, {
+    mySetTBodyID: {
+        value: function(id) {
+            assert(this.tagName == 'TABLE')
+            assert(typOf(id) == 'str')
+
+            let tbody = this.querySelector('tbody');
+            tbody.id = id
+        }
+    }
+});
+
+Object.defineProperties(Object.prototype, {
+    mySetTBodyClass: {
+        value: function(classString) {
+            assert(this.tagName == 'TABLE')
+            assert(typOf(classString) == 'str')
+
+            let tbody = this.querySelector('tbody');
+            tbody.className = classString
+        }
+    }
+});
+
+Object.defineProperties(Object.prototype, {
+    mySetRowsID: {
+        value: function(liste) {
+            assert(this.tagName == 'TABLE')
+            assert(this.rows.length -1 == liste.length )    // excluding the header row
+
+            let tbody = this.querySelector('tbody');
+
+            for (let i = 0; i < tbody.rows.length; i++) {
+                tbody.rows[i].id = liste[i]}
+        }
+    }
+});
+
+Object.defineProperties(Object.prototype, {
+    mySetRowsClass: {
+        value: function(liste) {
+            assert(this.tagName == 'TABLE')
+            assert(this.rows.length -1 == liste.length)     // excluding the header row
+
+            let tbody = this.querySelector('tbody');
+
+            for (let i = 0; i < tbody.rows.length; i++) {
+                tbody.rows[i].className = liste[i]}
+        }
+    }
+});
+
+Object.defineProperties(Object.prototype, {
+    mySetCells: {
+        value: function(liste) {
+            assert(this.tagName == 'TABLE')
+            assert(this.rows.length -1 == liste.length)
+
+            let tbody = this.querySelector('tbody');
+
+            for (let i = 0; i < tbody.rows.length; i++) {
+                assert(tbody.rows[i].cells.length == liste[i].length)
+                for (let j = 0; j < tbody.rows[i].cells.length; j++) {
+                    tbody.rows[i].cells[j].innerHTML = liste[i][j]}
+                }
+        }
+    }
+});
+
+Object.defineProperties(Object.prototype, {
+    mySetCellsID: {
+        value: function(liste) {
+            assert(this.tagName == 'TABLE')
+            assert(this.rows.length -1 == liste.length)
+
+            let tbody = this.querySelector('tbody');
+
+            for (let i = 0; i < tbody.rows.length; i++) {
+                assert(tbody.rows[i].cells.length == liste[i].length)
+                for (let j = 0; j < tbody.rows[i].cells.length; j++) {
+                    tbody.rows[i].cells[j].id = liste[i][j]}
+                }
+        }
+    }
+});
+
+Object.defineProperties(Object.prototype, {
+    mySetCellsClass: {
+        value: function(liste) {
+            assert(this.tagName == 'TABLE')
+            assert(this.rows.length -1 == liste.length)
+
+            let tbody = this.querySelector('tbody');
+
+            for (let i = 0; i < tbody.rows.length; i++) {
+                assert(tbody.rows[i].cells.length == liste[i].length)
+                for (let j = 0; j < tbody.rows[i].cells.length; j++) {
+                    tbody.rows[i].cells[j].className= liste[i][j]}
+                }
+        }
+    }
+});
+
+// ################################################################
+// DOM /HTML Elements  - Other                                    #
 // ################################################################
 
 // Note: When no parent with ID was found, then the ego element is returned

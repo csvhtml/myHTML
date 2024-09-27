@@ -37,6 +37,12 @@ class clsXCSV_Names {
         return false
     }
 
+    IsNameBox(divID) {
+        if (this.IDs.IsNameBox(divID)) {
+            return true}
+        return false
+    }
+
     }
 
 class clsXCSV_Names_ID {
@@ -86,6 +92,10 @@ class clsXCSV_Names_ID {
             r +=1}
 
         return ret
+    }
+
+    namebox (ItemsIndex) {
+        return this._egoprefix(ItemsIndex) + 'Namebox'
     }
 
     RowfromCellID (divID) {
@@ -145,6 +155,13 @@ class clsXCSV_Names_ID {
         if (this.rows().includes(ID)) {
             return true}
         return false
+    }
+
+    IsNameBox(ID) {
+        for (i = 0; i< this.parent.XItems.length; i++) {
+            if (ID == this.namebox(i))  return true}
+        
+            return false
     }
 
     RC_fromID(divID, FirstIndexisOne = false) {

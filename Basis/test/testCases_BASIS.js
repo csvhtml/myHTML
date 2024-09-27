@@ -292,6 +292,300 @@ function test_MarkupSVG(myTest) {
 }
 
 // #############################################################################################################
+// # HTML table                                                                                                #
+// #############################################################################################################
+
+function test_HTMLTable(myTest) {
+    let tableStr = '\
+    <table>\
+        <thead>\
+            <tr>\
+                <th></th>\
+                <th></th>\
+                <th></th>\
+            </tr>\
+        </thead>\
+        <tbody>\
+            <tr>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+            <tr>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+        </tbody>\
+    </table>'
+    let table = HTML_Table()
+    myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
+}
+
+function test_HTMLTable_Table(myTest) {
+    let tableStr = '\
+    <table id="id-table" class="class1 class2">\
+        <thead>\
+            <tr>\
+                <th></th>\
+                <th></th>\
+                <th></th>\
+            </tr>\
+        </thead>\
+        <tbody>\
+            <tr>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+            <tr>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+        </tbody>\
+    </table>'
+    let table = HTML_Table()
+    table.id = "id-table"
+    table.className = "class1 class2"
+    myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
+}
+
+function test_HTMLTable_SetTHead(myTest) {
+    let tableStr = '\
+    <table>\
+        <thead id="id-thead" class="class1 class2">\
+            <tr>\
+                <th></th>\
+                <th></th>\
+                <th></th>\
+            </tr>\
+        </thead>\
+        <tbody>\
+            <tr>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+            <tr>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+        </tbody>\
+    </table>'
+    let table = HTML_Table()
+    table.mySetTHeadID("id-thead")
+    table.mySetTHeadClass("class1 class2")
+    myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
+}
+
+function test_HTMLTable_SetHRow(myTest) {
+    let tableStr = '\
+    <table>\
+        <thead>\
+            <tr id="id-row" class="class1 class2">\
+                <th></th>\
+                <th></th>\
+                <th></th>\
+            </tr>\
+        </thead>\
+        <tbody>\
+            <tr>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+            <tr>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+        </tbody>\
+    </table>'
+    let table = HTML_Table()
+    table.mySetHRowID("id-row")
+    table.mySetHRowClass("class1 class2")
+    myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
+}
+
+function test_HTMLTable_SetHeaders(myTest) {
+    let tableStr = '\
+    <table>\
+        <thead>\
+            <tr>\
+                <th id="id-A" class="class-A1 class-A2">A</th>\
+                <th id="id-B" class="class-B1 class-B2">B</th>\
+                <th id="id-C" class="class-C1 class-C2">C</th>\
+            </tr>\
+        </thead>\
+        <tbody>\
+            <tr>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+            <tr>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+        </tbody>\
+    </table>'
+    let table = HTML_Table()
+    table.mySetHeaders(["A", "B", "C"])
+    table.mySetHeadersID(["id-A", "id-B", "id-C"])
+    table.mySetHeadersClass(["class-A1 class-A2", "class-B1 class-B2", "class-C1 class-C2"])
+
+    myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
+}
+
+function test_HTMLTable_SetTBody(myTest) {
+    let tableStr = '\
+    <table>\
+        <thead>\
+            <tr>\
+                <th></th>\
+                <th></th>\
+                <th></th>\
+            </tr>\
+        </thead>\
+        <tbody id="id-tbody" class="class1 class2">\
+            <tr>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+            <tr>\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+        </tbody>\
+    </table>'
+    let table = HTML_Table()
+    table.mySetTBodyID("id-tbody")
+    table.mySetTBodyClass("class1 class2")
+    myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
+}
+
+function test_HTMLTable_SetRows(myTest) {
+    let tableStr = '\
+    <table>\
+        <thead>\
+            <tr>\
+                <th></th>\
+                <th></th>\
+                <th></th>\
+            </tr>\
+        </thead>\
+        <tbody>\
+            <tr id="id-row1" class="class11 class12">\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+            <tr id="id-row2" class="class21 class22">\
+                <td></td>\
+                <td></td>\
+                <td></td>\
+            </tr>\
+        </tbody>\
+    </table>'
+    let table = HTML_Table()
+    table.mySetRowsID(["id-row1", "id-row2"])
+    table.mySetRowsClass(["class11 class12", "class21 class22"])
+    myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
+}
+
+function test_HTMLTable_SetCells(myTest) {
+    let tableStr = '\
+    <table>\
+        <thead>\
+            <tr>\
+                <th></th>\
+                <th></th>\
+                <th></th>\
+            </tr>\
+        </thead>\
+        <tbody>\
+            <tr>\
+                <td id="id-11" class="class11-1 class11-2">AA</td>\
+                <td id="id-12" class="class12-1 class12-2">BB</td>\
+                <td id="id-13" class="class13-1 class13-2">CC</td>\
+            </tr>\
+            <tr>\
+                <td id="id-21" class="class21-1 class21-2">DD</td>\
+                <td id="id-22" class="class22-1 class22-2">EE</td>\
+                <td id="id-23" class="class23-1 class23-2">FF</td>\
+            </tr>\
+        </tbody>\
+    </table>'
+    let table = HTML_Table()
+    table.mySetCells([["AA", "BB", "CC"], ["DD", "EE", "FF"]])
+    table.mySetCellsID([["id-11", "id-12", "id-13"], ["id-21", "id-22", "id-23"]])
+    table.mySetCellsClass([["class11-1 class11-2", "class12-1 class12-2", "class13-1 class13-2"], 
+        ["class21-1 class21-2", "class22-1 class22-2", "class23-1 class23-2"]])
+    myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
+}
+
+function test_HTMLTable_Table_Config(myTest) {
+    let tableStr = '\
+    <table>\
+        <thead>\
+            <tr>\
+                <th></th>\
+                <th></th>\
+            </tr>\
+        </thead>\
+        <tbody>\
+            <tr>\
+                <td>A</td>\
+                <td>B</td>\
+            </tr>\
+            <tr>\
+                <td>C</td>\
+                <td>D</td>\
+            </tr>\
+            <tr>\
+                <td>E</td>\
+                <td>F</td>\
+            </tr>\
+        </tbody>\
+    </table>'
+    let table = HTML_Table({cellsText: [["A", "B"], ["C", "D"],["E", "F"]]})
+    myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
+}
+
+function test_HTMLTable_Table_Config_2(myTest) {
+    let tableStr = '\
+    <table>\
+        <thead>\
+            <tr>\
+                <th>H-1</th>\
+                <th>H-2</th>\
+            </tr>\
+        </thead>\
+        <tbody>\
+            <tr>\
+                <td>A</td>\
+                <td>B</td>\
+            </tr>\
+            <tr>\
+                <td>C</td>\
+                <td>D</td>\
+            </tr>\
+            <tr>\
+                <td>E</td>\
+                <td>F</td>\
+            </tr>\
+        </tbody>\
+    </table>'
+    let table = HTML_Table({cellsText: [["A", "B"], ["C", "D"],["E", "F"]]})
+    table.mySetHeaders(["H-1", "H-2"])
+    myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
+}
+// #############################################################################################################
 // # Prototype tests                                                                                           #
 // #############################################################################################################
 
@@ -393,13 +687,29 @@ function proto_listconvert2(myTest) {
 
 }
 
-function proto_dictAsList(myTest) {
+function proto_listShape(myTest) {
+    let liste1 = ["1", "2", "3", "4"]
+    let liste2 = [["1"], ["2"], ["3"], ["4"]]
+    let liste3 = [[["1"], ["2"], ["2"]], [["3"], ["4"], ["2"]]]
+
+    myTest.Equal(liste1.Shape(), [4], arguments.callee.name)
+    myTest.Equal(liste2.Shape(), [4,1], arguments.callee.name)
+    myTest.Equal(liste3.Shape(), [2,3,1], arguments.callee.name)
+}
+
+function proto_dictKeys(myTest) {
+    let dict = {"A": 1, "B": 2, "C": "Hallo", "D": ["other", "list"]}
+    let expected = ["A", "B", "C", "D"]
+    
+    myTest.Equal(dict.keys(), expected, arguments.callee.name)
+
+}
+
+function proto_dictValues(myTest) {
     let dict = {"A": 1, "B": 2, "C": "Hallo", "D": ["other", "list"]}
     let expected = [1, 2, "Hallo", ["other", "list"]]
     
-    liste = dict.AsList()
-    myTest.Equal(liste, expected, arguments.callee.name)
-
+    myTest.Equal(dict.values(), expected, arguments.callee.name)
 }
 
 function proto_stringUntil(myTest) {

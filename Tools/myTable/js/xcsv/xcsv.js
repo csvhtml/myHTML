@@ -188,4 +188,9 @@ const XCSV_DATA_ITEMS = {
 '
 }
 
+const XCSV_CONFIG = {
+    'default value': '..',
+    'min-width': '600pt'
+}
+
 const XCSV_DATA_DEFAULT_VALUE = '..'

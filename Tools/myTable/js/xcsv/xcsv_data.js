@@ -80,12 +80,12 @@ class clsData {
         this.headers[idx] = newColname
     }
 
-    _DefaultRow() {     
-        return XCSV_DATA_DEFAULT_VALUE.AsList(this.headers.length)
+    _DefaultRow() {
+        return XCSV_CONFIG['default value'].AsList(this.headers.length)
     }
 
     _DefaultCol() {     
-        return XCSV_DATA_DEFAULT_VALUE.AsList(this.data.length)
+        return XCSV_CONFIG['default value'].AsList(this.data.length)
     }
 
     _UpdateNumberCol() {

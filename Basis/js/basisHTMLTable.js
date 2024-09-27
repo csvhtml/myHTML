@@ -30,6 +30,52 @@ const BASIS_HTMLTABLE_CONFIG = {
     cellsStyle: [["", "", ""], ["", "", ""]]
 }
 
+function HTML_Table(config) {
+    let rows = 2; let cols = 3
+    let table = _HTML_Table_Skeleton(rows, cols)
+    
+    if (!IsUndefined([config])) {
+        // if defined, then cellsText must be defined
+        table = _HTML_Table_Skeleton(config['cellsText'].Shape()[0], config['cellsText'].Shape()[1])
+        table.mySetCells(config['cellsText'])}
+
+
+    // if (!IsUndefined([config])) {
+    //     let fullConfig = HTMLTable_FullConfig(config)
+    //     _HTMLTable_ConfigAssert(fullConfig)
+    // }
+
+    return table;
+}
+
+function _HTML_Table_Skeleton(rows, cols) {
+    let thead = document.createElement('thead')
+    thead = _HTML_Table_Rows(thead, 'th', 1, cols)
+    
+    let tbody = document.createElement('tbody');
+    tbody = _HTML_Table_Rows(tbody, 'td', rows, cols)
+
+    let table = document.createElement('table')
+    table.appendChild(thead)
+    table.appendChild(tbody);
+
+    return table;
+}
+
+function _HTML_Table_Rows(anchor, tx, Nrows, Ncols) {
+    if (tx == 'th') assert(Nrows == 1)
+
+    let row = document.createElement('tr')
+    for (let r = 0; r < Nrows; r++) {
+        row = document.createElement('tr')
+        for (let i = 0; i<Ncols; i++) {
+            row.appendChild(document.createElement(tx))}
+        anchor.appendChild(row)
+    }
+
+    return anchor
+}
+
 function HTMLTable_FromConfig(config) {
     let fullConfig = HTMLTable_FullConfig(config)
     _HTMLTable_ConfigAssert(fullConfig)
@@ -51,7 +97,8 @@ function HTMLTable_FromMarkdown(markdownString) {
 
 function HTMLTable_FullConfig(config) {
     // will lead to wrong result: let fullConfig = { ...BASIS_HTMLTABLE_CONFIG, ...config }; 
-    // because the deimension may not fit. The merge must be done manually
+    // because the dimension may not fit. The merge must be done manually
+    if (IsUndefined([config])) return BASIS_HTMLTABLE_CONFIG
 
     let ret = {}
     let nRowsCols = HTMLTable_TableRowsCols(config); let nCols = nRowsCols[1]; let nRows = nRowsCols[0]
@@ -99,13 +146,13 @@ function _HTMLTable_ConfigAssert(cfg) {
     return true
 }
 
-function HTMLTable_TableRowsCols(p = {'thsText' : [],'cellsText' : []}) {
-    assert(!(IsEqual(p['thsText'], []) && IsEqual(p['cellsText'], [])))
+function HTMLTable_TableRowsCols(p) {
+    assert(p.keys().includes('cellsText'))
 
-    let r = 0;let c = 0
-    if (!IsEqual(p['thsText'], [])) {
-        assert(typOf(p['thsText'], true) == "list-1D")
-        c = p['thsText'].length}
+    let r = 0; let c = 0
+    // if (!IsEqual(p['thsText'], [])) {
+    //     assert(typOf(p['thsText'], true) == "list-1D")
+    //     c = p['thsText'].length}
 
     if (!IsEqual(p['cellsText'], [])) {
         assert(typOf(p['cellsText'], true) == "list-2D")
@@ -174,11 +221,20 @@ let _assertThis = function (borderline)  {
 
 function _htmltable_Tag(tag, {id="", clas="", style=""}) {
     let Tag_PropertyString = function (key, val) {return _htmltable_Tag_PropertyString(key, val)}
-    let ret = "<" + tag + " "
+    let ret = "<" + tag
     ret += Tag_PropertyString("id", id)
     ret += Tag_PropertyString("class", clas)
     ret += Tag_PropertyString("style", style)
     ret += '>'
+
+    if (tag == 'table') {
+        let table = document.createElement('table')
+        if (id!='') table.id = id
+        if (clas!='') table.className = clas
+        if (style!='') table.style = style
+        assert(ret == table.outerHTML.until('</table>').trimPlus([': ', '; ']))
+    }
+
     return ret}
 
 function _htmltable_Body(rows, cfg) {
@@ -211,7 +267,9 @@ function HTMLTable_Row(config) {
 function _htmltable_Tag_PropertyString(key, val) {
     let ret = ""
     if (val.length > 0) {
-        ret += key + '="' + val + '" '}
+        // ret += key + '="' + val + '" '
+        ret += " " + key + '="' + val + '"'
+        }
     return ret}
 
 function _DOM_Tags(DOM, id="", clas="", style="") {

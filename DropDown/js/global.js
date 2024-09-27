@@ -41,6 +41,7 @@ function DropDown_Hide(divID) {
     document.getElementById(divID).style.display = 'none';
 }
 
+// absolutely necessary, z index will move any div out of windo/document mouseclick events.
 function _DropDown_ZIndex(undo = false) {
     let tds = document.getElementsByTagName("td")
     let ths = document.getElementsByTagName("th")
