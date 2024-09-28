@@ -171,6 +171,11 @@ table.table {
   flex: 0 0 15%;
 }
 
+.left {
+  /* position: fixed; */
+
+}
+
 .middle {
   flex: 0 0 83%;
   padding-left: 5pt;
@@ -180,4 +185,22 @@ table.table {
 .container {
   display: flex;
   flex-wrap: wrap;
+}
+
+.sidebar {
+  position: fixed !important;
+  width:190pt;
+  height:100%;
+  overflow: auto;
+  background-color: #fafafa;
+}
+
+.sidebar-button {
+  position: fixed;
+  top: 50pt;
+  left: 170pt
+}
+
+.content {
+  width: 900pt;
 }

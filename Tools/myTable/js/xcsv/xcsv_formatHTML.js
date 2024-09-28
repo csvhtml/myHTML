@@ -5,15 +5,24 @@ class clsFormatHTML {
 
     
     Print() {
-        document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.PrintPreview()
+        document.getElementById(this.parent.config["EgoID"]).innerHTML = this.PrintContent()
+        document.getElementById(this.parent.config["SidebarID"]).innerHTML = this.PrintSidebar()
         this.parent.XSelection.unset()    
     }
     
-    PrintPreview(prefix = '') {
+    PrintContent(prefix = '') {
         let ret = prefix
         for (let i = 0; i < this.parent.XItems.length; i++) {
             ret += this.HeaderBox(i).outerHTML
             ret += this.PrintItems(i)
+        }
+        return ret
+    }
+
+    PrintSidebar() {
+        let ret = ''
+        for (let i = 0; i < this.parent.XItems.length; i++) {
+            ret += this.SidebarItem(i).outerHTML
         }
         return ret
     }
@@ -40,6 +49,14 @@ class clsFormatHTML {
         ret.className = "NameBox"
         ret.style = "min-width:" + XCSV_CONFIG['min-width']+';'
 
+        return ret
+    }
+
+    SidebarItem(idx) {
+        let ret = document.createElement('DIV')
+        ret.id = "id-" + String(idx)
+        ret.innerHTML = this.parent.XItems[idx].name
+        ret.className = ""
         return ret
     }
 
@@ -94,18 +111,6 @@ class clsFormatHTML {
         table.mySetRowsID(this.parent.XNames.IDs.rows(ItemsIndex))
         table.mySetCellsID(this.parent.XNames.IDs.cells(ItemsIndex))
         return pre + table.outerHTML
-
-        // return pre + 
-        //     HTMLTable_FromConfig({
-        //     tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
-        //     tableClass: "table xcsv",
-        //     tableStyle: "margin-bottom:0px;min-width:" + XCSV_CONFIG['min-width']+';',
-        //     thsText: this.parent.XItems[ItemsIndex].headers,
-        //     thsID: this.parent.XNames.IDs.headers(ItemsIndex),
-        //     rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
-        //     cellsText: this._MarkupToX(ItemsIndex),
-        //     cellsID: this.parent.XNames.IDs.cells(ItemsIndex),
-        // })
     }
 
 }

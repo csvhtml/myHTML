@@ -3,10 +3,8 @@
 // ################################################################
 
 class clsXCSV {
-        constructor(egoDivID, config) {   
-            this.config = {}  
-            this.config["Ego Div ID"] = egoDivID
-            // this.config = config
+        constructor(config) {   
+            this.config = this.__config(config)
             
             this.XAssert = new clsXCSV_assert(this)  // OK
 
@@ -23,20 +21,19 @@ class clsXCSV {
 
 
             // Apply
-            this.__config()
             this.XFormat.Read(XCSV_DATA_ITEMS['table'].trimPlus()) 
             this.Activate()
             // this.XData = this.XItems[0]        // internal reference to active XItems set
         }
 
-        __config() {
-            let keys = [
-                "Ego Div ID",           // the DOM element id where the content fo this class are printed
-                'infoblocks',           // list of div ids where feedback information from this class shall be dieplayed. Max 3 divs. The first in the list has highest prio.
-                                        // Each info has a importance level and will overwrite the innerHTML of that div when it reaches the prio level.
-            ]
-            for (let k of keys) {
-                if (this.config[k] === undefined) this.config[k] = null}
+        __config(config) {
+            let ret = byVal(XCSV_CONFIG)
+            for (let key in config) {
+                if (key in ret) {
+                    ret[key] = config[key]
+                }
+            }
+            return ret
         }
 
         ItemsNamesList() {
@@ -189,8 +186,13 @@ const XCSV_DATA_ITEMS = {
 }
 
 const XCSV_CONFIG = {
+    'EgoID': null,
+    'SidebarID': null,
+    'InfoIDs': [null,null,null],
+
     'default value': '..',
-    'min-width': '900pt'
+    'min-width': '100%',
+    'SidebarVisible': true
 }
 
 const XCSV_DATA_DEFAULT_VALUE = '..'

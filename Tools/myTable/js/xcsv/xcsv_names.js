@@ -126,7 +126,6 @@ class clsXCSV_Names_ID {
 
     _egoprefix(ItemsIndex) {
         assert(!IsUndefined([ItemsIndex]))
-        // return '[' + this.parent.config["Ego Div ID"] + '] '
         return '[' + this.parent.XItems[ItemsIndex].name + '] '
     }
 

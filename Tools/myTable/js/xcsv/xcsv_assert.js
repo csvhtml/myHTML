@@ -47,7 +47,7 @@ class clsXCSV_assert {
     }
 
     name() {
-        assert(typOf(this.parent.config["Ego Div ID"]) == "str")
+        assert(typOf(this.parent.config["EgoID"]) == "str")
     }
 
     AddRow(atPosition, newRow) {

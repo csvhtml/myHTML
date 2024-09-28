@@ -114,17 +114,28 @@ function _Edit_MinHeight_Undo(divID) {
 
 
 // ####################################################################################
-// Column visble                                                                      #
+// Sidebar                                                                            #
 // ####################################################################################
 
-function TogglePageSide(columnElementName) {
-    let divelement = document.getElementById(columnElementName)
-    let currentFlex = divelement.style.flex;
-    // Mini Fix: Actually, the css property needs o be changed. the code here hcanges the element style property. so you need one inital extra click
-    if (currentFlex === '0 0 15%') {
-        divelement.style.flex = '0 0 2%';
+function ToggleSidebar(divID) {
+    let button = document.getElementById("id-button-sidebar")
+    let sidebar = document.getElementById(divID)
+    let content = document.getElementById("id-content")
+    
+    if (XCSV["main"].config["SidebarVisible"]) {
+        sidebar.style.display = "None"
+        button.style.left = '10pt'
+        button.innerHTML = '-'
+        content.style.marginLeft = '30pt'
+        content.style.minWidth = '1070pt'
+        XCSV["main"].config["SidebarVisible"] = false
     } else {
-        divelement.style.flex = '0 0 15%';
+        sidebar.style.display = "Block"
+        button.style.left = '170pt'
+        button.innerHTML = 'X'
+        content.style.marginLeft = '200pt'
+        content.style.minWidth = '900pt'
+        XCSV["main"].config["SidebarVisible"] = true
     }
   }
   

@@ -3,10 +3,8 @@
 // ################################################################
 
 class clsXCSV {
-        constructor(egoDivID, config) {   
-            this.config = {}  
-            this.config["Ego Div ID"] = egoDivID
-            // this.config = config
+        constructor(config) {   
+            this.config = this.__config(config)
             
             this.XAssert = new clsXCSV_assert(this)  // OK
 
@@ -23,20 +21,19 @@ class clsXCSV {
 
 
             // Apply
-            this.__config()
             this.XFormat.Read(XCSV_DATA_ITEMS['table'].trimPlus()) 
             this.Activate()
             // this.XData = this.XItems[0]        // internal reference to active XItems set
         }
 
-        __config() {
-            let keys = [
-                "Ego Div ID",           // the DOM element id where the content fo this class are printed
-                'infoblocks',           // list of div ids where feedback information from this class shall be dieplayed. Max 3 divs. The first in the list has highest prio.
-                                        // Each info has a importance level and will overwrite the innerHTML of that div when it reaches the prio level.
-            ]
-            for (let k of keys) {
-                if (this.config[k] === undefined) this.config[k] = null}
+        __config(config) {
+            let ret = byVal(XCSV_CONFIG)
+            for (let key in config) {
+                if (key in ret) {
+                    ret[key] = config[key]
+                }
+            }
+            return ret
         }
 
         ItemsNamesList() {
@@ -189,8 +186,13 @@ const XCSV_DATA_ITEMS = {
 }
 
 const XCSV_CONFIG = {
+    'EgoID': null,
+    'SidebarID': null,
+    'InfoIDs': [null,null,null],
+
     'default value': '..',
-    'min-width': '800pt'
+    'min-width': '100%',
+    'SidebarVisible': true
 }
 
 const XCSV_DATA_DEFAULT_VALUE = '..'
@@ -244,7 +246,7 @@ class clsXCSV_assert {
     }
 
     name() {
-        assert(typOf(this.parent.config["Ego Div ID"]) == "str")
+        assert(typOf(this.parent.config["EgoID"]) == "str")
     }
 
     AddRow(atPosition, newRow) {
@@ -591,15 +593,24 @@ class clsFormatHTML {
 
     
     Print() {
-        document.getElementById(this.parent.config["Ego Div ID"]).innerHTML = this.PrintPreview()
+        document.getElementById(this.parent.config["EgoID"]).innerHTML = this.PrintContent()
+        document.getElementById(this.parent.config["SidebarID"]).innerHTML = this.PrintSidebar()
         this.parent.XSelection.unset()    
     }
     
-    PrintPreview(prefix = '') {
+    PrintContent(prefix = '') {
         let ret = prefix
         for (let i = 0; i < this.parent.XItems.length; i++) {
             ret += this.HeaderBox(i).outerHTML
             ret += this.PrintItems(i)
+        }
+        return ret
+    }
+
+    PrintSidebar() {
+        let ret = ''
+        for (let i = 0; i < this.parent.XItems.length; i++) {
+            ret += this.SidebarItem(i).outerHTML
         }
         return ret
     }
@@ -626,6 +637,14 @@ class clsFormatHTML {
         ret.className = "NameBox"
         ret.style = "min-width:" + XCSV_CONFIG['min-width']+';'
 
+        return ret
+    }
+
+    SidebarItem(idx) {
+        let ret = document.createElement('DIV')
+        ret.id = "id-" + String(idx)
+        ret.innerHTML = this.parent.XItems[idx].name
+        ret.className = ""
         return ret
     }
 
@@ -680,18 +699,6 @@ class clsFormatHTML {
         table.mySetRowsID(this.parent.XNames.IDs.rows(ItemsIndex))
         table.mySetCellsID(this.parent.XNames.IDs.cells(ItemsIndex))
         return pre + table.outerHTML
-
-        // return pre + 
-        //     HTMLTable_FromConfig({
-        //     tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
-        //     tableClass: "table xcsv",
-        //     tableStyle: "margin-bottom:0px;min-width:" + XCSV_CONFIG['min-width']+';',
-        //     thsText: this.parent.XItems[ItemsIndex].headers,
-        //     thsID: this.parent.XNames.IDs.headers(ItemsIndex),
-        //     rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
-        //     cellsText: this._MarkupToX(ItemsIndex),
-        //     cellsID: this.parent.XNames.IDs.cells(ItemsIndex),
-        // })
     }
 
 }
@@ -701,14 +708,11 @@ class clsXCSV_Infohandler {
     }
 
     Level1(msg) {
-        let infoblocks = this.parent.config['infoblocks']
-        if (typOf(infoblocks) == 'list')
-            if (infoblocks.length > 0) 
-                document.getElementById(infoblocks[0]).innerHTML = msg 
+        document.getElementById(this.parent.config['InfoIDs'][0]).innerHTML = msg 
     }
 
     Level2(msg) {
-        let infoblocks = this.parent.config['infoblocks']
+        let infoblocks = this.parent.config['InfoIDs']
         if (typOf(infoblocks) == 'list') {
             if (infoblocks.length > 1) {
                 document.getElementById(infoblocks[1]).innerHTML = msg
@@ -721,7 +725,7 @@ class clsXCSV_Infohandler {
     }
 
     Level3(msg) {
-        let infoblocks = this.parent.config['infoblocks']
+        let infoblocks = this.parent.config['InfoIDs']
         if (typOf(infoblocks) == 'list') {
             if (infoblocks.length > 2) {
                 document.getElementById(infoblocks[2]).innerHTML = msg
@@ -858,7 +862,6 @@ class clsXCSV_Names_ID {
 
     _egoprefix(ItemsIndex) {
         assert(!IsUndefined([ItemsIndex]))
-        // return '[' + this.parent.config["Ego Div ID"] + '] '
         return '[' + this.parent.XItems[ItemsIndex].name + '] '
     }
 
