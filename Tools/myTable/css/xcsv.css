@@ -1,6 +1,6 @@
 /* Base table styling */
 .xcsv {
-    min-width: 600pt;
+    /* min-width: 600pt; */
 }
 
 .NameBox {
@@ -22,6 +22,7 @@ table.table {
     table-layout: auto;
     /* display: block; */
     overflow-y: scroll;
+    overflow-wrap: break-word;
 }
 
 /* Table header styling */
@@ -79,10 +80,16 @@ table.table {
 
   .table th {
     font-weight: bold;
-    background-color: lightgray !important;
+    background-color: lightgray 
+  }
+
+  /* Sticky Table */
+  
+/* position: sticky does not work (properly) on <thead> or <tr>. Sticky defers to relevtive and relative does not appy to thead and tr */
+  .table th {
     position: sticky;
-    top: 0px;  
-    z-index: 2;
+    top: 60px;  
+
   }
 
     /* 
@@ -142,4 +149,35 @@ table.table {
 /* For screens with height greater than 1000px */
 @media (min-height: 1000px) {
     table.table {max-height: 900px;}
+}
+
+
+  /* 
+  ###########################################################################
+  # Areas                                                           #
+  ########################################################################### 
+  */
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #ccc;
+  text-align: center;
+}
+
+.left, .right {
+  flex: 0 0 15%;
+}
+
+.middle {
+  flex: 0 0 83%;
+  padding-left: 5pt;
+  /* overflow-x: scroll; */
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
 }

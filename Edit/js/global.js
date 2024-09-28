@@ -20,6 +20,10 @@ function Edit_Save(divID, value) {
     return value_modified
 }
 
+function Edit_Save_Post() {
+    //things that shall happen after Edit finished its job
+}
+
 function Edit_Close(divID) {
     // This function is called whenever a div textarea is closed by libEdit
     return 

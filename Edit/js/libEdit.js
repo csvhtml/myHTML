@@ -41,7 +41,8 @@ class libEdit {
         // document.getElementById(divID).innerHTML = this._value_to_html(value)
         document.getElementById(divID).innerHTML = Edit_Save(divID, value)
         this._Delete_this_innerHTMLs_item(divID)
-        this._SetModeRead(document.getElementById(divID))}
+        this._SetModeRead(document.getElementById(divID))
+        Edit_Save_Post()}
 
     CloseAll()  {
         for (let divIDD of Object.keys(this.innerHTMLs)) {

@@ -74,6 +74,10 @@
     margin-top: 40pt !important;
 }
 
+.mt-50 {
+    margin-top: 50pt !important;
+}
+
 .p-3 {
     padding: 1rem !important;
     box-sizing: border-box; 

@@ -86,6 +86,10 @@ function Edit_Save(divID, value) {
     return value_modified
 }
 
+function Edit_Save_Post() {
+    XCSV["main"].XHTML.Print()
+}
+
 function Edit_Close(divID) {
     _Edit_MinHeight_Undo(divID)
     return 
@@ -108,3 +112,19 @@ function _Edit_MinHeight_Undo(divID) {
         
 }
 
+
+// ####################################################################################
+// Column visble                                                                      #
+// ####################################################################################
+
+function TogglePageSide(columnElementName) {
+    let divelement = document.getElementById(columnElementName)
+    let currentFlex = divelement.style.flex;
+    // Mini Fix: Actually, the css property needs o be changed. the code here hcanges the element style property. so you need one inital extra click
+    if (currentFlex === '0 0 15%') {
+        divelement.style.flex = '0 0 2%';
+    } else {
+        divelement.style.flex = '0 0 15%';
+    }
+  }
+  

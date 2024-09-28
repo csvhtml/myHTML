@@ -18,6 +18,8 @@ const DROPDOWN_CONFIG = {
         {"Data": "XCSV['main'].XHTML.Print()"},     //
         {"Links": "XCSV['main'].XHTML.Print('Link')"}, 
     ],
+    "id-button-sidebar": 'TogglePageSide("id-container-left")' ,
+    "id-button-config": 'TogglePageSide("id-container-right")' ,
 }
 
 // UpDownloadConfig
