@@ -5,18 +5,13 @@
 class clsXCSV {
         constructor(config) {   
             this.config = this.__config(config)
-            
-            this.XAssert = new clsXCSV_assert(this)  // OK
-
-            this.XFormat = new clsFormatFile(this)  // OK
-            this.XItems = [
-                // new clsData()
-            ]
-            this.XHTML = new clsFormatHTML(this)  // OK
-
-            this.XNames = new clsXCSV_Names(this)  // OK
-            this.XClick = new clsXCSV_Clickhandler(this)  // OK
-            this.XSelection = new clsXCSV_Selectionhandler(this)  // OK
+            this.XAssert = new clsXCSV_assert(this)
+            this.XFormat = new clsFormatFile(this)
+            this.XItems = []
+            this.XHTML = new clsFormatHTML(this)
+            this.XNames = new clsXCSV_Names(this) 
+            this.XClick = new clsXCSV_Clickhandler(this)
+            this.XSelection = new clsXCSV_Selectionhandler(this)
             this.XInfo = new clsXCSV_Infohandler(this)
 
 

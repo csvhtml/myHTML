@@ -56,15 +56,15 @@ function test_clsXSCV_Config(myTest) {
     myTest.Equal(ted.Config('test'), -1, fname)
     myTest.Equal(ted.Config({'some key': 'test'}), -1, fname)
     // Intended Use Case 1: get cofig
-    myTest.Equal(ted.Config('infoblocks'), null, fname)
+    myTest.Equal(ted.Config('InfoIDs'), [null, null, null], fname)
 
     myTest.Equal(ted.Config({'some key': 'test'}), -1, fname)
 
     // no config shall be allowed to be equal to -1. -1 indicates there no key or some other issue
-    myTest.Equal(ted.Config({'infoblocks': -1}), -1, fname)
-    myTest.Equal(ted.Config('infoblocks'), null, fname)     /// the line above din not impact the config of infoblocks
+    myTest.Equal(ted.Config({'InfoIDs': -1}), -1, fname)
+    myTest.Equal(ted.Config('InfoIDs'), [null, null, null], fname)     /// -> the line above does not impact the config of infoblocks
     
     // Intended Use Case 2: set config
-    ted.Config({'infoblocks': ["div-id"]})
-    myTest.Equal(ted.Config('infoblocks'), ["div-id"], fname) 
+    ted.Config({'InfoIDs': ["div-id"]})
+    myTest.Equal(ted.Config('InfoIDs'), ["div-id"], fname) 
 }

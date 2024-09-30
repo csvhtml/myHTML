@@ -5,18 +5,13 @@
 class clsXCSV {
         constructor(config) {   
             this.config = this.__config(config)
-            
-            this.XAssert = new clsXCSV_assert(this)  // OK
-
-            this.XFormat = new clsFormatFile(this)  // OK
-            this.XItems = [
-                // new clsData()
-            ]
-            this.XHTML = new clsFormatHTML(this)  // OK
-
-            this.XNames = new clsXCSV_Names(this)  // OK
-            this.XClick = new clsXCSV_Clickhandler(this)  // OK
-            this.XSelection = new clsXCSV_Selectionhandler(this)  // OK
+            this.XAssert = new clsXCSV_assert(this)
+            this.XFormat = new clsFormatFile(this)
+            this.XItems = []
+            this.XHTML = new clsFormatHTML(this)
+            this.XNames = new clsXCSV_Names(this) 
+            this.XClick = new clsXCSV_Clickhandler(this)
+            this.XSelection = new clsXCSV_Selectionhandler(this)
             this.XInfo = new clsXCSV_Infohandler(this)
 
 
@@ -205,33 +200,7 @@ const XCSV_DATA_DEFAULT_VALUE = '..'
 class clsXCSV_assert {
     constructor(parent) {
         this.parent = parent
-        this.name()
     }
-
-    Generic() {
-        // assert(this.parent.XData === this.parent.XItems[this.parent.ActiveIndex()])
-    }
-
-    // Type(type) {
-    //     for (let X of this.parent.XItems) {
-    //         assert(this._TypeX(X, type))}
-    // }
-
-    // _TypeX(XData, type) {
-    //     // verify via headers
-    //     if (XData.headers.length == 1) {
-    //         if (XData.headers[0].startWith('[text]')) assert(type == 'text') 
-    //         if (!XData.headers[0].startWith('[text]')) assert(type == 'gallery') }
-    //     if (XData.headers.length > 1) assert(type == 'table') 
-        
-    //     // verify via data (independent)
-    //     if (XData.data.length == 1) {
-    //         if (XData.data[0].length == 1) assert(type == 'text') 
-    //         if (XData.data[0].length > 1) assert(type == 'table') }       // special case of a table with only one row
-    //     if (XData.data.length > 1) {
-    //         if (XData.data[0].length == 1) assert(type == 'gallery') 
-    //         if (XData.data[0].length > 1) assert(type == 'table')   }     
-    // }
     
     HeaderIs1D (headers) {
         assert(IsNotUndefined(headers), "Undefined headers")
@@ -245,10 +214,6 @@ class clsXCSV_assert {
         assert(ListDepth(data) == 2)
     }
 
-    name() {
-        assert(typOf(this.parent.config["EgoID"]) == "str")
-    }
-
     AddRow(atPosition, newRow) {
         assert(-2 < atPosition  && atPosition < this.parent.XData.data.length+1)
         assert(newRow.length == this.parent.XData.headers.length || newRow.length == 0, "values length not equal to data length")}
@@ -258,14 +223,6 @@ class clsXCSV_assert {
         assert(typOf(colName) == "str")
         assert(newCol.length == this.parent.XData.data.length || newCol.length == 0)}
 
-    // config() {
-    //     assert(this.parent.config.key(0) == "WorkingItems")
-    //     assert(this.parent.config.key(1) == "ConfigItems")
-    //     assert(this.parent.config.key(2) == null)
-    //     assert(this.parent.config["ConfigItems"].key(0) == "Link")
-    // }
-    
-    
 }
 class clsXCSV_Clickhandler {
     constructor(parent) {
@@ -594,7 +551,8 @@ class clsFormatHTML {
     
     Print() {
         document.getElementById(this.parent.config["EgoID"]).innerHTML = this.PrintContent()
-        document.getElementById(this.parent.config["SidebarID"]).innerHTML = this.PrintSidebar()
+        if (this.parent.config["SidebarID"] != null) {
+            document.getElementById(this.parent.config["SidebarID"]).innerHTML = this.PrintSidebar()}
         this.parent.XSelection.unset()    
     }
     
@@ -632,7 +590,7 @@ class clsFormatHTML {
 
     HeaderBox(idx) {
         let ret = document.createElement('DIV')
-        ret.id = this.parent.XNames.IDs.namebox(idx)
+        ret.id = this.parent.XNames.IDs._namebox(idx)
         ret.innerHTML = this.parent.XItems[idx].name
         ret.className = "NameBox"
         ret.style = "min-width:" + XCSV_CONFIG['min-width']+';'
@@ -708,31 +666,20 @@ class clsXCSV_Infohandler {
     }
 
     Level1(msg) {
-        document.getElementById(this.parent.config['InfoIDs'][0]).innerHTML = msg 
+        if (this.parent.config['InfoIDs'][0] != null) {
+            document.getElementById(this.parent.config['InfoIDs'][0]).innerHTML = msg}
+        
     }
 
     Level2(msg) {
-        let infoblocks = this.parent.config['InfoIDs']
-        if (typOf(infoblocks) == 'list') {
-            if (infoblocks.length > 1) {
-                document.getElementById(infoblocks[1]).innerHTML = msg
-                return }
-            if (infoblocks.length == 1) {
-                document.getElementById(infoblocks[0]).innerHTML = msg 
-                return }
-        }
-
+        if (this.parent.config['InfoIDs'][1] != null) {
+            document.getElementById(this.parent.config['InfoIDs'][1]).innerHTML = msg}
     }
 
     Level3(msg) {
-        let infoblocks = this.parent.config['InfoIDs']
-        if (typOf(infoblocks) == 'list') {
-            if (infoblocks.length > 2) {
-                document.getElementById(infoblocks[2]).innerHTML = msg
-                return }
-        }
+        if (this.parent.config['InfoIDs'][2] != null) {
+            document.getElementById(this.parent.config['InfoIDs'][2]).innerHTML = msg}
     }
-
 }
 // ################################################################
 // Layout Naming Functions and Config                             #
@@ -743,33 +690,23 @@ class clsXCSV_Names {
     constructor(parent) {
         this.parent = parent
         this.IDs = new clsXCSV_Names_ID(parent)
-        // this.ConfigIDs = {
-        //     "Link": new clsXCSV_Names_ID(parent, this.parent.XConfigItems["Link"])
-        // }
-
     }
 
     IsHeader (divID) {
         if (this.IDs.IsHeader(divID)) {
             return true}
-        // if (this.ConfigIDs["Link"].IsHeader(divID)) {
-        //     return true}
         return false
     }
 
     IsRow (divID) {
         if (this.IDs.IsRow(divID)) {
             return true}
-        // if (this.ConfigIDs["Link"].IsRow(divID)) {
-        //     return true}
         return false
     }
 
     IsCell (divID) {
         if (this.IDs.IsCell(divID)) {
             return true}
-        // if (this.ConfigIDs["Link"].IsCell(divID)) {
-        //     return true}
         return false
     }
 
@@ -830,9 +767,7 @@ class clsXCSV_Names_ID {
         return ret
     }
 
-    namebox (ItemsIndex) {
-        return this._egoprefix(ItemsIndex) + 'Namebox'
-    }
+
 
     RowfromCellID (divID) {
         if (this.IsRow(divID)) {
@@ -841,6 +776,10 @@ class clsXCSV_Names_ID {
         let r = RetStringBetween(divID, X["r"], X["c"])
         let ItemsIndex = this.ItemsIndex(divID)
         return this._row(r, ItemsIndex)}
+
+// ################################################################
+// Single Names                                                   #
+// ################################################################
 
     _header(header, ItemsIndex) {
         let idxHeader = this.parent.XItems[ItemsIndex].headers.indexOf(header)
@@ -860,10 +799,22 @@ class clsXCSV_Names_ID {
         return this._egoprefix(ItemsIndex) + X["prefix"] + r + X["postfix"]
     }
 
+    _namebox(ItemsIndex) {
+        return this._egoprefix(ItemsIndex) + 'Namebox'
+    }
+
+
+
     _egoprefix(ItemsIndex) {
         assert(!IsUndefined([ItemsIndex]))
         return '[' + this.parent.XItems[ItemsIndex].name + '] '
     }
+
+
+// ################################################################
+// Is                                                             #
+// ################################################################
+
 
     IsItems(divID) {
         let name = RetStringBetween(divID, "[", "]")
@@ -892,12 +843,17 @@ class clsXCSV_Names_ID {
         return false
     }
 
-    IsNameBox(ID) {
+    IsNamebox(ID) {
         for (i = 0; i< this.parent.XItems.length; i++) {
-            if (ID == this.namebox(i))  return true}
+            if (ID == this._namebox(i))  return true}
         
             return false
     }
+
+
+// ################################################################
+// Return Index                                                   #
+// ################################################################
 
     RC_fromID(divID, FirstIndexisOne = false) {
         if (!this.IsCell(divID)) {assert(false)}
@@ -994,6 +950,14 @@ class clsXCSV_Selectionhandler {
         return wenn(X.IsHeader(id), X.C_fromHeaderID(id), -1)
     }
 
+    ScrollToitem(targetID) {
+        // let ItemIndex = this.parent.XNames.IDs.ItemsIndex(ItemName)
+        // let idNamebox = this.parent.XNames.IDs.namebox(ItemIndex)
+        let namebox = document.getElementById(targetID);
+        namebox.scrollIntoView();   // now the namebox is on top, i. e. hidden behidn the navbar. 
 
+        let html = document.documentElement;
+        html.scrollTop -= 70;
+    }
 
 }

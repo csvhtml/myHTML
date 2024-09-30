@@ -6,7 +6,8 @@ class clsFormatHTML {
     
     Print() {
         document.getElementById(this.parent.config["EgoID"]).innerHTML = this.PrintContent()
-        document.getElementById(this.parent.config["SidebarID"]).innerHTML = this.PrintSidebar()
+        if (this.parent.config["SidebarID"] != null) {
+            document.getElementById(this.parent.config["SidebarID"]).innerHTML = this.PrintSidebar()}
         this.parent.XSelection.unset()    
     }
     
@@ -44,7 +45,7 @@ class clsFormatHTML {
 
     HeaderBox(idx) {
         let ret = document.createElement('DIV')
-        ret.id = this.parent.XNames.IDs.namebox(idx)
+        ret.id = this.parent.XNames.IDs._namebox(idx)
         ret.innerHTML = this.parent.XItems[idx].name
         ret.className = "NameBox"
         ret.style = "min-width:" + XCSV_CONFIG['min-width']+';'

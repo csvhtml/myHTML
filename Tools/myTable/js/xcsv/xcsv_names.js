@@ -7,33 +7,23 @@ class clsXCSV_Names {
     constructor(parent) {
         this.parent = parent
         this.IDs = new clsXCSV_Names_ID(parent)
-        // this.ConfigIDs = {
-        //     "Link": new clsXCSV_Names_ID(parent, this.parent.XConfigItems["Link"])
-        // }
-
     }
 
     IsHeader (divID) {
         if (this.IDs.IsHeader(divID)) {
             return true}
-        // if (this.ConfigIDs["Link"].IsHeader(divID)) {
-        //     return true}
         return false
     }
 
     IsRow (divID) {
         if (this.IDs.IsRow(divID)) {
             return true}
-        // if (this.ConfigIDs["Link"].IsRow(divID)) {
-        //     return true}
         return false
     }
 
     IsCell (divID) {
         if (this.IDs.IsCell(divID)) {
             return true}
-        // if (this.ConfigIDs["Link"].IsCell(divID)) {
-        //     return true}
         return false
     }
 
@@ -94,9 +84,7 @@ class clsXCSV_Names_ID {
         return ret
     }
 
-    namebox (ItemsIndex) {
-        return this._egoprefix(ItemsIndex) + 'Namebox'
-    }
+
 
     RowfromCellID (divID) {
         if (this.IsRow(divID)) {
@@ -105,6 +93,10 @@ class clsXCSV_Names_ID {
         let r = RetStringBetween(divID, X["r"], X["c"])
         let ItemsIndex = this.ItemsIndex(divID)
         return this._row(r, ItemsIndex)}
+
+// ################################################################
+// Single Names                                                   #
+// ################################################################
 
     _header(header, ItemsIndex) {
         let idxHeader = this.parent.XItems[ItemsIndex].headers.indexOf(header)
@@ -124,10 +116,22 @@ class clsXCSV_Names_ID {
         return this._egoprefix(ItemsIndex) + X["prefix"] + r + X["postfix"]
     }
 
+    _namebox(ItemsIndex) {
+        return this._egoprefix(ItemsIndex) + 'Namebox'
+    }
+
+
+
     _egoprefix(ItemsIndex) {
         assert(!IsUndefined([ItemsIndex]))
         return '[' + this.parent.XItems[ItemsIndex].name + '] '
     }
+
+
+// ################################################################
+// Is                                                             #
+// ################################################################
+
 
     IsItems(divID) {
         let name = RetStringBetween(divID, "[", "]")
@@ -156,12 +160,17 @@ class clsXCSV_Names_ID {
         return false
     }
 
-    IsNameBox(ID) {
+    IsNamebox(ID) {
         for (i = 0; i< this.parent.XItems.length; i++) {
-            if (ID == this.namebox(i))  return true}
+            if (ID == this._namebox(i))  return true}
         
             return false
     }
+
+
+// ################################################################
+// Return Index                                                   #
+// ################################################################
 
     RC_fromID(divID, FirstIndexisOne = false) {
         if (!this.IsCell(divID)) {assert(false)}

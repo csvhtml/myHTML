@@ -5,7 +5,7 @@
 function DownloadHTML() {
     // DownloadFile(XCSV["main"].XHTML.AsCSV())
     // DownloadFile(XCSV["main"].XHTML.DataAsHTML(CSS_HTMLEXPORT))
-    DownloadFile(XCSV["main"].XHTML.PrintPreview(CSS_HTMLEXPORT))
+    DownloadFile(XCSV["main"].XHTML.PrintContent(CSS_HTMLEXPORT))
 }
 
 

@@ -4,29 +4,18 @@ class clsXCSV_Infohandler {
     }
 
     Level1(msg) {
-        document.getElementById(this.parent.config['InfoIDs'][0]).innerHTML = msg 
+        if (this.parent.config['InfoIDs'][0] != null) {
+            document.getElementById(this.parent.config['InfoIDs'][0]).innerHTML = msg}
+        
     }
 
     Level2(msg) {
-        let infoblocks = this.parent.config['InfoIDs']
-        if (typOf(infoblocks) == 'list') {
-            if (infoblocks.length > 1) {
-                document.getElementById(infoblocks[1]).innerHTML = msg
-                return }
-            if (infoblocks.length == 1) {
-                document.getElementById(infoblocks[0]).innerHTML = msg 
-                return }
-        }
-
+        if (this.parent.config['InfoIDs'][1] != null) {
+            document.getElementById(this.parent.config['InfoIDs'][1]).innerHTML = msg}
     }
 
     Level3(msg) {
-        let infoblocks = this.parent.config['InfoIDs']
-        if (typOf(infoblocks) == 'list') {
-            if (infoblocks.length > 2) {
-                document.getElementById(infoblocks[2]).innerHTML = msg
-                return }
-        }
+        if (this.parent.config['InfoIDs'][2] != null) {
+            document.getElementById(this.parent.config['InfoIDs'][2]).innerHTML = msg}
     }
-
 }

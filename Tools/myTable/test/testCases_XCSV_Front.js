@@ -1,13 +1,15 @@
 function test_clsXSCV_Front_Default_Var2(myTest) {
-    let fname = arguments.callee.name;let id = "id-front 1"
-    let ted = new clsXCSV(id)
+    let id = "id-front 1"
+    let fname = arguments.callee.name;
+    let ted = new clsXCSV({EgoID:id})
     document.getElementById(id).innerHTML += '<b> ' + fname + '</b>'
     ted.Activate()   
 }
 
 function test_clsXSCV_Front_Table(myTest) {
-    let fname = arguments.callee.name; let id = "id-front 2"
-    let ted = new clsXCSV(id)
+    let id = "id-front 2"
+    let fname = arguments.callee.name; 
+    let ted = new clsXCSV({EgoID:id})
     
     ted.Add(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test-table')
     document.getElementById(id).innerHTML += '<b> ' + fname + '</b>'
@@ -18,8 +20,9 @@ function test_clsXSCV_Front_Table(myTest) {
 }
 
 function test_clsXSCV_Front_Gallery(myTest) {
-    let fname = arguments.callee.name;let id = "id-front 3"
-    let ted = new clsXCSV(id)
+    let id = "id-front 3"
+    let fname = arguments.callee.name;
+    let ted = new clsXCSV({EgoID:id})
 
     let picList = ["pic1.png", "pic2.png", "pic3.png", "pic1.png", "pic2.png", "pic3.png"]
     picList.convert2()

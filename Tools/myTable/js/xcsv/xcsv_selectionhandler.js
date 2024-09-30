@@ -62,6 +62,14 @@ class clsXCSV_Selectionhandler {
         return wenn(X.IsHeader(id), X.C_fromHeaderID(id), -1)
     }
 
+    ScrollToitem(targetID) {
+        // let ItemIndex = this.parent.XNames.IDs.ItemsIndex(ItemName)
+        // let idNamebox = this.parent.XNames.IDs.namebox(ItemIndex)
+        let namebox = document.getElementById(targetID);
+        namebox.scrollIntoView();   // now the namebox is on top, i. e. hidden behidn the navbar. 
 
+        let html = document.documentElement;
+        html.scrollTop -= 70;
+    }
 
 }
