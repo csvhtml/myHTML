@@ -11,17 +11,21 @@ class clsXCSV_Clickhandler {
         let ItemsName = this.parent.XNames.IDs.ItemsName(divID)
         this.parent.Activate(ItemsName); this.parent.XInfo.Level2(ItemsName)
 
-        if (this.parent.XNames.IsHeader(divID)){
+        if (this.parent.XNames.IDs.IsNameBox(divID)) {
+            this._Namebox(divID)
+            return}
+
+        if (this.parent.XNames.IDs.IsSidebarItem(divID)) {
+            this._SidebarItem(divID)
+            return}
+
+        if (this.parent.XNames.IDs.IsHeader(divID)){
             this._HeaderCell(divID)
             return}
 
-        if (this.parent.XNames.IsCell(divID)){
+        if (this.parent.XNames.IDs.IsCell(divID)){
             this._Cell(divID)
             return}
-
-        if (this.parent.XNames.IsNameBox(divID)) {
-            this._Namebox(divID)
-        }
     }
 
     _HeaderCell(divID) {
@@ -53,6 +57,15 @@ class clsXCSV_Clickhandler {
         else {
             this.parent.XSelection.unset(divID)
             this.parent.XSelection.set(divID)}  
+    }
+
+    _SidebarItem(divID) {
+        let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
+        let targetnameboxID = this.parent.XNames.IDs._namebox(ItemsIndex)
+        this.parent.XSelection.ScrollToitem(targetnameboxID)
+
+        this.parent.XSelection.unset(targetnameboxID)
+        this.parent.XSelection.set(targetnameboxID)
     }
 
     _AlreadyInFocus(divID) {

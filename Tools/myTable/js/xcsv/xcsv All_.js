@@ -237,17 +237,21 @@ class clsXCSV_Clickhandler {
         let ItemsName = this.parent.XNames.IDs.ItemsName(divID)
         this.parent.Activate(ItemsName); this.parent.XInfo.Level2(ItemsName)
 
-        if (this.parent.XNames.IsHeader(divID)){
+        if (this.parent.XNames.IDs.IsNameBox(divID)) {
+            this._Namebox(divID)
+            return}
+
+        if (this.parent.XNames.IDs.IsSidebarItem(divID)) {
+            this._SidebarItem(divID)
+            return}
+
+        if (this.parent.XNames.IDs.IsHeader(divID)){
             this._HeaderCell(divID)
             return}
 
-        if (this.parent.XNames.IsCell(divID)){
+        if (this.parent.XNames.IDs.IsCell(divID)){
             this._Cell(divID)
             return}
-
-        if (this.parent.XNames.IsNameBox(divID)) {
-            this._Namebox(divID)
-        }
     }
 
     _HeaderCell(divID) {
@@ -279,6 +283,15 @@ class clsXCSV_Clickhandler {
         else {
             this.parent.XSelection.unset(divID)
             this.parent.XSelection.set(divID)}  
+    }
+
+    _SidebarItem(divID) {
+        let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
+        let targetnameboxID = this.parent.XNames.IDs._namebox(ItemsIndex)
+        this.parent.XSelection.ScrollToitem(targetnameboxID)
+
+        this.parent.XSelection.unset(targetnameboxID)
+        this.parent.XSelection.set(targetnameboxID)
     }
 
     _AlreadyInFocus(divID) {
@@ -600,7 +613,7 @@ class clsFormatHTML {
 
     SidebarItem(idx) {
         let ret = document.createElement('DIV')
-        ret.id = "id-" + String(idx)
+        ret.id = this.parent.XNames.IDs._sidebarItem(idx)
         ret.innerHTML = this.parent.XItems[idx].name
         ret.className = ""
         return ret
@@ -803,6 +816,9 @@ class clsXCSV_Names_ID {
         return this._egoprefix(ItemsIndex) + 'Namebox'
     }
 
+    _sidebarItem(ItemsIndex) {
+        return this._egoprefix(ItemsIndex) + 'SidebarItem'
+    }
 
 
     _egoprefix(ItemsIndex) {
@@ -814,7 +830,6 @@ class clsXCSV_Names_ID {
 // ################################################################
 // Is                                                             #
 // ################################################################
-
 
     IsItems(divID) {
         let name = RetStringBetween(divID, "[", "]")
@@ -843,11 +858,18 @@ class clsXCSV_Names_ID {
         return false
     }
 
-    IsNamebox(ID) {
+    IsNameBox(ID) {
         for (i = 0; i< this.parent.XItems.length; i++) {
             if (ID == this._namebox(i))  return true}
         
             return false
+    }
+
+    IsSidebarItem(ID) {
+        for (i = 0; i< this.parent.XItems.length; i++) {
+            if (ID == this._sidebarItem(i))  return true}
+        
+            return false 
     }
 
 
@@ -895,9 +917,16 @@ class clsXCSV_Selectionhandler {
 
     // set elemenets inside
     set(divID) {
+        // set content
         this.SelectedID = divID
         document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")
+
+        // set sidebar
+        let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
+        let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
+        document.getElementById(targetSidebarItemID).classList.add("xcsv-focus","bg-lblue")
         
+        // messages
         let X = this.parent.XNames.IDs; let msg = ''
         if (X.IsRow(divID)) {
             msg = "Selected Row: " + String(this.parent.XNames.IDs.R_fromRowID(this.SelectedID, true))
@@ -913,15 +942,21 @@ class clsXCSV_Selectionhandler {
             let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
             msg = "Selected Namebox: " + this.parent.XItems[ItemsIndex].headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]
             this.parent.XInfo.Level3(msg); return}
-            
-        
     }
 
     unset() {
         if (this.SelectedID != "") {
             if (document.getElementById(this.SelectedID)) {
+                // in case edit is active
                 EDIT.Init_Undo()
+
+                //content
                 document.getElementById(this.SelectedID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
+
+                // sidebar
+                let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(this.SelectedID)
+                let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
+                document.getElementById(targetSidebarItemID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
             }
         }
         this.SelectedID = ""
@@ -951,8 +986,6 @@ class clsXCSV_Selectionhandler {
     }
 
     ScrollToitem(targetID) {
-        // let ItemIndex = this.parent.XNames.IDs.ItemsIndex(ItemName)
-        // let idNamebox = this.parent.XNames.IDs.namebox(ItemIndex)
         let namebox = document.getElementById(targetID);
         namebox.scrollIntoView();   // now the namebox is on top, i. e. hidden behidn the navbar. 
 

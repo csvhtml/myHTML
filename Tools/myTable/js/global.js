@@ -131,7 +131,7 @@ function ToggleSidebar(divID) {
         XCSV["main"].config["SidebarVisible"] = false
     } else {
         sidebar.style.display = "Block"
-        button.style.left = '170pt'
+        button.style.left = '155pt'
         button.innerHTML = 'X'
         content.style.marginLeft = '200pt'
         content.style.minWidth = '900pt'

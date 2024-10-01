@@ -55,7 +55,7 @@ class clsFormatHTML {
 
     SidebarItem(idx) {
         let ret = document.createElement('DIV')
-        ret.id = "id-" + String(idx)
+        ret.id = this.parent.XNames.IDs._sidebarItem(idx)
         ret.innerHTML = this.parent.XItems[idx].name
         ret.className = ""
         return ret

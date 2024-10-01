@@ -7,9 +7,16 @@ class clsXCSV_Selectionhandler {
 
     // set elemenets inside
     set(divID) {
+        // set content
         this.SelectedID = divID
         document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")
+
+        // set sidebar
+        let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
+        let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
+        document.getElementById(targetSidebarItemID).classList.add("xcsv-focus","bg-lblue")
         
+        // messages
         let X = this.parent.XNames.IDs; let msg = ''
         if (X.IsRow(divID)) {
             msg = "Selected Row: " + String(this.parent.XNames.IDs.R_fromRowID(this.SelectedID, true))
@@ -25,15 +32,21 @@ class clsXCSV_Selectionhandler {
             let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
             msg = "Selected Namebox: " + this.parent.XItems[ItemsIndex].headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]
             this.parent.XInfo.Level3(msg); return}
-            
-        
     }
 
     unset() {
         if (this.SelectedID != "") {
             if (document.getElementById(this.SelectedID)) {
+                // in case edit is active
                 EDIT.Init_Undo()
+
+                //content
                 document.getElementById(this.SelectedID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
+
+                // sidebar
+                let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(this.SelectedID)
+                let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
+                document.getElementById(targetSidebarItemID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
             }
         }
         this.SelectedID = ""
@@ -63,8 +76,6 @@ class clsXCSV_Selectionhandler {
     }
 
     ScrollToitem(targetID) {
-        // let ItemIndex = this.parent.XNames.IDs.ItemsIndex(ItemName)
-        // let idNamebox = this.parent.XNames.IDs.namebox(ItemIndex)
         let namebox = document.getElementById(targetID);
         namebox.scrollIntoView();   // now the namebox is on top, i. e. hidden behidn the navbar. 
 

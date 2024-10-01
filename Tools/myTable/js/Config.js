@@ -37,5 +37,8 @@ const LIB_USERINPUT = {
         "Click" : 'Click()'
         // "Hover": "outHover(); outHoverID()",
         // "HoverLeave": "outLeave()",
+    },
+    "id-sidebar": {
+        "Click" : 'Click()'
     }
 }

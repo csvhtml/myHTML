@@ -120,6 +120,9 @@ class clsXCSV_Names_ID {
         return this._egoprefix(ItemsIndex) + 'Namebox'
     }
 
+    _sidebarItem(ItemsIndex) {
+        return this._egoprefix(ItemsIndex) + 'SidebarItem'
+    }
 
 
     _egoprefix(ItemsIndex) {
@@ -131,7 +134,6 @@ class clsXCSV_Names_ID {
 // ################################################################
 // Is                                                             #
 // ################################################################
-
 
     IsItems(divID) {
         let name = RetStringBetween(divID, "[", "]")
@@ -160,11 +162,18 @@ class clsXCSV_Names_ID {
         return false
     }
 
-    IsNamebox(ID) {
+    IsNameBox(ID) {
         for (i = 0; i< this.parent.XItems.length; i++) {
             if (ID == this._namebox(i))  return true}
         
             return false
+    }
+
+    IsSidebarItem(ID) {
+        for (i = 0; i< this.parent.XItems.length; i++) {
+            if (ID == this._sidebarItem(i))  return true}
+        
+            return false 
     }
 
 

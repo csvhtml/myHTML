@@ -190,15 +190,17 @@ table.table {
 .sidebar {
   position: fixed !important;
   width:190pt;
-  height:100%;
+  height: 75%;
   overflow: auto;
+  overflow-y: scroll;
+  overflow-x: hidden;
   background-color: #fafafa;
 }
 
 .sidebar-button {
   position: fixed;
   top: 50pt;
-  left: 170pt
+  left: 155pt
 }
 
 .content {

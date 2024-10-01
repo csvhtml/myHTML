@@ -5,7 +5,7 @@
 const DD = new libDropDowns();
 
 // User Input 
-const UIN = new clsUserInput(["id-main"]);
+const UIN = new clsUserInput(["id-main", "id-sidebar"]);
 
 // const CSVG = new clsSVG();  // MOHI: fix. the clsSVG class automatically creates svg icons. If referenced multipel time, itmes are multiple times created. libEdit also defines a SVG
 
