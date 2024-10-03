@@ -71,6 +71,22 @@ class clsData {
         this.data.insertColum(targetCol)
     }
 
+    DelRow(index) {
+        if (IsUndefined([index])) index = this.parent.XSelection.Row()
+        if (index == -1) index = this.data.length - 1
+        this.data.splice(index, 1)
+    }
+
+    DelCol(index) {
+        if (IsUndefined([index])) index = this.parent.XSelection.Col()
+        if (index == -1) index = this.headers.length - 1
+        // MOHI
+        this.headers.splice(index,1)
+        for (let i = 0; i< this.data.length; i++) {
+            this.data[i].splice(index, 1)
+        }
+    }
+
     ChangeColName(colName, newColname) {
         assert (!IsUndefined([colName, newColname])) 
 

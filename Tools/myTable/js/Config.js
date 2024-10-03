@@ -12,6 +12,8 @@ const DROPDOWN_CONFIG = {
     "nav-Edit": [
         {"Add Row": "XCSV['main'].AddRow()"},
         {"Add Col": "XCSV['main'].AddCol()"},   
+        {"Delete Row": "XCSV['main'].DelRow()"}, 
+        {"Delete Col": "XCSV['main'].DelCol()"},     
         {"Save As HTML": "DownloadHTML()"}  
     ],
      "nav-List": [

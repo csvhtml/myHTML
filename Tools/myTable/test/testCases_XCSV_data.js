@@ -25,46 +25,97 @@ function test_clsXSCV_AddCol(myTest) {
     myTest.Equal(ted.XData.data[2][4], "gut", fname) 
 }
 
-function test_clsXSCV_ChangeColName(myTest) {
+function test_clsXSCV_DelRow(myTest) {
     let fname = arguments.callee.name;
     let ted = new clsXCSV("div-id")
 
-    // ted.XData.AddCol()  // not allowed
-    ted.XData.AddCol("newCol 1")
-    ted.XData.AddCol("newCol 2", ["Das", "ist", "gut"])
+    let headers = byVal(ted.XData.headers)
+    let row0 = byVal(ted.XData.data[0])
+    let row1 = byVal(ted.XData.data[1])
+    let len = ted.XData.data.length
 
-    ted.XData.ChangeColName("newCol 2", "changed Col")
+    ted.XData.DelRow()
 
-    myTest.Equal(ted.XData.headers, ["A", "B", "C", "newCol 1", "changed Col"], fname) 
+    myTest.Equal(ted.XData.data.length, len-1, fname)
+    myTest.Equal(ted.XData.headers, headers, fname)
+    myTest.Equal(ted.XData.data[0], row0, fname)
+    myTest.Equal(ted.XData.data[1], row1, fname) 
 }
 
-function test_clsXSCV_Clear(myTest) {
+function test_clsXSCV_DelRow_0(myTest) {
     let fname = arguments.callee.name;
     let ted = new clsXCSV("div-id")
 
-    myTest.Equal(ted.XData.data[0], ["1","2","3"], fname)
-    ted.XData.Clear()
-    myTest.Equal(ted.XData.data[0], ["", "", ""], fname)
+    let headers = byVal(ted.XData.headers)
+    let row1 = byVal(ted.XData.data[1])
+    let row2 = byVal(ted.XData.data[2])
+    let len = ted.XData.data.length
+
+    ted.XData.DelRow(0)
+
+    myTest.Equal(ted.XData.data.length, len-1, fname)
+    myTest.Equal(ted.XData.headers, headers, fname)
+    myTest.Equal(ted.XData.data[0], row1, fname)
+    myTest.Equal(ted.XData.data[1], row2, fname) 
 }
 
-function test_clsXSCV_Config(myTest) {
+function test_clsXSCV_DelRow_1(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("id-front 2")
+    let ted = new clsXCSV("div-id")
 
+    let headers = byVal(ted.XData.headers)
+    let row0 = byVal(ted.XData.data[0])
+    let row2 = byVal(ted.XData.data[2])
+    let len = ted.XData.data.length
 
-    myTest.Equal(ted.Config(), -1, fname)
-    myTest.Equal(ted.Config('test'), -1, fname)
-    myTest.Equal(ted.Config({'some key': 'test'}), -1, fname)
-    // Intended Use Case 1: get cofig
-    myTest.Equal(ted.Config('InfoIDs'), [null, null, null], fname)
+    ted.XData.DelRow(1)
 
-    myTest.Equal(ted.Config({'some key': 'test'}), -1, fname)
+    myTest.Equal(ted.XData.data.length, len-1, fname)
+    myTest.Equal(ted.XData.headers, headers, fname)
+    myTest.Equal(ted.XData.data[0], row0, fname)
+    myTest.Equal(ted.XData.data[1], row2, fname) 
+}
 
-    // no config shall be allowed to be equal to -1. -1 indicates there no key or some other issue
-    myTest.Equal(ted.Config({'InfoIDs': -1}), -1, fname)
-    myTest.Equal(ted.Config('InfoIDs'), [null, null, null], fname)     /// -> the line above does not impact the config of infoblocks
+function test_clsXSCV_Del_Col(myTest) {
+    let fname = arguments.callee.name;
+    let ted = new clsXCSV("div-id")
+
+    let DelIndex = ted.XData.headers.length-1   // in case of undefined parameter
+
+    let headers = byVal(ted.XData.headers); headers.splice(DelIndex,1)
+    let row0 = byVal(ted.XData.data[0]); row0.splice(DelIndex,1)
+    let row1 = byVal(ted.XData.data[1]); row1.splice(DelIndex,1)
+    let row2 = byVal(ted.XData.data[2]); row2.splice(DelIndex,1)
+    let len = ted.XData.data.length
+
+    ted.XData.DelCol()
+
+    myTest.Equal(ted.XData.data.length, len, fname)
+    myTest.Equal(ted.XData.headers, headers, fname)
+    myTest.Equal(ted.XData.data[0], row0, fname)
+    myTest.Equal(ted.XData.data[1], row1, fname)
+    myTest.Equal(ted.XData.data[2], row2, fname) 
+}
+
+function test_clsXSCV_Del_Col_X(myTest) {
+    let fname = arguments.callee.name;
+    let ted = new clsXCSV("div-id")
+
+    let DelIndex = [0,1,2]
+
+    for (let idx of DelIndex) {
+        let headers = byVal(ted.XData.headers); headers.splice(idx,1)
+        let row0 = byVal(ted.XData.data[0]); row0.splice(idx,1)
+        let row1 = byVal(ted.XData.data[1]); row1.splice(idx,1)
+        let row2 = byVal(ted.XData.data[2]); row2.splice(idx,1)
+        let len = ted.XData.data.length
     
-    // Intended Use Case 2: set config
-    ted.Config({'InfoIDs': ["div-id"]})
-    myTest.Equal(ted.Config('InfoIDs'), ["div-id"], fname) 
+        ted.XData.DelCol(idx)
+    
+        myTest.Equal(ted.XData.data.length, len, fname)
+        myTest.Equal(ted.XData.headers, headers, fname)
+        myTest.Equal(ted.XData.data[0], row0, fname)
+        myTest.Equal(ted.XData.data[1], row1, fname)
+        myTest.Equal(ted.XData.data[2], row2, fname) 
+    }
 }

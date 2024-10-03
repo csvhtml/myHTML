@@ -132,6 +132,16 @@ class clsXCSV {
             this.XData.AddCol(lastHeaderName + '-copy')
             this.XHTML.Print()
         }
+
+        DelRow() {
+            this.XData.DelRow()
+            this.XHTML.Print()
+        }
+
+        DelCol() {
+            this.XData.DelCol()
+            this.XHTML.Print()
+        }
     }
 
 // ################################################################
@@ -369,6 +379,22 @@ class clsData {
         let targetCol = wenn(IsEqual(newCol, []), this._DefaultCol(), newCol)
         this.headers.push(colName)
         this.data.insertColum(targetCol)
+    }
+
+    DelRow(index) {
+        if (IsUndefined([index])) index = this.parent.XSelection.Row()
+        if (index == -1) index = this.data.length - 1
+        this.data.splice(index, 1)
+    }
+
+    DelCol(index) {
+        if (IsUndefined([index])) index = this.parent.XSelection.Col()
+        if (index == -1) index = this.headers.length - 1
+        // MOHI
+        this.headers.splice(index,1)
+        for (let i = 0; i< this.data.length; i++) {
+            this.data[i].splice(index, 1)
+        }
     }
 
     ChangeColName(colName, newColname) {
@@ -903,9 +929,7 @@ class clsXCSV_Names_ID {
         if (!this.IsHeader(divID)) return -1
 
         let X = CLSXCSV_NAMES["id"]["header"]
-        let ItemsIndex = this.ItemsIndex(divID)
-        let headerName = RetStringBetween(divID, X["prefix"], X["postfix"])
-        return Number(this.parent.XItems[ItemsIndex].headers.indexOf(headerName))  
+        return Number(RetStringBetween(divID, X["prefix"], X["postfix"]))
     }
 }
 class clsXCSV_Selectionhandler {

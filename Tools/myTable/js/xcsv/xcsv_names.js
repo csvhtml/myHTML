@@ -207,8 +207,6 @@ class clsXCSV_Names_ID {
         if (!this.IsHeader(divID)) return -1
 
         let X = CLSXCSV_NAMES["id"]["header"]
-        let ItemsIndex = this.ItemsIndex(divID)
-        let headerName = RetStringBetween(divID, X["prefix"], X["postfix"])
-        return Number(this.parent.XItems[ItemsIndex].headers.indexOf(headerName))  
+        return Number(RetStringBetween(divID, X["prefix"], X["postfix"]))
     }
 }

@@ -132,6 +132,16 @@ class clsXCSV {
             this.XData.AddCol(lastHeaderName + '-copy')
             this.XHTML.Print()
         }
+
+        DelRow() {
+            this.XData.DelRow()
+            this.XHTML.Print()
+        }
+
+        DelCol() {
+            this.XData.DelCol()
+            this.XHTML.Print()
+        }
     }
 
 // ################################################################
