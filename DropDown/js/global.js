@@ -25,7 +25,7 @@ function DropDown_ToggleEventClick(divID, pair) {
         if (document.getElementById(divID).outerHTML.includes(lookup)) {
             document.getElementById(divID).outerHTML = 
                 document.getElementById(divID).outerHTML.replace(lookup, repl)
-            eval(item)
+            eval(item)      // eval will not work on functions in other global files
             break
         }
     }
@@ -55,3 +55,4 @@ function _DropDown_ZIndex(undo = false) {
         }
     }
 }
+

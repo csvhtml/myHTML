@@ -4,21 +4,23 @@
 
 const DROPDOWN_CONFIG = {
     "nav-Start": [
-        {"Add Table": "XCSV['main'].Add()"},
-        {"Add Gallery": "XCSV['main'].Add_Gallery()"},   
-        {"Add Text": "XCSV['main'].Add_Text()"},
-        {"Remove": "XCSV['main'].Remove()"} 
+        {"Add Table": "XCSV['mainX'].Add()"},
+        {"Add Gallery": "XCSV['mainX'].Add_Gallery()"},   
+        {"Add Text": "XCSV['mainX'].Add_Text()"},
+        {"Remove": "XCSV['mainX'].Remove()"} 
     ],
     "nav-Edit": [
-        {"Add Row": "XCSV['main'].AddRow()"},
-        {"Add Col": "XCSV['main'].AddCol()"},   
-        {"Delete Row": "XCSV['main'].DelRow()"}, 
-        {"Delete Col": "XCSV['main'].DelCol()"},     
+        {"Add Row": "XCSV['mainX'].AddRow()"},
+        {"Add Col": "XCSV['mainX'].AddCol()"},   
+        {"Delete Row": "XCSV['mainX'].DelRow()"}, 
+        {"Delete Col": "XCSV['mainX'].DelCol()"},     
         {"Save As HTML": "DownloadHTML()"}  
     ],
      "nav-List": [
-        {"Data": "XCSV['main'].XHTML.Print()"},     //
-        {"Links": "XCSV['main'].XHTML.Print('Link')"}, 
+        {"Data": "XCSV['mainX'].XHTML.Print()"},     //
+        {"Links": "XCSV['mainX'].XHTML.Print('Link')"}, 
+        {"Numbering": "XCSV['mainX'].Config({'Items Numbering': true})"},
+        {"No Numbering": "XCSV['mainX'].Config({'Items Numbering': false})"}
     ],
     "id-button-sidebar": 'ToggleSidebar("id-sidebar")' ,
 }

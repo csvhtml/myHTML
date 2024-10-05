@@ -177,7 +177,7 @@ Object.defineProperties(String.prototype, {
 
             let idx = this.indexOf(n)
             if (idx == -1) { 
-                return this}
+                return this.substring(0)}
             return this.substring(0,idx)
         }
     } 
@@ -186,11 +186,11 @@ Object.defineProperties(String.prototype, {
 Object.defineProperties(String.prototype, {
     after: {
         value: function(n) {
-            if (n == '') {return this} 
+            if (n == '') {return this.substring(0)} 
 
             let idx = this.indexOf(n)
             if (idx == -1) { 
-                return this}
+                return this.substring(0)}
             return this.substring(idx + n.length)
         }
     } 

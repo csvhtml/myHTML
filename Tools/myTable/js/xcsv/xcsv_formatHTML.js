@@ -5,6 +5,7 @@ class clsFormatHTML {
 
     
     Print() {
+        this.parent.OrderItems()
         document.getElementById(this.parent.config["EgoID"]).innerHTML = this.PrintContent()
         if (this.parent.config["SidebarID"] != null) {
             document.getElementById(this.parent.config["SidebarID"]).innerHTML = this.PrintSidebar()}

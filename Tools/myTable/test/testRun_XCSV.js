@@ -18,6 +18,9 @@ function test_XCSV(divID, myTest) {
 	test_clsXSCV_Front_Gallery(myTest)
 	test_clsXSCV_AsCSV_HeaderLine(myTest)
 	test_clsXSCV_AsCSV_HeaderLine(myTest)
+	test_clsXSCV_Sort(myTest)
+	test_clsXSCV_Sort2(myTest)
+	test_clsXSCV_SubTest(myTest)
 
 	myTest.PrintResult(divID)
 }

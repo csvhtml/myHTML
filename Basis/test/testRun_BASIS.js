@@ -10,6 +10,7 @@ function test_BASIS(divID, myTest) {
 	test_wenn(myTest)
 	test_IsListEqualSize(myTest)
 	test_IsEqual(myTest)
+	test_sortByLeadingNumber(myTest)
 	test_ElementInArrayN(myTest)
 	test_RetStringBetween(myTest)
 	test_FileNameFromPath(myTest)

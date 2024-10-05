@@ -6,12 +6,14 @@ const BASIS = {
 	ValidChars: function(validChars, text) {return ValidChars(validChars, text)},
 	typOf: function(variable, extendedInfo = false) {return typOf(variable, extendedInfo)},
 	ListDepth: function(ListVariable) {return ListDepth(ListVariable)},
+	NtoX: function(n, x) {return NtoX(n, x)},
 	maxx: function(a, b) {return maxx(a, b)},
 	minn: function(a, b) {return minn(a, b)},
 	wenn: function(condition, trueValue, falseValue) {return wenn(condition, trueValue, falseValue)},
 	IsEqual: function(a,b, max_iterations = 100) {return IsEqual(a,b, max_iterations)},
 	IsListEqualSize: function(a,b, flag = false) {return IsListEqualSize(a,b, flag)},
 	ElementInArrayN: function(array, element) {return ElementInArrayN(array, element)},
+	sortByLeadingNumber: function(textList) {return sortByLeadingNumber(textList)},
 	toggle: function(val, pair) {return toggle(val, pair)},
 	DIV: function(divID) {return DIV(divID)},
 	Append_TextArea: function(div, cfg = {}) {return Append_TextArea(div, cfg)},
@@ -141,6 +143,13 @@ function ListDepth(ListVariable) {
     return maxDepth + 1
 }
 
+function NtoX(n, x) {
+    let ret = [];
+    for (let i = n; i <= x; i++) {
+        ret.push(i);}
+    return ret;
+  }
+
 function maxx(a, b) {
     return (a > b) ? a : b;
 }
@@ -245,6 +254,20 @@ function ElementInArrayN(array, element) {
     return false; 
 }
 
+function sortByLeadingNumber(textList) {
+    for (element of textList) {
+        if (!ValidChars("0123456789", element.until(' '))) return textList}
+
+    const compare = (a, b) => {
+      // Extrahiere die Zahl aus jedem Text
+      const numberA = Number(a.split(' ')[0]);
+      const numberB = Number(b.split(' ')[0]);
+      return numberA - numberB;
+    };
+  
+    // Sortiere das Array mit der Vergleichsfunktion
+    return textList.slice().sort(compare);
+  }
 // ################################################################
 // rest                                                           #
 // ################################################################
@@ -1297,7 +1320,7 @@ Object.defineProperties(String.prototype, {
 
             let idx = this.indexOf(n)
             if (idx == -1) { 
-                return this}
+                return this.substring(0)}
             return this.substring(0,idx)
         }
     } 
@@ -1306,11 +1329,11 @@ Object.defineProperties(String.prototype, {
 Object.defineProperties(String.prototype, {
     after: {
         value: function(n) {
-            if (n == '') {return this} 
+            if (n == '') {return this.substring(0)} 
 
             let idx = this.indexOf(n)
             if (idx == -1) { 
-                return this}
+                return this.substring(0)}
             return this.substring(idx + n.length)
         }
     } 

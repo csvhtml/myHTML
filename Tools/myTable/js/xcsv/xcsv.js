@@ -92,10 +92,14 @@ class clsXCSV {
         }
 
         Add_Text() {
+            this.xAdd_Text()
+            this.XHTML.Print()
+        }
+
+        xAdd_Text() {
             let nhd = this.XFormat._NameHeadersData(XCSV_DATA_ITEMS['text'])
             if (nhd[0])
             this.xAdd(nhd[0][1],nhd[0][2], nhd[0][0])
-            this.XHTML.Print()
         }
 
         Add_Gallery() {
@@ -142,7 +146,54 @@ class clsXCSV {
             this.XData.DelCol()
             this.XHTML.Print()
         }
+
+        OrderItems() {
+            if (!this.Config('Items Numbering')) return 
+
+            let NamesList = this.ItemsNamesList()
+            
+
+            // 1a) numbered in one basket, unnumberd in the otehr 
+            let retNumberd = []; let retNot = []
+            for (let i = 0; i< this.XItems.length; i++) {
+                if (this.OrderItems_IsNumbered(this.XItems[i].name)) {
+                    retNumberd.push(this.XItems[i])
+                } else {
+                    retNot.push(this.XItems[i])
+                }
+            }
+
+            // 1a a ) sort within numbered
+            // let sorted = sortByLeadingNumber()
+            
+
+            // 1b) Merge Back 
+            this.XItems = [] 
+            for (let i = 0; i< retNumberd.length; i++) {
+                this.XItems.push(retNumberd[i])}
+            for (let i = 0; i< retNot.length; i++) {
+                this.XItems.push(retNot[i])}
+
+        }
+
+
+        OrderItems_IsNumbered(name) {
+            let NameUntilBlank = name.until(' ')
+            return ValidChars('0123456789', NameUntilBlank)
+        }
+    
     }
+// ####################################################################################
+// XCSV config                                                                        #
+// ####################################################################################
+
+// function XSCV_ItemsNumberingOn() {
+//     XCSV["mainX"].Config({'Items Numbering': true})
+// }
+
+// function XCSV_ItemsNumberingOff() {
+//     XCSV["mainX"].Config({'Items Numbering': false})
+// }
 
 // ################################################################
 // XCSV - inner config                                            #
@@ -197,7 +248,8 @@ const XCSV_CONFIG = {
 
     'default value': '..',
     'min-width': '100%',
-    'SidebarVisible': true
+    'SidebarVisible': true,
+    'Items Numbering': false,
 }
 
 const XCSV_DATA_DEFAULT_VALUE = '..'

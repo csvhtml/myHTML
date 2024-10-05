@@ -154,6 +154,13 @@ function test_IsEqual(myTest) {
     }
 }
 
+function test_sortByLeadingNumber(myTest) {
+    let liste = ["4 Mario", "11 Peach", "7 Luigi", "9 Bowser", "2 Koopa", "5 Wario"]
+    let expected = ["2 Koopa", "4 Mario", "5 Wario", "7 Luigi", "9 Bowser", "11 Peach"]
+
+    myTest.Equal(sortByLeadingNumber(liste), expected, arguments.callee.name)
+}
+
 function test_ElementInArrayN(myTest) {
     let listen = [["Mario", "Peach", "Luigi"], ["Bowser", "Koopa"], "Wario"]
 
@@ -718,6 +725,7 @@ function proto_stringUntil(myTest) {
     
     myTest.Equal(text.until(' '), expected, arguments.callee.name)
     myTest.Equal(text.until(''), text, arguments.callee.name)
+    myTest.Equal(text.until('X'), text, arguments.callee.name)
 }
 
 function proto_stringAfter(myTest) {

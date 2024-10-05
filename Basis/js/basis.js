@@ -88,6 +88,13 @@ function ListDepth(ListVariable) {
     return maxDepth + 1
 }
 
+function NtoX(n, x) {
+    let ret = [];
+    for (let i = n; i <= x; i++) {
+        ret.push(i);}
+    return ret;
+  }
+
 function maxx(a, b) {
     return (a > b) ? a : b;
 }
@@ -192,6 +199,20 @@ function ElementInArrayN(array, element) {
     return false; 
 }
 
+function sortByLeadingNumber(textList) {
+    for (element of textList) {
+        if (!ValidChars("0123456789", element.until(' '))) return textList}
+
+    const compare = (a, b) => {
+      // Extrahiere die Zahl aus jedem Text
+      const numberA = Number(a.split(' ')[0]);
+      const numberB = Number(b.split(' ')[0]);
+      return numberA - numberB;
+    };
+  
+    // Sortiere das Array mit der Vergleichsfunktion
+    return textList.slice().sort(compare);
+  }
 // ################################################################
 // rest                                                           #
 // ################################################################
