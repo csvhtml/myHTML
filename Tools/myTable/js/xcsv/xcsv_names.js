@@ -50,6 +50,10 @@ class clsXCSV_Names_ID {
 
         return this.parent.XItems.map(item => item.name).indexOf(this.ItemsName(divID))
     }
+    
+    ItemsIndexFromName(ItemsName) {
+        return this.parent.XItems.map(item => item.name).indexOf(ItemsName)
+    }
 
     headers(ItemsIndex) {
         if (IsUndefined([ItemsIndex])) ItemsIndex = this.parent.ActiveIndex()

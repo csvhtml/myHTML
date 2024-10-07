@@ -149,31 +149,32 @@ class clsXCSV {
 
         OrderItems() {
             if (!this.Config('Items Numbering')) return 
-
-            let NamesList = this.ItemsNamesList()
             
-
             // 1a) numbered in one basket, unnumberd in the otehr 
-            let retNumberd = []; let retNot = []
+            let retNumberd_Name = []; let retNot_Name = []
             for (let i = 0; i< this.XItems.length; i++) {
                 if (this.OrderItems_IsNumbered(this.XItems[i].name)) {
-                    retNumberd.push(this.XItems[i])
+                    retNumberd_Name.push(this.XItems[i].name)
                 } else {
-                    retNot.push(this.XItems[i])
+                    retNot_Name.push(this.XItems[i].name)
                 }
             }
 
-            // 1a a ) sort within numbered
-            // let sorted = sortByLeadingNumber()
+            // prepare new index order
+            let sorted_Name = sortByLeadingNumber(retNumberd_Name).concat(retNot_Name)
+            let sortedIndexx = []
             
-
-            // 1b) Merge Back 
-            this.XItems = [] 
-            for (let i = 0; i< retNumberd.length; i++) {
-                this.XItems.push(retNumberd[i])}
-            for (let i = 0; i< retNot.length; i++) {
-                this.XItems.push(retNot[i])}
-
+            for (let ItemsName of sorted_Name) {
+                sortedIndexx.push(this.XNames.IDs.ItemsIndexFromName(ItemsName))}
+            let idx = 0; let XItemsRefCopy = []
+            for (let i = 0; i< this.XItems.length; i++) {
+                XItemsRefCopy.push(this.XItems[i])}
+            
+            // actual sorting
+            for (let sortedIndex of sortedIndexx) {
+                this.XItems[idx] = XItemsRefCopy[sortedIndex]    
+                idx += 1
+            }
         }
 
 
