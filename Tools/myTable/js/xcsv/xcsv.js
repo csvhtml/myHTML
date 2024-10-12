@@ -8,11 +8,13 @@ class clsXCSV {
             this.XAssert = new clsXCSV_assert(this)
             this.XFormat = new clsFormatFile(this)
             this.XItems = []
+            this.XItems_Baseline = []
             this.XHTML = new clsFormatHTML(this)
             this.XNames = new clsXCSV_Names(this) 
             this.XClick = new clsXCSV_Clickhandler(this)
             this.XSelection = new clsXCSV_Selectionhandler(this)
             this.XInfo = new clsXCSV_Infohandler(this)
+            this.XHISTORY = new clsXCSV_ChangeHandler(this)
 
 
             // Apply

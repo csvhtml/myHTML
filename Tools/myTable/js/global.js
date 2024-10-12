@@ -59,7 +59,7 @@ function Gloabl_Edit_Textarea(div) {
     return value_modified
 }
 
-function Edit_Save(divID, value) {
+function Edit_Save(divID, value, valueOld) {
     if (value == "") {value = XCSV_CONFIG['default value']}
     if (XCSV["mainX"].XNames.IDs.IsCell(divID)) {
         let RC = XCSV["mainX"].XNames.IDs.RC_fromID(divID)
@@ -79,9 +79,11 @@ function Edit_Save(divID, value) {
         XCSV["mainX"].XData.name = value    
     }
 
-    let value_modified = value
-    value_modified = MyMarkDowntoHTML(value_modified, ignore1 = ["[("])
+    let value_modified = MyMarkDowntoHTML(value, ignore1 = ["[("])
+    // value_modified = MyMarkDowntoHTML(value_modified, ignore1 = ["[("])
     // value_modified = MyMarkDowntoSVG(value_modified)
+    
+    if (!IsEqual(value, valueOld)) XCSV["mainX"].XHISTORY.MarkAsChanged_FromID(divID)
     
     return value_modified
 }
@@ -140,3 +142,15 @@ function ToggleSidebar(divID) {
   }
 
 
+// ####################################################################################
+// Test Function                                                                      #
+// ####################################################################################
+
+
+function testNewFeature() {
+    console.log("Run new feature")
+
+    XCSV["mainX"].XHISTORY.UnmarkAll()
+    XCSV["mainX"].XHTML.Print()
+
+}

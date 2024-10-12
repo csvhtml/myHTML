@@ -88,8 +88,6 @@ class clsXCSV_Names_ID {
         return ret
     }
 
-
-
     RowfromCellID (divID) {
         if (this.IsRow(divID)) {
             return divID}

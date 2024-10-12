@@ -38,8 +38,8 @@ class libEdit {
 
     Save(divID) {
         let value = document.getElementById("id-textarea-" + divID).value
-        // document.getElementById(divID).innerHTML = this._value_to_html(value)
-        document.getElementById(divID).innerHTML = Edit_Save(divID, value)
+        let valueOld = this.innerHTMLs[divID]
+        document.getElementById(divID).innerHTML = Edit_Save(divID, value, valueOld)
         this._Delete_this_innerHTMLs_item(divID)
         this._SetModeRead(document.getElementById(divID))
         Edit_Save_Post()}

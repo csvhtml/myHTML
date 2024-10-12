@@ -23,6 +23,7 @@ const DROPDOWN_CONFIG = {
         {"No Numbering": "XCSV['mainX'].Config({'Items Numbering': false})"}
     ],
     "id-button-sidebar": 'ToggleSidebar("id-sidebar")' ,
+    "id-button-test":   'testNewFeature()'
 }
 
 // UpDownloadConfig

@@ -20,7 +20,7 @@ class clsFormatFile {
 
         this.parent.XItems = [];
         for (let i = 0; i < textItems.length; i++) {
-            this.ReadOne(i, textItems[i])
+            this.ReadOne(textItems[i])
         }
         this.parent.Activate()
     }
@@ -45,7 +45,7 @@ class clsFormatFile {
         return text.until('\n').trim()
     }
     
-    ReadOne(ItemsIndex, texttriple) {
+    ReadOne(texttriple) {
         this.parent.xAdd(texttriple[1], texttriple[2], texttriple[0])
     }
 

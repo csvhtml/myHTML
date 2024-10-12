@@ -46,6 +46,19 @@ table.table {
     background-color: #f5fcff;
 }
 
+.table .vertical-bar-blue{
+  position: relative;
+}
+
+.table .vertical-bar-blue::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  background-color: rgb(17, 125, 42);
+}
 
 /* tr:hover {
     background-color: #f1f1f1;

@@ -7,9 +7,12 @@ class clsFormatHTML {
     Print() {
         this.parent.OrderItems()
         document.getElementById(this.parent.config["EgoID"]).innerHTML = this.PrintContent()
-        if (this.parent.config["SidebarID"] != null) {
-            document.getElementById(this.parent.config["SidebarID"]).innerHTML = this.PrintSidebar()}
-        this.parent.XSelection.unset()    
+        
+        this.PrintSidebar()
+        
+        this.parent.XSelection.unset() 
+        
+        this.parent.XHISTORY.ShowBars()
     }
     
     PrintContent(prefix = '') {
@@ -22,11 +25,16 @@ class clsFormatHTML {
     }
 
     PrintSidebar() {
+        if (this.parent.config["SidebarID"] == null) return
+
         let ret = ''
         for (let i = 0; i < this.parent.XItems.length; i++) {
             ret += this.SidebarItem(i).outerHTML
         }
-        return ret
+
+        // cant set on elevel higher, since sidebar might not exist
+        document.getElementById(this.parent.config["SidebarID"]).innerHTML =  ret
+        return 
     }
 
     PrintItems(idx) {
