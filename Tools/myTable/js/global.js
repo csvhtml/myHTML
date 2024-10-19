@@ -65,6 +65,8 @@ function Edit_Save(divID, value, valueOld) {
         let RC = XCSV["mainX"].XNames.IDs.RC_fromID(divID)
         XCSV["mainX"].XData.data[RC[0]][RC[1]] = value
         _Edit_MinHeight_Undo(divID)
+
+        if (!IsEqual(value, valueOld)) XCSV["mainX"].XHISTORY.MarkAsChanged_FromID(divID)
     }
 
     if (XCSV["mainX"].XNames.IDs.IsHeader(divID)) {
@@ -83,7 +85,7 @@ function Edit_Save(divID, value, valueOld) {
     // value_modified = MyMarkDowntoHTML(value_modified, ignore1 = ["[("])
     // value_modified = MyMarkDowntoSVG(value_modified)
     
-    if (!IsEqual(value, valueOld)) XCSV["mainX"].XHISTORY.MarkAsChanged_FromID(divID)
+    // if (!IsEqual(value, valueOld)) XCSV["mainX"].XHISTORY.MarkAsChanged_FromID(divID)
     
     return value_modified
 }
