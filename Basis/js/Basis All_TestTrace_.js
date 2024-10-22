@@ -1015,10 +1015,12 @@ const CONFIG_MYMARKDOWN_FEATURES_ACTIVE = {
 const CONFIG_MYMARKDOWN_PATTERN2_ACTIVE = {
     'Checkbox': true,
     'svg': true,
+    'img': true
 }
 
 const CONFIG_MYMARKDOWN_PATTERN3_ACTIVE = {
     'Link': true,
+
 }
 
 // ################################################################
@@ -1064,18 +1066,35 @@ function _MyMarkDown_Patterns2_Apply(text, pats2) {
         for (let pat of pats2) {
             if (pat.includes('[(svg)') || pat.includes('[(SVG)')) {
                 text = _MyMarkDown_ReplaceSVG(text, pat)}}}
+    if (Features['img']) {
+        let endings = ['.png', 'PNG', 'jpg', 'JPG']
+        let size = ''; let w = ''; let h = ''
+        let part1 = ''
+        for (let pat of pats2) {
+            for (let ending of endings) {
+                if (pat.endsWith(ending + ']')) {
+                    part1 = RetStringBetween(pat, "[", "]")
+                    if (part1.includes('(') && part1.includes(')')) {
+                        size = RetStringBetween(part1, "(", ")")
+                        w = size.until('x'); h = size.after('x')
+                        part1 = part1.after(')')}
+                    html = '<img src="' + part1 + '" width="' + w + '" height="'+ h +'">'
+                    text = text.replace(pat, html)    
+                } 
+            }
+        }}
     return text
 }
 
 function _MyMarkDown_Patterns3_Apply(text, pats3) {
     let Features = CONFIG_MYMARKDOWN_PATTERN3_ACTIVE
-    let part1 = ''; let part2 = ''
+    let part1 = ''; let part2 = ''; let html = ''
     if (Features['Link']) {
         for (let pat of pats3) {
             part1 = RetStringBetween(pat, "[", "::")
             part2 = RetStringBetween(pat, "::", "]")
-            href = '<a href="' + part2 + '" target="#">' + part1 + '</a>'
-            text = text.replace(pat, href)
+            html = '<a href="' + part2 + '" target="#">' + part1 + '</a>'
+            text = text.replace(pat, html)
         }}
 
     return text
