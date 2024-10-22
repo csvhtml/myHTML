@@ -18,7 +18,7 @@ class clsXCSV {
 
 
             // Apply
-            this.XFormat.Read(XCSV_DATA_ITEMS['table'].trimPlus()) 
+            this.XFormat.Read(XCSV_DATA_ITEMS['table'].trimPlus([' |'], false)) 
             this.Activate()
             // this.XData = this.XItems[0]        // internal reference to active XItems set
         }
@@ -226,10 +226,10 @@ const CLSXCSV_NAMES = {
 
 const XCSV_DATA_ITEMS = {
     'table': '\
-                ||||Default Data\n\
+                ||||New\n\
                 ||A|B|C\n\
                 ||1|2|3\n\
-                ||5 Leerzeichen|Neue\nZeile|[Link::URL]\n\
+                ||5     Leerzeichen|Neue\nZeile|[(200x100)test/pic2.png]\n\
                 ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
     ',
     'text':     '\

@@ -3,7 +3,7 @@ function test_clsXSCV_Init(myTest) {
     let ted = new clsXCSV("div-id")
 
     myTest.IsTrue(ted.XData === ted.XItems[0], fname)
-    myTest.Equal(ted.XData.name, "Default Data", fname)
+    myTest.Equal(ted.XData.name, "New", fname)
     myTest.Equal(ted.XData.headers,['A', 'B', 'C'], fname)
 }
 
@@ -42,5 +42,5 @@ function test_clsXSCV_ItemNameAvailable(myTest) {
     ted.xAdd(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test-table')
     ted.xAdd(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test-table')
     ted.xAdd(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test-table')
-    myTest.Equal(ted.ItemsNamesList(), ['Default Data', 'test-table', 'test-table-copy', 'test-table-copy-copy'], fname)
+    myTest.Equal(ted.ItemsNamesList(), ['New', 'test-table', 'test-table-copy', 'test-table-copy-copy'], fname)
 }

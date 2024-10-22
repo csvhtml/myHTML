@@ -149,6 +149,17 @@ function _BackToMyMarkDown_Patterns2_Apply(text) {
         text = text.replace(/<input type="checkbox" checked="">/g, '[x]')}
     if (Features['svg']) {
         text = _replace_SVG_BACK_To_MyMarkdon(text)}
+    if (Features['img']) {
+        let imgTags = PatternsInText(text, ['<img', '>'])
+        for (let imgTag of imgTags) {
+            let w = RetStringBetween(imgTag,'width="', '"')
+            let h = RetStringBetween(imgTag,'height="', '"')
+            let src = RetStringBetween(imgTag,'src="', '"')
+            let wh = wenn(w.length + h.length >0, '(' + w + 'x' + h + ')', '')
+            let mark = '[' + wh + src + ']'
+            text = text.replace(imgTag, mark)
+            }
+        }
     return text
 }
 

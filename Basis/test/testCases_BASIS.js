@@ -175,6 +175,7 @@ function test_RetStringBetween(myTest) {
     myTest.Equal(RetStringBetween(text, "R:", "C:"), "1029", fname)
     myTest.Equal(RetStringBetween(text, "R:", ""), "1029C:23H:header", fname)
     myTest.Equal(RetStringBetween(text, "H:", ""), "header", fname)
+    myTest.Equal(RetStringBetween("abccdd", "bc", "c"), "", fname)
 }
 
 function test_FileNameFromPath(myTest) {
@@ -271,7 +272,11 @@ function test_Markup(myTest) {
         ["   ", "&nbsp;&nbsp;&nbsp;"],
         // Checkboxes
         ["[ ]abc[ ]", '<input type="checkbox">abc<input type="checkbox">'],   // [ ] will not work if data is loaded
-        ["[x]abc[x]", '<input type="checkbox" checked="">abc<input type="checkbox" checked="">']
+        ["[x]abc[x]", '<input type="checkbox" checked="">abc<input type="checkbox" checked="">'],
+        // Imgages
+        ["[somepicture.jpg]", '<img src="somepicture.jpg" width="" height="">'],
+        ["[(60x80)somepicture.jpg]", '<img src="somepicture.jpg" width="60" height="80">'],
+
 
         
 ]
@@ -777,8 +782,9 @@ function proto_stringTrimPlus2(myTest) {
         [' X ', 'X'],
         [' HalXlo ', 'HalXlo'],
         [' Hallo XWelt', 'HalloXWelt'],
+        [' Hallo                  XWelt', 'HalloXWelt'],
         [' Hallo Welt X', 'Hallo WeltX'],
-        [' Hallo \nXWelt ', 'Hallo \nXWelt'],
+        [' Hallo        \n   XWelt ', 'Hallo \nXWelt'],
     ]
 
     for (let t of test) {

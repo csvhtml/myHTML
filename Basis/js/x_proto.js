@@ -240,7 +240,7 @@ Object.defineProperties(String.prototype, {
 
 Object.defineProperties(String.prototype, {
     trimPlus: {
-        value: function(plusList) {
+        value: function(plusList, multi = true, std = true) {
             let ret = String(this)
             // Plus: specifically will remove all spaces if seen in specifc pattern 
             if (typOf(plusList) == 'list') {
@@ -253,9 +253,9 @@ Object.defineProperties(String.prototype, {
                 }
             }
             // Plus: generically will remove all multi spaces inside with normal blank space. 
-            ret = ret.replace(/  +/g, ' ');
+            if (multi) ret = ret.replace(/  +/g, ' ');
             // Standard: removes starting and ending spaces
-            ret = ret.trim()               
+            if (std) ret = ret.trim()               
             return ret
         }
 

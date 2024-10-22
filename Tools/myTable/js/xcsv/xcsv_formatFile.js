@@ -99,7 +99,7 @@ class clsFormatFile {
         for (let textPart of textParts) {
             let name = textPart.until('\n').trim()
             let textPart2 = textPart.substring(textPart.indexOf('\n')+1)
-            textPart2 = textPart2.trimPlus([' |'])
+            textPart2 = textPart2.trimPlus([' |'], false)
             let headers_data = this._HeadersData(textPart2)
             triple = [name, headers_data[0], headers_data[1]]
             ret.push(triple)

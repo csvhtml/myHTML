@@ -39,7 +39,7 @@ const BASIS = {
 	IsNotUndefined: function(variable) {return IsNotUndefined(variable)},
 	IsEmptyList: function(variable) {return IsEmptyList(variable)},
 	IsString1: function(variable) {return IsString1(variable)},
-	RetStringBetween: function(text, fromStr, toStr, ignoreBlankAtBorders) {return RetStringBetween(text, fromStr, toStr, ignoreBlankAtBorders)},
+	RetStringBetween: function(text, fromStr, toStr) {return RetStringBetween(text, fromStr, toStr)},
 	RetStringOutside: function(text, fromStr, toStr) {return RetStringOutside(text, fromStr, toStr)},
 	FileNameFromPath: function(path) {return FileNameFromPath(path)},
 	rgbText: function(a,b,c) {return rgbText(a,b,c)},
@@ -790,21 +790,21 @@ class clsSVG {
 // Basis   Text Functions                                                        #
 // ###############################################################################
 
-function RetStringBetween(text, fromStr, toStr, ignoreBlankAtBorders) {
+function RetStringBetween(text, fromStr, toStr) {
     /**
      * Returns the String between two  strings.
      * "" / empty strings are interpreted as open end / take rest of string
      * strings not found in text are interpreted as "" / empty strings
      * 
      */
-    if (text === undefined) return false;
-    if (fromStr === undefined) return false;
+    if (IsUndefined([text, fromStr])) assert(false)
     if (toStr === undefined) toStr = ''
-    if (ignoreBlankAtBorders === undefined) ignoreBlankAtBorders = false
+    
+    if (toStr == '') return text.after(fromStr)
 
-    var [idx1, idx2, len1, len2] = _RetIdxFromTextInString(text, fromStr, toStr, ignoreBlankAtBorders)
+    var [idx1, idx2, len1, len2] = _RetIdxFromTextInString(text, fromStr, toStr)
 
-    if (idx2 > idx1) {
+    if (idx2 > idx1+len1-1) {
         return text.substring(idx1+len1, idx2);}
     else {
         return text.substring(idx1+len1)}
@@ -831,7 +831,7 @@ function RetStringOutside(text, fromStr, toStr) {
         return text.substring(0, idx1)}
 }
 
-function _RetIdxFromTextInString(text, strA, strB, ignoreBlankAtBorders){
+function _RetIdxFromTextInString(text, strA, strB){
     /**
      * Returns the indexes and length of the search string given
      * if a string was not found, returns (idx=0 and len=0) => identical behaviour as if search string was str = ""
@@ -842,12 +842,12 @@ function _RetIdxFromTextInString(text, strA, strB, ignoreBlankAtBorders){
     if (idx1 == -1) {strA=""; tmp1 = -1}   // if u dont find the string, act if it was an empty string
     idx1 = text.indexOf(strA);
     
-    if (ignoreBlankAtBorders && text.indexOf(" " + strB)>-1) {
-        strB = " " + strB
-    }
-    var idx2 = text.indexOf(strB, fromIndex = idx1);
+    // if (ignoreBlankAtBorders && text.indexOf(" " + strB)>-1) {
+    //     strB = " " + strB
+    // }
+    var idx2 = text.indexOf(strB, fromIndex = idx1 + strA.length);
     if (idx2 == -1) {strB=""; tmp2 = -1} // if u dont find the string, act if it was an empty string
-    idx2 = text.indexOf(strB, fromIndex = idx1);
+    idx2 = text.indexOf(strB, fromIndex = idx1 + strA.length);
     l1 = strA.length
     l2 = strB.length
     return [idx1, idx2, l1, l2]
@@ -1100,6 +1100,17 @@ function _BackToMyMarkDown_Patterns2_Apply(text) {
         text = text.replace(/<input type="checkbox" checked="">/g, '[x]')}
     if (Features['svg']) {
         text = _replace_SVG_BACK_To_MyMarkdon(text)}
+    if (Features['img']) {
+        let imgTags = PatternsInText(text, ['<img', '>'])
+        for (let imgTag of imgTags) {
+            let w = RetStringBetween(imgTag,'width="', '"')
+            let h = RetStringBetween(imgTag,'height="', '"')
+            let src = RetStringBetween(imgTag,'src="', '"')
+            let wh = wenn(w.length + h.length >0, '(' + w + 'x' + h + ')', '')
+            let mark = '[' + wh + src + ']'
+            text = text.replace(imgTag, mark)
+            }
+        }
     return text
 }
 
@@ -1402,7 +1413,7 @@ Object.defineProperties(String.prototype, {
 
 Object.defineProperties(String.prototype, {
     trimPlus: {
-        value: function(plusList) {
+        value: function(plusList, multi = true, std = true) {
             let ret = String(this)
             // Plus: specifically will remove all spaces if seen in specifc pattern 
             if (typOf(plusList) == 'list') {
@@ -1415,9 +1426,9 @@ Object.defineProperties(String.prototype, {
                 }
             }
             // Plus: generically will remove all multi spaces inside with normal blank space. 
-            ret = ret.replace(/  +/g, ' ');
+            if (multi) ret = ret.replace(/  +/g, ' ');
             // Standard: removes starting and ending spaces
-            ret = ret.trim()               
+            if (std) ret = ret.trim()               
             return ret
         }
 
