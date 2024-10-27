@@ -10,7 +10,7 @@ const UIN = new clsUserInput(["id-main", "id-sidebar"]);
 // const CSVG = new clsSVG();  // MOHI: fix. the clsSVG class automatically creates svg icons. If referenced multipel time, itmes are multiple times created. libEdit also defines a SVG
 
 
-const EDIT = new libEdit('EDIT');
+const EDIT = new libEdit('EDIT', true);
 
 const XCSV = {
     // "main": new clsXCSV("id-main", XCSV_DATA)

@@ -1028,7 +1028,7 @@ function _MyMarkDown_Patterns2_Apply(text, pats2) {
             for (let ending of endings) {
                 if (pat.endsWith(ending + ']')) {
                     part1 = RetStringBetween(pat, "[", "]")
-                    if (part1.includes('[(') && part1.includes(')')) {
+                    if (part1.startsWith('(') && part1.includes(')')) {
                         size = RetStringBetween(part1, "[(", ")")
                         w = size.until('x'); h = size.after('x')
                         part1 = part1.after(')')}

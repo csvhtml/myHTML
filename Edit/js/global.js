@@ -28,3 +28,15 @@ function Edit_Close(divID) {
     // This function is called whenever a div textarea is closed by libEdit
     return 
 }
+
+
+// if focusHandler:
+function Edit_Focus(divID) {
+    // This function is called whenever a div textarea is focused (only if focusHandler == true)
+    return 
+}
+
+// function Edit_Blur(divID) {
+//     // This function is called whenever a div textarea lost focus (only if focusHandler == true)
+//     return 
+// }

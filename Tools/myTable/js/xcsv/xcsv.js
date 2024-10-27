@@ -228,7 +228,7 @@ const XCSV_DATA_ITEMS = {
     'table': '\
                 ||||New\n\
                 ||A|B|C\n\
-                ||1|2|3\n\
+                ||Bug: When being in a textfield and then going to another in another items (e. g. to copy past), then the other item is active. When i now want to save the ego textfield. >error|2|3\n\
                 ||5     Leerzeichen|Neue\nZeile|[(200x100)test/pic2.png]\n\
                 ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
     ',

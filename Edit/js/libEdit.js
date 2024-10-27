@@ -1,8 +1,9 @@
 const CSVG = new clsSVG();CSVG.CreateAll_BasedOnDivClasses(['div', 'a'])
 
 class libEdit {
-    constructor(name) {
+    constructor(name, focusHandling = false) {
         this.name = name
+        this.focusHandling = focusHandling
         this.innerHTMLs = {}  // in case of Close, then the original state is restored
         this.lasttime = new Date().getTime()
         this.Init()
@@ -86,6 +87,10 @@ class libEdit {
         textarea.style.width = this._textareaSize(div, size) [0]
         textarea.style.height = this._textareaSize(div, size) [1]
         div.innerHTML = ""
+        if (this.focusHandling) {
+            // textarea.addEventListener('focus', Edit_Focus(this));   // if this not work, try: div.setAttribute('onclick', this.name + '.Edit(this)')
+            textarea.setAttribute('onfocus', 'Edit_Focus(this)');
+        }
         div.append(textarea);
         textarea.focus();
         textarea.select();}
