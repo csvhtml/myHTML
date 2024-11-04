@@ -129,12 +129,14 @@ class clsXCSV {
         }
         
         AddRow() {
+            this.XHISTORY.Shift(1,0)
             this.XData.AddRow()
             this.XHTML.Print()
         }
 
         AddCol() {
             let lastHeaderName = this.XData.headers[this.XData.headers.length-1]
+            this.XHISTORY.Shift(0,1)
             this.XData.AddCol(lastHeaderName + '-copy')
             this.XHTML.Print()
         }
@@ -228,7 +230,7 @@ const XCSV_DATA_ITEMS = {
     'table': '\
                 ||||New\n\
                 ||A|B|C\n\
-                ||1|2|3\n\
+                ||Bug: When being in a textfield and then going to another in another items (e. g. to copy past), then the other item is active. When i now want to save the ego textfield. >error|2|3\n\
                 ||5     Leerzeichen|Neue\nZeile|[(200x100)test/pic2.png]\n\
                 ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
     ',
@@ -318,6 +320,24 @@ class clsXCSV_ChangeHandler {
                 'ColIndex': ColIndex,
                 
             }
+        }
+
+        //Shifting indexpointers in 'this.Changes' (left right, top, down), e. g. due to addd or delete col
+        Shift(rows, cols, fromSelection = true) {
+            if (typOf(rows) != 'int' && typOf(cols) != 'int') return 
+            // if nothing is selected, then no shift
+            if (fromSelection && this.parent.XSelection.Row() == -1 && this.parent.XSelection.Col() == -1) return
+            if (fromSelection && this.parent.XSelection.Row() == -1 && rows != 0) return
+            if (fromSelection && this.parent.XSelection.Col() == -1 && cols != 0) return
+            
+
+            let fromRow = -1; let fromCol = -1
+            if (fromSelection) fromRow = this.parent.XSelection.Row() - 1
+            if (fromSelection) fromCol = this.parent.XSelection.Col() - 1
+            for (let i = 0; i<this.Changes.length; i++) {
+                if (this.Changes[i]['RowIndex'] > fromRow) this.Changes[i]['RowIndex'] += rows
+                if (this.Changes[i]['ColIndex'] > fromCol) this.Changes[i]['ColIndex'] += cols
+                }
         }
 
         ShowBars() {
@@ -466,6 +486,7 @@ class clsData {
             this._UpdateNumberCol()
     }
 
+    // MOHI: Currently Cols are only puhsed not inserted at certain position
     AddCol(colName, newCol = []) {
         let atPosition = this.parent.XSelection.Col()      
         this.parent.XAssert.AddCol(atPosition, colName, newCol)

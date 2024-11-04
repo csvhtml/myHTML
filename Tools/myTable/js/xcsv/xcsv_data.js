@@ -62,6 +62,7 @@ class clsData {
             this._UpdateNumberCol()
     }
 
+    // MOHI: Currently Cols are only puhsed not inserted at certain position
     AddCol(colName, newCol = []) {
         let atPosition = this.parent.XSelection.Col()      
         this.parent.XAssert.AddCol(atPosition, colName, newCol)

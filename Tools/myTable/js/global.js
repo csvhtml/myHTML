@@ -101,7 +101,6 @@ function Edit_Close(divID) {
 
 function Edit_Focus(div) {
     let ItemsName = RetStringBetween(div.id, 'id-textarea-[', '] ')
-    // let ItemsName = XCSV["mainX"].XNames.IDs.ItemsName(divID)
     XCSV["mainX"].Activate(ItemsName)
     return 
 }

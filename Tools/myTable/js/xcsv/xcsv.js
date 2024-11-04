@@ -129,12 +129,14 @@ class clsXCSV {
         }
         
         AddRow() {
+            this.XHISTORY.Shift(1,0)
             this.XData.AddRow()
             this.XHTML.Print()
         }
 
         AddCol() {
             let lastHeaderName = this.XData.headers[this.XData.headers.length-1]
+            this.XHISTORY.Shift(0,1)
             this.XData.AddCol(lastHeaderName + '-copy')
             this.XHTML.Print()
         }
