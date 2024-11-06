@@ -5,6 +5,8 @@
 class clsXCSV {
         constructor(config) {   
             this.config = this.__config(config)
+            this.title = XCSV_DATA_ITEMS['title']
+
             this.XAssert = new clsXCSV_assert(this)
             this.XFormat = new clsFormatFile(this)
             this.XItems = []
@@ -18,9 +20,8 @@ class clsXCSV {
 
 
             // Apply
-            this.XFormat.Read(XCSV_DATA_ITEMS['table'].trimPlus([' |'], false)) 
+            this.XFormat.Read(XCSV_DATA_ITEMS['table'].trimPlus([' |'])) 
             this.Activate()
-            // this.XData = this.XItems[0]        // internal reference to active XItems set
         }
 
         __config(config) {
@@ -61,11 +62,14 @@ class clsXCSV {
         }
 
         Activate(name) {
+            document.title = this.title
+
             if (IsUndefined([name])) {
                 this.XData = this.XItems[0]; 
                 this.XSelection.ActiveItemsName = this.XItems[0].name
                 return }
-                
+            
+            //else
             assert(this.XItems.map(item => item.name).includes(name))
             
             let ItemsIndex = this.XItems.map(item => item.name).indexOf(name)
@@ -85,6 +89,12 @@ class clsXCSV {
 
             assert(ItemsIndex1 == ItemsIndex2)
             return ItemsIndex1
+        }
+
+        Title(newTitle) {
+            if (newTitle == undefined) return this.title
+            this.title = newTitle
+            this.Activate()
         }
 
         Add(headers, data, name) {  // when headers, data are defined, then also gallery and text are added here
@@ -227,6 +237,8 @@ const CLSXCSV_NAMES = {
 // ################################################################
 
 const XCSV_DATA_ITEMS = {
+    'title': null,
+
     'table': '\
                 ||||New\n\
                 ||A|B|C\n\

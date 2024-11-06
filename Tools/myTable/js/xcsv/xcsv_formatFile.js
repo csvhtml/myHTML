@@ -9,7 +9,7 @@ class clsFormatFile {
         }
     }
 
-    Read(text) {
+    Read(text, title) {
         /**
          * Reads in a text (formatted acc to this.config) and saves its data to the parent
          */
@@ -22,6 +22,9 @@ class clsFormatFile {
         for (let i = 0; i < textItems.length; i++) {
             this.ReadOne(textItems[i])
         }
+        
+        if (title != undefined) this.parent.title = title
+
         this.parent.Activate()
     }
 

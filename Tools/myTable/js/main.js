@@ -15,7 +15,7 @@ const EDIT = new libEdit('EDIT', true);
 const XCSV = {
     // "main": new clsXCSV("id-main", XCSV_DATA)
     "mainX": new clsXCSV({EgoID: "id-main", 
-                        SidebarID: "id-sidebar",
+                        SidebarID: "id-sidebar", 
                         InfoIDs:['id-infoblock-l', 'id-infoblock-m', 'id-infoblock-r']})
 };
 
@@ -27,8 +27,8 @@ const XCSV = {
     for (let key of Object.keys(FILES_UPLOAD_CONFIG) ) {
         cFileReaders[key] = new FileReader()
     }
-    // XCSV["main"].XFormat.Read(myTrim(XCSV_DATA["WorkingItems"]["X"]))
     XCSV["mainX"].Config({})
+    XCSV["mainX"].Title('new CSV')
     XCSV["mainX"].XHTML.Print()
     XCSV["mainX"].XInfo.Level1("New")
 })();

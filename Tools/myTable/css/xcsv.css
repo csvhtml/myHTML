@@ -3,6 +3,25 @@
     /* min-width: 600pt; */
 }
 
+@media print {
+  #navbar {
+    display: none;
+  }
+
+  #id-sidebar {
+    display: none;
+  }
+
+  #id-button-sidebar{
+    display: none;
+  }
+
+  #id-content {
+    margin-left: 30pt;
+    width: 900pt;
+}
+}
+
 .NameBox {
   font-size: 24px;
   font-weight: bold;

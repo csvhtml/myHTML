@@ -14,6 +14,8 @@ function ParseFromFileReader() {
     let text = cFileReaders["nav-input"].result
     // XCSV["mainX"].XReader.ReadXCSV(text)
     XCSV["mainX"].XFormat.Read(text)
+    let title = 'XCSV: ' + cFileReaders_File['nav-input'].files[0]['name']
+    XCSV["mainX"].Title(title)
     XCSV["mainX"].XHTML.Print()
     XCSV["mainX"].XInfo.Level1(FileNameFromPath(cFileReaders_File["nav-input"].value))
 }
