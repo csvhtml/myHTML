@@ -356,11 +356,12 @@ function A_HREF({
 
 function NewDiv(config) {
 	TraceFunctionCalls.pushX(arguments.callee.name)
-    let defaultConfig = {'type': 'div', 'id': 'id', 'innerHTML': '---'}
+    let defaultConfig = {'type': 'div', 'id': 'id', 'innerHTML': '---', 'class': ''}
     let cfg = {...defaultConfig,...config}
     let ret = document.createElement(cfg['type'])
     ret.id = cfg['id']
     ret.innerHTML = cfg['innerHTML']
+    ret.className = cfg['class']
 
     return ret
 }

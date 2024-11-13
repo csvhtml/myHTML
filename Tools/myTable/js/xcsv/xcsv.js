@@ -99,7 +99,7 @@ class clsXCSV {
 
         Add(headers, data, name) {  // when headers, data are defined, then also gallery and text are added here
             if (IsPartlyUndefined[headers, data, name]) return false       // either compeltey defined or not
-            this.xAdd(headers,data, name)
+            this.xAdd(headers, data, name)
             this.XHTML.Print()
         }
 
@@ -159,6 +159,26 @@ class clsXCSV {
         DelCol() {
             this.XData.DelCol()
             this.XHTML.Print()
+        }
+
+        MoveUp(idx) {
+            if (idx <1) return
+            let tmp = this.XItems[idx-1]
+            this._OVERWRTIE_XItem(idx-1, this.XItems[idx])
+            this._OVERWRTIE_XItem(idx, tmp)
+            this.XHTML.Print()
+        }
+
+        MoveDown(idx) {
+            if (idx > this.XItems.length-1) return 
+            let tmp = this.XItems[idx+1]
+            this._OVERWRTIE_XItem(idx+1, this.XItems[idx])
+            this._OVERWRTIE_XItem(idx, tmp)
+            this.XHTML.Print()
+        }
+
+        _OVERWRTIE_XItem(idx, newItem) {
+            this.XItems[idx] = newItem
         }
 
         OrderItems() {

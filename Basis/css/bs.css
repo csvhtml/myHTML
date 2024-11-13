@@ -94,9 +94,17 @@
     margin-bottom: 50pt !important;
 }
 
+.ml-5 {
+    margin-left: 5pt !important;
+}
+
 .p-3 {
     padding: 1rem !important;
     box-sizing: border-box; 
+}
+
+.p-0-3{
+    padding: 0pt 3pt !important
 }
 
 .w-100 {

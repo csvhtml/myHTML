@@ -99,7 +99,7 @@ class clsXCSV {
 
         Add(headers, data, name) {  // when headers, data are defined, then also gallery and text are added here
             if (IsPartlyUndefined[headers, data, name]) return false       // either compeltey defined or not
-            this.xAdd(headers,data, name)
+            this.xAdd(headers, data, name)
             this.XHTML.Print()
         }
 
@@ -159,6 +159,26 @@ class clsXCSV {
         DelCol() {
             this.XData.DelCol()
             this.XHTML.Print()
+        }
+
+        MoveUp(idx) {
+            if (idx <1) return
+            let tmp = this.XItems[idx-1]
+            this._OVERWRTIE_XItem(idx-1, this.XItems[idx])
+            this._OVERWRTIE_XItem(idx, tmp)
+            this.XHTML.Print()
+        }
+
+        MoveDown(idx) {
+            if (idx > this.XItems.length-1) return 
+            let tmp = this.XItems[idx+1]
+            this._OVERWRTIE_XItem(idx+1, this.XItems[idx])
+            this._OVERWRTIE_XItem(idx, tmp)
+            this.XHTML.Print()
+        }
+
+        _OVERWRTIE_XItem(idx, newItem) {
+            this.XItems[idx] = newItem
         }
 
         OrderItems() {
@@ -778,9 +798,19 @@ class clsFormatHTML {
 
     SidebarItem(idx) {
         let ret = document.createElement('DIV')
+        let name = this.parent.XItems[idx].name
         ret.id = this.parent.XNames.IDs._sidebarItem(idx)
-        ret.innerHTML = this.parent.XItems[idx].name
-        ret.className = ""
+        ret.innerHTML = name
+        ret.className = "flex-container"
+
+        if (idx == 0) return ret
+        let buttonWrapper = NewDiv({id:'id-button-Wrapper'+ name, class:'flex-container', innerHTML:''})
+        let buttonUp = NewDiv({type:'a', id:'id-buttonUp-' + name, innerHTML: '&#8613;', class:'p-0-3 btn'})
+        buttonUp.setAttribute('onclick', "MoveUp('" + idx + "')")
+        let buttonDown = NewDiv({type:'a', id:'id-buttonDown-' + name, innerHTML: '&#8615;', class:'p-0-3 ml-5 btn'})
+        buttonDown.setAttribute('onclick', "MoveDown('" + idx + "')")
+        buttonWrapper.appendChild(buttonUp).appendChild(buttonDown)
+        ret.appendChild(buttonWrapper)
         return ret
     }
 

@@ -219,6 +219,13 @@ table.table {
   flex-wrap: wrap;
 }
 
+.flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
 .sidebar {
   position: fixed !important;
   width:190pt;

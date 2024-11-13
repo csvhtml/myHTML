@@ -152,6 +152,15 @@ function ToggleSidebar(divID) {
   }
 
 
+function MoveUp(idx) {
+    XCSV["mainX"].MoveUp(Number(idx))
+}
+
+function MoveDown(idx) {
+    XCSV["mainX"].MoveDown(Number(idx))
+}
+
+
 // ####################################################################################
 // Test Function                                                                      #
 // ####################################################################################

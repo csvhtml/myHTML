@@ -25,7 +25,7 @@ class libDropDowns {
     }
 
     preventDefault() {
-        // when clicking on a link, prevents teh browser from scolling back to top (where teh link is)
+        // when clicking on a link, prevents the browser from scolling back to top (where teh link is)
         let aElem = document.querySelectorAll('a.preventDefault')
         for (let a of aElem) {
             a.addEventListener("click", (event) => {
