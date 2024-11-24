@@ -17,10 +17,17 @@ class clsFormatHTML {
     
     PrintContent(prefix = '') {
         let ret = prefix
+        let wrapper = null
         for (let i = 0; i < this.parent.XItems.length; i++) {
-            ret += this.HeaderBox(i).outerHTML
-            ret += this.PrintItems(i)
+            wrapper = this.Wrapper(i)
+            wrapper.appendChild(this.HeaderBox(i))
+            wrapper.appendChild(this.DataAsDivTable(i))
+
+            // ret += this.HeaderBox(i).outerHTML
+            // ret += this.PrintItems(i)
+            ret += wrapper.outerHTML
         }
+        // return wrapper.outerHTML
         return ret
     }
 
@@ -50,6 +57,16 @@ class clsFormatHTML {
             // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.Text(idx)
             return this.Text(idx)}
      
+    }
+
+    Wrapper(idx) {
+        let ret = document.createElement('DIV')
+        ret.id = this.parent.XNames.IDs._wrapper(idx)
+        ret.innerHTML = ''
+        ret.className = 'pl-8'
+        // ret.style = "min-width:" + XCSV_CONFIG['min-width']+';'
+
+        return ret
     }
 
     HeaderBox(idx) {
@@ -120,6 +137,11 @@ class clsFormatHTML {
     }
 
     DataAsHTML(pre = "", ItemsIndex) {
+        let table = this.DataAsDivTable(ItemsIndex)
+        return pre + table.outerHTML
+    }
+
+    DataAsDivTable(ItemsIndex) {
         let table = HTML_Table({cellsText:this._MarkupToX(ItemsIndex)})
         table.id = "id-table-" + this.parent.XItems[ItemsIndex].name
         table.className = "table"
@@ -130,7 +152,7 @@ class clsFormatHTML {
         // table.mySetHeadersClass() 
         table.mySetRowsID(this.parent.XNames.IDs.rows(ItemsIndex))
         table.mySetCellsID(this.parent.XNames.IDs.cells(ItemsIndex))
-        return pre + table.outerHTML
+        return table
     }
 
 }

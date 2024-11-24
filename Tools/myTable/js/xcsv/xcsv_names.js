@@ -97,7 +97,7 @@ class clsXCSV_Names_ID {
         return this._row(r, ItemsIndex)}
 
 // ################################################################
-// Single Names                                                   #
+// region Single Names                                            #
 // ################################################################
 
     _header(header, ItemsIndex) {
@@ -118,6 +118,10 @@ class clsXCSV_Names_ID {
         return this._egoprefix(ItemsIndex) + X["prefix"] + r + X["postfix"]
     }
 
+    _wrapper(ItemsIndex) {
+        return this._egoprefix(ItemsIndex) + 'Wrapper'
+    }
+
     _namebox(ItemsIndex) {
         return this._egoprefix(ItemsIndex) + 'Namebox'
     }
@@ -134,7 +138,7 @@ class clsXCSV_Names_ID {
 
 
 // ################################################################
-// Is                                                             #
+// region Is                                                      #
 // ################################################################
 
     IsItems(divID) {
@@ -178,9 +182,8 @@ class clsXCSV_Names_ID {
             return false 
     }
 
-
 // ################################################################
-// Return Index                                                   #
+// region Ret Index                                               #
 // ################################################################
 
     RC_fromID(divID, FirstIndexisOne = false) {
@@ -211,4 +214,15 @@ class clsXCSV_Names_ID {
         let X = CLSXCSV_NAMES["id"]["header"]
         return Number(RetStringBetween(divID, X["prefix"], X["postfix"]))
     }
+
+
+// ################################################################
+// region parent ID                                               #
+// ################################################################
+
+    WrapperID_FromChildID(divID) {
+        let idx = this.ItemsIndex(divID)
+        return this._wrapper(idx)
+    }
+
 }

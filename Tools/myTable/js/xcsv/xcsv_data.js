@@ -4,12 +4,14 @@ class clsData {
         this.name = null
         this.headers = null
         this.data = null
+        this.dicts = null
     }
 
     Init(headers, data, name) {
         this.name = name
         this.InitHeaders(headers)
         this.InitData(data)
+        this.InitDictionary()
         this.assertIntegrity()
     }
 
@@ -46,6 +48,18 @@ class clsData {
         // Text -> Data is a 1D list, with on entry only
         this.parent.XAssert.DataIs2D(data)
         this.data = data
+    }
+
+    InitDictionary() {
+        let tmp = null; 
+        this.dicts = []
+        for (let i = 0; i<this.data.length; i++) {
+            tmp = {}
+            for (let header of this.headers) {
+                tmp[header] = this.data[i][this.headers.indexOf(header)]
+            }
+            this.dicts.push(tmp)
+        }
     }
 
     AddRow(newRow = []) {

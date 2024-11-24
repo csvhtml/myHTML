@@ -386,8 +386,9 @@ class clsXCSV_Clickhandler {
         }
 
     ClickEvent(div) {
-        let divID = div.GetParentWithID().id
+        if (this.parent.config['EgoID'] == div.id) this.parent.XSelection.unset()
 
+        let divID = div.GetParentWithID().id
         if(!this.parent.XNames.IDs.IsItems(divID)) return
 
         let ItemsName = this.parent.XNames.IDs.ItemsName(divID)
@@ -460,12 +461,14 @@ class clsData {
         this.name = null
         this.headers = null
         this.data = null
+        this.dicts = null
     }
 
     Init(headers, data, name) {
         this.name = name
         this.InitHeaders(headers)
         this.InitData(data)
+        this.InitDictionary()
         this.assertIntegrity()
     }
 
@@ -502,6 +505,18 @@ class clsData {
         // Text -> Data is a 1D list, with on entry only
         this.parent.XAssert.DataIs2D(data)
         this.data = data
+    }
+
+    InitDictionary() {
+        let tmp = null; 
+        this.dicts = []
+        for (let i = 0; i<this.data.length; i++) {
+            tmp = {}
+            for (let header of this.headers) {
+                tmp[header] = this.data[i][this.headers.indexOf(header)]
+            }
+            this.dicts.push(tmp)
+        }
     }
 
     AddRow(newRow = []) {
@@ -751,10 +766,17 @@ class clsFormatHTML {
     
     PrintContent(prefix = '') {
         let ret = prefix
+        let wrapper = null
         for (let i = 0; i < this.parent.XItems.length; i++) {
-            ret += this.HeaderBox(i).outerHTML
-            ret += this.PrintItems(i)
+            wrapper = this.Wrapper(i)
+            wrapper.appendChild(this.HeaderBox(i))
+            wrapper.appendChild(this.DataAsDivTable(i))
+
+            // ret += this.HeaderBox(i).outerHTML
+            // ret += this.PrintItems(i)
+            ret += wrapper.outerHTML
         }
+        // return wrapper.outerHTML
         return ret
     }
 
@@ -784,6 +806,16 @@ class clsFormatHTML {
             // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.Text(idx)
             return this.Text(idx)}
      
+    }
+
+    Wrapper(idx) {
+        let ret = document.createElement('DIV')
+        ret.id = this.parent.XNames.IDs._wrapper(idx)
+        ret.innerHTML = ''
+        ret.className = 'pl-8'
+        // ret.style = "min-width:" + XCSV_CONFIG['min-width']+';'
+
+        return ret
     }
 
     HeaderBox(idx) {
@@ -854,6 +886,11 @@ class clsFormatHTML {
     }
 
     DataAsHTML(pre = "", ItemsIndex) {
+        let table = this.DataAsDivTable(ItemsIndex)
+        return pre + table.outerHTML
+    }
+
+    DataAsDivTable(ItemsIndex) {
         let table = HTML_Table({cellsText:this._MarkupToX(ItemsIndex)})
         table.id = "id-table-" + this.parent.XItems[ItemsIndex].name
         table.className = "table"
@@ -864,7 +901,7 @@ class clsFormatHTML {
         // table.mySetHeadersClass() 
         table.mySetRowsID(this.parent.XNames.IDs.rows(ItemsIndex))
         table.mySetCellsID(this.parent.XNames.IDs.cells(ItemsIndex))
-        return pre + table.outerHTML
+        return table
     }
 
 }
@@ -988,7 +1025,7 @@ class clsXCSV_Names_ID {
         return this._row(r, ItemsIndex)}
 
 // ################################################################
-// Single Names                                                   #
+// region Single Names                                            #
 // ################################################################
 
     _header(header, ItemsIndex) {
@@ -1009,6 +1046,10 @@ class clsXCSV_Names_ID {
         return this._egoprefix(ItemsIndex) + X["prefix"] + r + X["postfix"]
     }
 
+    _wrapper(ItemsIndex) {
+        return this._egoprefix(ItemsIndex) + 'Wrapper'
+    }
+
     _namebox(ItemsIndex) {
         return this._egoprefix(ItemsIndex) + 'Namebox'
     }
@@ -1025,7 +1066,7 @@ class clsXCSV_Names_ID {
 
 
 // ################################################################
-// Is                                                             #
+// region Is                                                      #
 // ################################################################
 
     IsItems(divID) {
@@ -1069,9 +1110,8 @@ class clsXCSV_Names_ID {
             return false 
     }
 
-
 // ################################################################
-// Return Index                                                   #
+// region Ret Index                                               #
 // ################################################################
 
     RC_fromID(divID, FirstIndexisOne = false) {
@@ -1102,6 +1142,17 @@ class clsXCSV_Names_ID {
         let X = CLSXCSV_NAMES["id"]["header"]
         return Number(RetStringBetween(divID, X["prefix"], X["postfix"]))
     }
+
+
+// ################################################################
+// region parent ID                                               #
+// ################################################################
+
+    WrapperID_FromChildID(divID) {
+        let idx = this.ItemsIndex(divID)
+        return this._wrapper(idx)
+    }
+
 }
 class clsXCSV_Selectionhandler {
     constructor(parent) {
@@ -1114,8 +1165,10 @@ class clsXCSV_Selectionhandler {
     set(divID) {
         // set content
         this.SelectedID = divID
+        let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(divID)
         document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")
-
+        document.getElementById(wrapperID).classList.add("bg-lblue-light")
+        
         // set sidebar
         let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
         let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
@@ -1147,6 +1200,8 @@ class clsXCSV_Selectionhandler {
 
                 //content
                 document.getElementById(this.SelectedID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
+                let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(this.SelectedID)
+                document.getElementById(wrapperID).classList.remove("bg-lblue-light")
 
                 // sidebar
                 let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(this.SelectedID)

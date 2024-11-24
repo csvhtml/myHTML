@@ -276,8 +276,8 @@ function test_Markup(myTest) {
         // Imgages
         ["[somepicture.jpg]", '<img src="somepicture.jpg" width="" height="">'],
         ["[(60x80)somepicture.jpg]", '<img src="somepicture.jpg" width="60" height="80">'],
-
-
+        // Tables
+        // ["|table", "<table></table>"]
         
 ]
     

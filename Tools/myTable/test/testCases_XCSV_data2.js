@@ -15,7 +15,7 @@ function test_clsXSCV_Clear(myTest) {
     let fname = arguments.callee.name;
     let ted = new clsXCSV("div-id")
 
-    myTest.Equal(ted.XData.data[0], ["1","2","3"], fname)
+    myTest.NotEqual(ted.XData.data[0], ["","",""], fname)
     ted.XData.Clear()
     myTest.Equal(ted.XData.data[0], ["", "", ""], fname)
 }

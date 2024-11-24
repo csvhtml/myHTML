@@ -16,8 +16,9 @@
 
 
 class clsUserInput {
-    constructor(DivIDs) {
-        this.EgoIDs = DivIDs
+    constructor() {
+        let sections = Object.keys(LIB_USERINPUT); sections.removeX('Tipp')
+        this.EgoIDs = sections
         this.mousedownTime = new Date().getTime()
         this.mouseupTime = new Date().getTime()
     }

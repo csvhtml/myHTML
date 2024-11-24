@@ -13,6 +13,8 @@ function test_XCSV(divID, myTest) {
 	test_clsXSCV_ChangeColName(myTest)
 	test_clsXSCV_Clear(myTest)
 	test_clsXSCV_Config(myTest)
+	test_clsXSCV_formatHTML_HeaderBox(myTest)
+	test_clsXSCV_FormatFile_NameHeadersData(myTest)
 	test_clsXSCV_Front_Default_Var2(myTest)
 	test_clsXSCV_Front_Table(myTest)
 	test_clsXSCV_Front_Gallery(myTest)

@@ -7,14 +7,15 @@ const DROPDOWN_CONFIG = {
         {"Add Table": "XCSV['mainX'].Add()"},
         {"Add Gallery": "XCSV['mainX'].Add_Gallery()"},   
         {"Add Text": "XCSV['mainX'].Add_Text()"},
-        {"Remove": "XCSV['mainX'].Remove()"} 
+        {"Remove": "XCSV['mainX'].Remove()"},
+        {"Save As HTML": "DownloadHTML()"}  
     ],
-    "nav-Edit": [
+    "nav-Table": [
         {"Add Row": "XCSV['mainX'].AddRow()"},
         {"Add Col": "XCSV['mainX'].AddCol()"},   
         {"Delete Row": "XCSV['mainX'].DelRow()"}, 
         {"Delete Col": "XCSV['mainX'].DelCol()"},     
-        {"Save As HTML": "DownloadHTML()"}  
+        
     ],
      "nav-List": [
         {"Data": "XCSV['mainX'].XHTML.Print()"},     //
@@ -38,7 +39,7 @@ const FILES_UPLOAD_CONFIG  = {
 const cUSERINPUT_EVENT = {}     // const dict, to pretect it from accidently being overwritten
 const LIB_USERINPUT = {
     "Tipp": "",
-    "id-main": {
+    "id-content": {
         "Click" : 'Click()'
         // "Hover": "outHover(); outHoverID()",
         // "HoverLeave": "outLeave()",

@@ -11,6 +11,12 @@ function testcase_Equal(myTest) {
     myTest.Equal({"A":[1,2,3], "B":{"a":1, "b":2}, "C":"Text", "D":123, "E": true}, {"A":[1,2,3], "B":{"a":3, "b":2}, "C":"Text", "D":123, "E": true},fname, INVRESULT)
 }
 
+function testcase_NotEqual(myTest) {
+    let fname = arguments.callee.name;
+    
+    myTest.NotEqual(1,2,fname)
+}
+
 function testcase_TrueFalse(myTest) {
     let fname = arguments.callee.name;
     

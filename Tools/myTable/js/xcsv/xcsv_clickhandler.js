@@ -4,8 +4,9 @@ class clsXCSV_Clickhandler {
         }
 
     ClickEvent(div) {
-        let divID = div.GetParentWithID().id
+        if (this.parent.config['EgoID'] == div.id) this.parent.XSelection.unset()
 
+        let divID = div.GetParentWithID().id
         if(!this.parent.XNames.IDs.IsItems(divID)) return
 
         let ItemsName = this.parent.XNames.IDs.ItemsName(divID)

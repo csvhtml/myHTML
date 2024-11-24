@@ -94,6 +94,14 @@
     margin-bottom: 50pt !important;
 }
 
+.pb-50 {
+    padding-bottom: 50pt !important;
+}
+
+.pr-50 {
+    padding-right: 50pt !important;
+}
+
 .ml-5 {
     margin-left: 5pt !important;
 }
@@ -101,6 +109,10 @@
 .p-3 {
     padding: 1rem !important;
     box-sizing: border-box; 
+}
+
+.pl-8 {
+    padding-left: 8pt !important;
 }
 
 .p-0-3{
@@ -117,6 +129,9 @@
 
 .bg-lblue {
     background-color: #cff4fc !important;
+}
+.bg-lblue-light {
+    background-color: #e7fafe !important;
 }
 
 .lh-5 {

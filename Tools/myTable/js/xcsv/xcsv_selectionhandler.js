@@ -9,8 +9,10 @@ class clsXCSV_Selectionhandler {
     set(divID) {
         // set content
         this.SelectedID = divID
+        let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(divID)
         document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")
-
+        document.getElementById(wrapperID).classList.add("bg-lblue-light")
+        
         // set sidebar
         let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
         let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
@@ -42,6 +44,8 @@ class clsXCSV_Selectionhandler {
 
                 //content
                 document.getElementById(this.SelectedID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
+                let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(this.SelectedID)
+                document.getElementById(wrapperID).classList.remove("bg-lblue-light")
 
                 // sidebar
                 let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(this.SelectedID)

@@ -124,6 +124,13 @@ table.table {
 
   }
 
+  /* bigger line height, except for new lines */
+  .table td:not(p > br + *) {
+
+    line-height: 1.5;
+  
+  }
+
     /* 
   ###########################################################################
   # Gallery Items                                                           #
@@ -242,6 +249,11 @@ table.table {
   left: 155pt
 }
 
-.content {
+#id-content {
+  width: 1200pt;
+  min-height: 1000pt;
+}
+
+#id-main {
   width: 900pt;
 }
