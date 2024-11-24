@@ -15,13 +15,14 @@ class clsXCSV {
             this.XNames = new clsXCSV_Names(this) 
             this.XClick = new clsXCSV_Clickhandler(this)
             this.XSelection = new clsXCSV_Selectionhandler(this)
+            this.XSIndicator = new clsXCSV_SelectionIndicator(this)
             this.XInfo = new clsXCSV_Infohandler(this)
             this.XHISTORY = new clsXCSV_ChangeHandler(this)
 
 
             // Apply
             this.XFormat.Read(XCSV_DATA_ITEMS['table'].trimPlus([' |'])) 
-            this.Activate()
+            // this.Activate()
         }
 
         __config(config) {
@@ -66,21 +67,23 @@ class clsXCSV {
 
             if (IsUndefined([name])) {
                 this.XData = this.XItems[0]; 
-                this.XSelection.ActiveItemsName = this.XItems[0].name
+                this.XSelection.Activate(0)
                 return }
             
             //else
             assert(this.XItems.map(item => item.name).includes(name))
             
             let ItemsIndex = this.XItems.map(item => item.name).indexOf(name)
-            this.XSelection.ActiveItemsName = name
+            this.XSelection.Activate(name)      // this.XSelection.Activate(ItemsIndex) would also work
             this.XData = this.XItems[ItemsIndex]
         }
 
         ActiveIndex() {
+            if (this.XSelection.SelectedID == '') return 0
+
             let ItemsIndex1 = -2; let ItemsIndex2 = -2
             // Option 1
-            ItemsIndex1 = this.XItems.map(item => item.name).indexOf(this.XSelection.ActiveItemsName)
+            ItemsIndex1 = this.XItems.map(item => item.name).indexOf(this.XSelection.ActiveItemsName())
 
 
             // Option 2
@@ -287,6 +290,7 @@ const XCSV_CONFIG = {
     'min-width': '100%',
     'SidebarVisible': true,
     'Items Numbering': false,
+    'Indicate Selections':true,
 }
 
 const XCSV_DATA_DEFAULT_VALUE = '..'

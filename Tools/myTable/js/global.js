@@ -31,10 +31,11 @@ function DownloadCSV() {
 // ##################################################################################
 // Click
 function Click() {
-    UpdateShowHide()
     let div = cUSERINPUT_EVENT["event"].srcElement
     // document.getElementById('id-infoblock-r').innerHTML = div.id
     XCSV["mainX"].XClick.ClickEvent(div)
+
+    UpdateShowHide()
 }
 
 

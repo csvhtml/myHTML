@@ -1,6 +1,6 @@
 function test_clsXSCV_ChangeColName(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     // ted.XData.AddCol()  // not allowed
     ted.XData.AddCol("newCol 1")
@@ -13,7 +13,7 @@ function test_clsXSCV_ChangeColName(myTest) {
 
 function test_clsXSCV_Clear(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     myTest.NotEqual(ted.XData.data[0], ["","",""], fname)
     ted.XData.Clear()
@@ -22,7 +22,9 @@ function test_clsXSCV_Clear(myTest) {
 
 function test_clsXSCV_Config(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("id-front 2")
+    STD_TEST_XCSV_CONFIG['EgoID'] = 'id-front 2'
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
+    // let ted = new clsXCSV("id-front 2")
 
 
     myTest.Equal(ted.Config(), -1, fname)

@@ -1,6 +1,6 @@
 function test_clsXSCV_AsCSV_HeaderLine(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     ted.XData.Init(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test')
 
@@ -11,7 +11,7 @@ function test_clsXSCV_AsCSV_HeaderLine(myTest) {
 
 function test_clsXSCV_AsCSV_HeaderLine(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     ted.XData.Init(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test')
 

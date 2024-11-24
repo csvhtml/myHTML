@@ -4,13 +4,14 @@ class clsXCSV_Clickhandler {
         }
 
     ClickEvent(div) {
-        if (this.parent.config['EgoID'] == div.id) this.parent.XSelection.unset()
+        if (this._IsOuterItemArea(div)) this.parent.XSelection.unsetAll()
 
         let divID = div.GetParentWithID().id
         if(!this.parent.XNames.IDs.IsItems(divID)) return
 
+        // this.parent.XSelection.set(divID) // this.parent.Activate(ItemsName); 
         let ItemsName = this.parent.XNames.IDs.ItemsName(divID)
-        this.parent.Activate(ItemsName); this.parent.XInfo.Level2(ItemsName)
+        this.parent.XInfo.Level2(ItemsName)
 
         if (this.parent.XNames.IDs.IsNameBox(divID)) {
             this._Namebox(divID)
@@ -71,5 +72,13 @@ class clsXCSV_Clickhandler {
 
     _AlreadyInFocus(divID) {
         return (this.parent.XSelection.currentSelection() == divID)
+    }
+
+// ####################################################################################
+// region State Transitions                                                           #
+// ####################################################################################
+
+    _IsOuterItemArea(div) {
+        return this.parent.config['EgoID'] == div.id
     }
 }

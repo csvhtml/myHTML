@@ -1,6 +1,6 @@
 function test_clsXSCV_Init(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     myTest.IsTrue(ted.XData === ted.XItems[0], fname)
     myTest.Equal(ted.XData.name, "New", fname)
@@ -9,7 +9,7 @@ function test_clsXSCV_Init(myTest) {
 
 function test_clsXSCV_Init2(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     ted.XData.Init(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test')
 
@@ -21,7 +21,7 @@ function test_clsXSCV_Init2(myTest) {
 
 function test_clsXSCV_Type(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("id-X")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     myTest.Equal(ted.XData.Type(), 'table', fname)
 
@@ -37,7 +37,7 @@ function test_clsXSCV_Type(myTest) {
 
 function test_clsXSCV_ItemNameAvailable(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("id-X")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     ted.xAdd(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test-table')
     ted.xAdd(["Header 1", "Header 2"], [["1", "2"],["3", "4"],["5", "6"]], 'test-table')

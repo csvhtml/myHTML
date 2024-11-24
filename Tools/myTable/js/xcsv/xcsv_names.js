@@ -113,27 +113,33 @@ class clsXCSV_Names_ID {
         // return this._egoprefix(ItemsIndex) + X["r"] + r + X["c"] + c + X["h"] + header 
     }
 
-    _row(r, ItemsIndex) {
+    _row(r, ItemsIndexOrName) {
         let X = CLSXCSV_NAMES["id"]["row"]
-        return this._egoprefix(ItemsIndex) + X["prefix"] + r + X["postfix"]
+        return this._egoprefix(ItemsIndexOrName) + X["prefix"] + r + X["postfix"]
     }
 
-    _wrapper(ItemsIndex) {
-        return this._egoprefix(ItemsIndex) + 'Wrapper'
+    _wrapper(ItemsIndexOrName) {
+        return this._egoprefix(ItemsIndexOrName) + 'Wrapper'
     }
 
-    _namebox(ItemsIndex) {
-        return this._egoprefix(ItemsIndex) + 'Namebox'
+    _namebox(ItemsIndexOrName) {
+        return this._egoprefix(ItemsIndexOrName) + 'Namebox'
     }
 
-    _sidebarItem(ItemsIndex) {
-        return this._egoprefix(ItemsIndex) + 'SidebarItem'
+    _sidebarItem(ItemsIndexOrName) {
+        return this._egoprefix(ItemsIndexOrName) + 'SidebarItem'
     }
 
 
-    _egoprefix(ItemsIndex) {
-        assert(!IsUndefined([ItemsIndex]))
-        return '[' + this.parent.XItems[ItemsIndex].name + '] '
+    _egoprefix(ItemsIndexOrName) {
+        assert(!IsUndefined([ItemsIndexOrName]))
+        ItemsIndexOrName= NumberX(ItemsIndexOrName) 
+
+        let name = ''
+        if (typOf(ItemsIndexOrName) == 'int') name = this.parent.XItems[ItemsIndexOrName].name
+        if (typOf(ItemsIndexOrName) == 'str') name = ItemsIndexOrName
+        
+        return '[' + name + '] '
     }
 
 
@@ -169,14 +175,14 @@ class clsXCSV_Names_ID {
     }
 
     IsNameBox(ID) {
-        for (i = 0; i< this.parent.XItems.length; i++) {
+        for (let i = 0; i< this.parent.XItems.length; i++) {
             if (ID == this._namebox(i))  return true}
         
             return false
     }
 
     IsSidebarItem(ID) {
-        for (i = 0; i< this.parent.XItems.length; i++) {
+        for (let i = 0; i< this.parent.XItems.length; i++) {
             if (ID == this._sidebarItem(i))  return true}
         
             return false 
@@ -223,6 +229,11 @@ class clsXCSV_Names_ID {
     WrapperID_FromChildID(divID) {
         let idx = this.ItemsIndex(divID)
         return this._wrapper(idx)
+    }
+
+    NameBoxID_FromChildID(divID) {
+        let idx = this.ItemsIndex(divID)
+        return this._namebox(idx)
     }
 
 }

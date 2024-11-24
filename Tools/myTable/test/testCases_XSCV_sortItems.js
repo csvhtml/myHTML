@@ -1,6 +1,6 @@
 function test_clsXSCV_Sort(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     ted.xAdd()
     ted.xAdd_Text()
@@ -16,7 +16,7 @@ function test_clsXSCV_Sort(myTest) {
 
 function test_clsXSCV_Sort2(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     ted.xAdd()
     ted.xAdd_Text()
@@ -33,7 +33,7 @@ function test_clsXSCV_Sort2(myTest) {
 
 function test_clsXSCV_SubTest(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
     
     myTest.IsTrue(ted.OrderItems_IsNumbered("1 Hallo"), fname)
     myTest.IsTrue(ted.OrderItems_IsNumbered("100 Hallo"), fname)

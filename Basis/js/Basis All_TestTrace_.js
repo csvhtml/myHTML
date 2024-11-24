@@ -2,6 +2,7 @@ const BASIS = {
 	assert: function(condition, message) {return assert(condition, message)},
 	NoBlanksInList: function(liste) {return NoBlanksInList(liste)},
 	NoBlanks: function(text) {return NoBlanks(text)},
+	NumberX: function(text) {return NumberX(text)},
 	byVal: function(data) {return byVal(data)},
 	ValidChars: function(validChars, text) {return ValidChars(validChars, text)},
 	typOf: function(variable, extendedInfo = false) {return typOf(variable, extendedInfo)},
@@ -83,6 +84,14 @@ function NoBlanksInList(liste) {
 function NoBlanks(text) {
 	TraceFunctionCalls.pushX(arguments.callee.name)
     return text.replace(/ /g, "")
+}
+
+function NumberX(text) {
+	TraceFunctionCalls.pushX(arguments.callee.name)
+    if (typOf(text) == 'str') {
+        if (ValidChars('012345789', text)) return Number(text)}
+   
+    return text
 }
 
 function byVal(data) {

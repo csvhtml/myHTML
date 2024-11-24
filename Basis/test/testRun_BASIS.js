@@ -1,6 +1,7 @@
 function test_BASIS(divID, myTest) {
 	test_NoBlanksInList(myTest)
 	test_ByVal(myTest)
+	test_NumberX(myTest)
 	test_ValidChars(myTest)
 	test_typOf(myTest)
 	test_Undefined(myTest)

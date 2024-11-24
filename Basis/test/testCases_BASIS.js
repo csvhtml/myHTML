@@ -43,6 +43,13 @@ function test_ByVal(myTest) {
     result += myTest.Equal(dicctVal, expectedVal, fname)
 }
 
+function test_NumberX(myTest) {
+    let fname = arguments.callee.name
+    myTest.Equal(123, NumberX(123),fname)
+    myTest.Equal(123, NumberX("123"),fname)
+    myTest.Equal("123A", NumberX("123A"),fname)
+}
+
 
 function test_ValidChars(myTest) {
     myTest.IsFalse(BASIS.ValidChars("abcdefghijklmnopqrstuvxyz", "hallo welt"), arguments.callee.name)

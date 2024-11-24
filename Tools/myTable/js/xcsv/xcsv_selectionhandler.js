@@ -2,21 +2,39 @@ class clsXCSV_Selectionhandler {
     constructor(parent) {
             this.parent = parent
             this.SelectedID = ""
-            this.ActiveItemsName = ""
+            // this.ActiveItemsName = ""
         }
 
-    // set elemenets inside
+    ActiveItemsName() {
+        return this.parent.XNames.IDs.ItemsName(this.SelectedID)
+    }
+
+    Activate(ItemsIndexOrName) {
+        // only if no ID is selected, then by default the namebox is selected
+        if (this.SelectedID != '') return 
+
+        let NameBoxID = this.parent.XNames.IDs._namebox(ItemsIndexOrName)
+        this.SelectedID = NameBoxID
+        if(document.getElementById(NameBoxID)) this.set(NameBoxID) 
+    }
+
     set(divID) {
+        this.unsetAll()
+        let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
         // set content
         this.SelectedID = divID
-        let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(divID)
-        document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")
-        document.getElementById(wrapperID).classList.add("bg-lblue-light")
+        this.parent.XData = this.parent.XItems[ItemsIndex]
+
+        if (this.parent.config['Indicate Selections']) this.parent.XSIndicator.set(ItemsIndex, divID)
         
-        // set sidebar
-        let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
-        let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
-        document.getElementById(targetSidebarItemID).classList.add("xcsv-focus","bg-lblue")
+        // // set content style ( actually this should be part of print, as it handles dom layout)
+        // let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(divID)
+        // document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")   
+        // document.getElementById(wrapperID).classList.add("bg-lblue-light")
+        
+        // // set sidebar style 
+        // let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
+        // document.getElementById(targetSidebarItemID).classList.add("xcsv-focus","bg-lblue")
         
         // messages
         let X = this.parent.XNames.IDs; let msg = ''
@@ -36,22 +54,28 @@ class clsXCSV_Selectionhandler {
             this.parent.XInfo.Level3(msg); return}
     }
 
+    unsetAll() {
+        this.unset()
+        // this.ActiveItemsName = ""
+    }
+
     unset() {
-        if (this.SelectedID != "") {
-            if (document.getElementById(this.SelectedID)) {
-                // in case edit is active
-                EDIT.Init_Undo()
+        if (this.SelectedID == '') return
+        if (this.SelectedID == this.parent.XNames.IDs._namebox(0)) return   // per default, the min selection is the first namebox is kept.
 
-                //content
-                document.getElementById(this.SelectedID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
-                let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(this.SelectedID)
-                document.getElementById(wrapperID).classList.remove("bg-lblue-light")
+        if (document.getElementById(this.SelectedID)) {
+            // in case edit is active
+            EDIT.Init_Undo()
 
-                // sidebar
-                let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(this.SelectedID)
-                let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
-                document.getElementById(targetSidebarItemID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
-            }
+            //content
+            document.getElementById(this.SelectedID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
+            let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(this.SelectedID)
+            document.getElementById(wrapperID).classList.remove("bg-lblue-light")
+
+            // sidebar
+            let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(this.SelectedID)
+            let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
+            document.getElementById(targetSidebarItemID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
         }
         this.SelectedID = ""
         this.parent.XInfo.Level3(this.SelectedID)

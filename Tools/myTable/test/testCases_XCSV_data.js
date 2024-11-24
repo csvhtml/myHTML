@@ -1,6 +1,9 @@
+const STD_TEST_XCSV_CONFIG = {'EgoID': 'id-ID', 'Indicate Selections': false}
+
 function test_clsXSCV_AddRow(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    STD_TEST_XCSV_CONFIG['EgoID'] = 'id-ID'
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     ted.XData.AddRow(["Das", "ist", "gut"])
 
@@ -10,7 +13,7 @@ function test_clsXSCV_AddRow(myTest) {
 
 function test_clsXSCV_AddCol(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     // ted.XData.AddCol()  // not allowed
     ted.XData.AddCol("newCol 1")
@@ -27,7 +30,7 @@ function test_clsXSCV_AddCol(myTest) {
 
 function test_clsXSCV_DelRow(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     let headers = byVal(ted.XData.headers)
     let row0 = byVal(ted.XData.data[0])
@@ -44,7 +47,7 @@ function test_clsXSCV_DelRow(myTest) {
 
 function test_clsXSCV_DelRow_0(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     let headers = byVal(ted.XData.headers)
     let row1 = byVal(ted.XData.data[1])
@@ -61,7 +64,7 @@ function test_clsXSCV_DelRow_0(myTest) {
 
 function test_clsXSCV_DelRow_1(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     let headers = byVal(ted.XData.headers)
     let row0 = byVal(ted.XData.data[0])
@@ -78,7 +81,7 @@ function test_clsXSCV_DelRow_1(myTest) {
 
 function test_clsXSCV_Del_Col(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     let DelIndex = ted.XData.headers.length-1   // in case of undefined parameter
 
@@ -99,7 +102,7 @@ function test_clsXSCV_Del_Col(myTest) {
 
 function test_clsXSCV_Del_Col_X(myTest) {
     let fname = arguments.callee.name;
-    let ted = new clsXCSV("div-id")
+    let ted = new clsXCSV(STD_TEST_XCSV_CONFIG)
 
     let DelIndex = [0,1,2]
 

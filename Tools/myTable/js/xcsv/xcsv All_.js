@@ -15,13 +15,14 @@ class clsXCSV {
             this.XNames = new clsXCSV_Names(this) 
             this.XClick = new clsXCSV_Clickhandler(this)
             this.XSelection = new clsXCSV_Selectionhandler(this)
+            this.XSIndicator = new clsXCSV_SelectionIndicator(this)
             this.XInfo = new clsXCSV_Infohandler(this)
             this.XHISTORY = new clsXCSV_ChangeHandler(this)
 
 
             // Apply
             this.XFormat.Read(XCSV_DATA_ITEMS['table'].trimPlus([' |'])) 
-            this.Activate()
+            // this.Activate()
         }
 
         __config(config) {
@@ -66,21 +67,23 @@ class clsXCSV {
 
             if (IsUndefined([name])) {
                 this.XData = this.XItems[0]; 
-                this.XSelection.ActiveItemsName = this.XItems[0].name
+                this.XSelection.Activate(0)
                 return }
             
             //else
             assert(this.XItems.map(item => item.name).includes(name))
             
             let ItemsIndex = this.XItems.map(item => item.name).indexOf(name)
-            this.XSelection.ActiveItemsName = name
+            this.XSelection.Activate(name)      // this.XSelection.Activate(ItemsIndex) would also work
             this.XData = this.XItems[ItemsIndex]
         }
 
         ActiveIndex() {
+            if (this.XSelection.SelectedID == '') return 0
+
             let ItemsIndex1 = -2; let ItemsIndex2 = -2
             // Option 1
-            ItemsIndex1 = this.XItems.map(item => item.name).indexOf(this.XSelection.ActiveItemsName)
+            ItemsIndex1 = this.XItems.map(item => item.name).indexOf(this.XSelection.ActiveItemsName())
 
 
             // Option 2
@@ -287,6 +290,7 @@ const XCSV_CONFIG = {
     'min-width': '100%',
     'SidebarVisible': true,
     'Items Numbering': false,
+    'Indicate Selections':true,
 }
 
 const XCSV_DATA_DEFAULT_VALUE = '..'
@@ -386,13 +390,14 @@ class clsXCSV_Clickhandler {
         }
 
     ClickEvent(div) {
-        if (this.parent.config['EgoID'] == div.id) this.parent.XSelection.unset()
+        if (this._IsOuterItemArea(div)) this.parent.XSelection.unsetAll()
 
         let divID = div.GetParentWithID().id
         if(!this.parent.XNames.IDs.IsItems(divID)) return
 
+        // this.parent.XSelection.set(divID) // this.parent.Activate(ItemsName); 
         let ItemsName = this.parent.XNames.IDs.ItemsName(divID)
-        this.parent.Activate(ItemsName); this.parent.XInfo.Level2(ItemsName)
+        this.parent.XInfo.Level2(ItemsName)
 
         if (this.parent.XNames.IDs.IsNameBox(divID)) {
             this._Namebox(divID)
@@ -453,6 +458,14 @@ class clsXCSV_Clickhandler {
 
     _AlreadyInFocus(divID) {
         return (this.parent.XSelection.currentSelection() == divID)
+    }
+
+// ####################################################################################
+// region State Transitions                                                           #
+// ####################################################################################
+
+    _IsOuterItemArea(div) {
+        return this.parent.config['EgoID'] == div.id
     }
 }
 class clsData {
@@ -1041,27 +1054,33 @@ class clsXCSV_Names_ID {
         // return this._egoprefix(ItemsIndex) + X["r"] + r + X["c"] + c + X["h"] + header 
     }
 
-    _row(r, ItemsIndex) {
+    _row(r, ItemsIndexOrName) {
         let X = CLSXCSV_NAMES["id"]["row"]
-        return this._egoprefix(ItemsIndex) + X["prefix"] + r + X["postfix"]
+        return this._egoprefix(ItemsIndexOrName) + X["prefix"] + r + X["postfix"]
     }
 
-    _wrapper(ItemsIndex) {
-        return this._egoprefix(ItemsIndex) + 'Wrapper'
+    _wrapper(ItemsIndexOrName) {
+        return this._egoprefix(ItemsIndexOrName) + 'Wrapper'
     }
 
-    _namebox(ItemsIndex) {
-        return this._egoprefix(ItemsIndex) + 'Namebox'
+    _namebox(ItemsIndexOrName) {
+        return this._egoprefix(ItemsIndexOrName) + 'Namebox'
     }
 
-    _sidebarItem(ItemsIndex) {
-        return this._egoprefix(ItemsIndex) + 'SidebarItem'
+    _sidebarItem(ItemsIndexOrName) {
+        return this._egoprefix(ItemsIndexOrName) + 'SidebarItem'
     }
 
 
-    _egoprefix(ItemsIndex) {
-        assert(!IsUndefined([ItemsIndex]))
-        return '[' + this.parent.XItems[ItemsIndex].name + '] '
+    _egoprefix(ItemsIndexOrName) {
+        assert(!IsUndefined([ItemsIndexOrName]))
+        ItemsIndexOrName= NumberX(ItemsIndexOrName) 
+
+        let name = ''
+        if (typOf(ItemsIndexOrName) == 'int') name = this.parent.XItems[ItemsIndexOrName].name
+        if (typOf(ItemsIndexOrName) == 'str') name = ItemsIndexOrName
+        
+        return '[' + name + '] '
     }
 
 
@@ -1097,14 +1116,14 @@ class clsXCSV_Names_ID {
     }
 
     IsNameBox(ID) {
-        for (i = 0; i< this.parent.XItems.length; i++) {
+        for (let i = 0; i< this.parent.XItems.length; i++) {
             if (ID == this._namebox(i))  return true}
         
             return false
     }
 
     IsSidebarItem(ID) {
-        for (i = 0; i< this.parent.XItems.length; i++) {
+        for (let i = 0; i< this.parent.XItems.length; i++) {
             if (ID == this._sidebarItem(i))  return true}
         
             return false 
@@ -1153,26 +1172,49 @@ class clsXCSV_Names_ID {
         return this._wrapper(idx)
     }
 
+    NameBoxID_FromChildID(divID) {
+        let idx = this.ItemsIndex(divID)
+        return this._namebox(idx)
+    }
+
 }
 class clsXCSV_Selectionhandler {
     constructor(parent) {
             this.parent = parent
             this.SelectedID = ""
-            this.ActiveItemsName = ""
+            // this.ActiveItemsName = ""
         }
 
-    // set elemenets inside
+    ActiveItemsName() {
+        return this.parent.XNames.IDs.ItemsName(this.SelectedID)
+    }
+
+    Activate(ItemsIndexOrName) {
+        // only if no ID is selected, then by default the namebox is selected
+        if (this.SelectedID != '') return 
+
+        let NameBoxID = this.parent.XNames.IDs._namebox(ItemsIndexOrName)
+        this.SelectedID = NameBoxID
+        if(document.getElementById(NameBoxID)) this.set(NameBoxID) 
+    }
+
     set(divID) {
+        this.unsetAll()
+        let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
         // set content
         this.SelectedID = divID
-        let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(divID)
-        document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")
-        document.getElementById(wrapperID).classList.add("bg-lblue-light")
+        this.parent.XData = this.parent.XItems[ItemsIndex]
+
+        if (this.parent.config['Indicate Selections']) this.parent.XSIndicator.set(ItemsIndex, divID)
         
-        // set sidebar
-        let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
-        let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
-        document.getElementById(targetSidebarItemID).classList.add("xcsv-focus","bg-lblue")
+        // // set content style ( actually this should be part of print, as it handles dom layout)
+        // let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(divID)
+        // document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")   
+        // document.getElementById(wrapperID).classList.add("bg-lblue-light")
+        
+        // // set sidebar style 
+        // let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
+        // document.getElementById(targetSidebarItemID).classList.add("xcsv-focus","bg-lblue")
         
         // messages
         let X = this.parent.XNames.IDs; let msg = ''
@@ -1192,22 +1234,28 @@ class clsXCSV_Selectionhandler {
             this.parent.XInfo.Level3(msg); return}
     }
 
+    unsetAll() {
+        this.unset()
+        // this.ActiveItemsName = ""
+    }
+
     unset() {
-        if (this.SelectedID != "") {
-            if (document.getElementById(this.SelectedID)) {
-                // in case edit is active
-                EDIT.Init_Undo()
+        if (this.SelectedID == '') return
+        if (this.SelectedID == this.parent.XNames.IDs._namebox(0)) return   // per default, the min selection is the first namebox is kept.
 
-                //content
-                document.getElementById(this.SelectedID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
-                let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(this.SelectedID)
-                document.getElementById(wrapperID).classList.remove("bg-lblue-light")
+        if (document.getElementById(this.SelectedID)) {
+            // in case edit is active
+            EDIT.Init_Undo()
 
-                // sidebar
-                let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(this.SelectedID)
-                let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
-                document.getElementById(targetSidebarItemID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
-            }
+            //content
+            document.getElementById(this.SelectedID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
+            let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(this.SelectedID)
+            document.getElementById(wrapperID).classList.remove("bg-lblue-light")
+
+            // sidebar
+            let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(this.SelectedID)
+            let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
+            document.getElementById(targetSidebarItemID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
         }
         this.SelectedID = ""
         this.parent.XInfo.Level3(this.SelectedID)
@@ -1244,3 +1292,22 @@ class clsXCSV_Selectionhandler {
     }
 
 }
+class clsXCSV_SelectionIndicator {
+    constructor(parent) {
+            this.parent = parent
+        }
+
+        set(ItemsIndex, divID) {
+            if (this.parent.config['Indicate Selections']) {
+                // set content style
+                let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(divID)
+                document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")   
+                document.getElementById(wrapperID).classList.add("bg-lblue-light")
+                        
+                // set sidebar style 
+                let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
+                document.getElementById(targetSidebarItemID).classList.add("xcsv-focus","bg-lblue")     
+            }
+
+        }
+    }

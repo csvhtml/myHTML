@@ -27,6 +27,13 @@ function NoBlanks(text) {
     return text.replace(/ /g, "")
 }
 
+function NumberX(text) {
+    if (typOf(text) == 'str') {
+        if (ValidChars('012345789', text)) return Number(text)}
+   
+    return text
+}
+
 function byVal(data) {
     // Creates a hard copy of a variable (instead of just createing a reference in case of list and dictioaries). 
     // It mimics the 'byVal' operater in VBA, hence the name

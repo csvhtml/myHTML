@@ -18,6 +18,7 @@ function test_XCSV(divID, myTest) {
 	test_clsXSCV_Front_Default_Var2(myTest)
 	test_clsXSCV_Front_Table(myTest)
 	test_clsXSCV_Front_Gallery(myTest)
+	test_clsXSCV_Names_egoprefix(myTest)
 	test_clsXSCV_AsCSV_HeaderLine(myTest)
 	test_clsXSCV_AsCSV_HeaderLine(myTest)
 	test_clsXSCV_Sort(myTest)
