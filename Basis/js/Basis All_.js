@@ -5,6 +5,7 @@ const BASIS = {
 	NumberX: function(text) {return NumberX(text)},
 	byVal: function(data) {return byVal(data)},
 	ValidChars: function(validChars, text) {return ValidChars(validChars, text)},
+	shortenString: function(str, maxChars) {return shortenString(str, maxChars)},
 	typOf: function(variable, extendedInfo = false) {return typOf(variable, extendedInfo)},
 	ListDepth: function(ListVariable) {return ListDepth(ListVariable)},
 	NtoX: function(n, x) {return NtoX(n, x)},
@@ -33,6 +34,8 @@ const BASIS = {
 	HTMLTable_TableRowsCols: function(p) {return HTMLTable_TableRowsCols(p)},
 	HTMLTable_DefaultVal: function(key, nCols, nRows) {return HTMLTable_DefaultVal(key, nCols, nRows)},
 	HTMLTable_Row: function(config) {return HTMLTable_Row(config)},
+	mergeRows: function(table, r, c) {return mergeRows(table, r, c)},
+	unmergeRows: function(table, r, c) {return unmergeRows(table, r, c)},
 	IsObject: function(variable) {return IsObject(variable)},
 	IsString: function(variable) {return IsString(variable)},
 	IsUndefined: function(variables) {return IsUndefined(variables)},
@@ -120,6 +123,17 @@ function ValidChars(validChars, text) {
     }
     return true
 }
+
+function shortenString(str, maxChars) {
+    if (str.length <= maxChars) return str
+  
+    let frontLength = Math.floor((maxChars - 4) / 2)
+    let backLength = maxChars - 4 - frontLength;
+  
+    let shortenedStr = str.substring(0, frontLength) + "...." + str.substring(str.length - backLength);
+  
+    return shortenedStr;
+  }
 
 function typOf(variable, extendedInfo = false) {
     if (Array.isArray(variable)) {
@@ -677,6 +691,47 @@ function _DOM_Tags(DOM, id="", clas="", style="") {
         DOM.style.cssText = style}
 
     return DOM
+}
+
+
+// ############################################################################
+// region Merge                                                               #
+// ############################################################################
+
+function mergeRows(table, r, c) {
+    if (_hasHeaderRow(table)) r += 1
+    let row = table.rows[r];
+    let rowBelow = table.rows[r+1];let cellBelow = null
+    let cell = row.cells[c];
+    if (rowBelow) cellBelow = rowBelow.cells[c]
+  
+    if (cellBelow) {
+        cell.rowSpan += cellBelow.rowSpan;
+        rowBelow.removeChild(cellBelow);
+    }
+
+    return table
+}
+
+function unmergeRows(table, r, c) {
+    if (_hasHeaderRow(table)) r += 1
+    let row = table.rows[r]; let rowBelow = table.rows[r+1]
+    let cell = row.cells[c];
+    let cellNew = document.createElement('td')
+    let cellBelow = rowBelow.cells[c];
+  
+    if (cell.rowSpan > 1) {
+        cell.rowSpan = 1
+        rowBelow.insertBefore(cellNew, cellBelow)
+    }
+
+    return table
+}
+
+function _hasHeaderRow(table) {
+    let firstRow = table.rows[0];
+    let allCellsAreTH = Array.from(firstRow.cells).every(cell => cell.tagName === 'TH');
+    return allCellsAreTH;
 }
 function IsObject(variable) {
     return typeof variable === 'object' && variable !== null && !Array.isArray(variable);

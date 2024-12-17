@@ -65,6 +65,17 @@ function ValidChars(validChars, text) {
     return true
 }
 
+function shortenString(str, maxChars) {
+    if (str.length <= maxChars) return str
+  
+    let frontLength = Math.floor((maxChars - 4) / 2)
+    let backLength = maxChars - 4 - frontLength;
+  
+    let shortenedStr = str.substring(0, frontLength) + "...." + str.substring(str.length - backLength);
+  
+    return shortenedStr;
+  }
+
 function typOf(variable, extendedInfo = false) {
     if (Array.isArray(variable)) {
         if (extendedInfo) {

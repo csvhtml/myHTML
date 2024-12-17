@@ -313,30 +313,31 @@ function test_MarkupSVG(myTest) {
 // #############################################################################################################
 // # HTML table                                                                                                #
 // #############################################################################################################
+const var_tableStr = '\
+<table>\
+    <thead>\
+        <tr>\
+            <th></th>\
+            <th></th>\
+            <th></th>\
+        </tr>\
+    </thead>\
+    <tbody>\
+        <tr>\
+            <td></td>\
+            <td></td>\
+            <td></td>\
+        </tr>\
+        <tr>\
+            <td></td>\
+            <td></td>\
+            <td></td>\
+        </tr>\
+    </tbody>\
+</table>'
 
 function test_HTMLTable(myTest) {
-    let tableStr = '\
-    <table>\
-        <thead>\
-            <tr>\
-                <th></th>\
-                <th></th>\
-                <th></th>\
-            </tr>\
-        </thead>\
-        <tbody>\
-            <tr>\
-                <td></td>\
-                <td></td>\
-                <td></td>\
-            </tr>\
-            <tr>\
-                <td></td>\
-                <td></td>\
-                <td></td>\
-            </tr>\
-        </tbody>\
-    </table>'
+    let tableStr = var_tableStr
     let table = HTML_Table()
     myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
 }
@@ -604,6 +605,80 @@ function test_HTMLTable_Table_Config_2(myTest) {
     table.mySetHeaders(["H-1", "H-2"])
     myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
 }
+
+function test_HTMLTable_Table_Merge00(myTest) {
+    let tableStr = '\
+    <table><thead>\
+            <tr>\
+                <th>H-1</th>\
+                <th>H-2</th>\
+            </tr>\
+        </thead>\
+        <tbody>\
+            <tr>\
+                <td rowspan="2">A</td>\
+                <td>B</td>\
+            </tr>\
+            <tr>\
+                <td>D</td>\
+            </tr>\
+    </tbody></table>'
+
+    let tableStr2 = '\
+    <table><thead>\
+            <tr>\
+                <th>H-1</th>\
+                <th>H-2</th>\
+            </tr>\
+        </thead>\
+        <tbody>\
+            <tr>\
+                <td rowspan="1">A</td>\
+                <td>B</td>\
+            </tr>\
+            <tr>\
+                <td></td>\
+                <td>D</td>\
+            </tr>\
+    </tbody></table>'
+
+    let table = HTML_Table({cellsText: [["A", "B"], ["C", "D"]]})
+    table.mySetHeaders(["H-1", "H-2"])
+    table = mergeRows(table,0,0)
+    myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
+    table = unmergeRows(table,0,0)
+    myTest.Equal(table.outerHTML,tableStr2.trimPlus([' <']), arguments.callee.name)
+}
+
+function test_HTMLTable_Table_Merge10(myTest) {
+    let tableStr = '\
+    <table><thead>\
+            <tr><th>H-1</th><th>H-2</th>\
+            </tr>\
+        </thead><tbody>\
+            <tr><td>A</td><td>B</td></tr>\
+            <tr><td rowspan="2">C</td><td>D</td></tr>\
+            <tr><td>F</td></tr>\
+    </tbody></table>'
+
+    let tableStr2 = '\
+    <table><thead>\
+            <tr><th>H-1</th><th>H-2</th>\
+            </tr>\
+        </thead><tbody>\
+            <tr><td>A</td><td>B</td></tr>\
+            <tr><td rowspan="1">C</td><td>D</td></tr>\
+            <tr><td></td><td>F</td></tr>\
+    </tbody></table>'
+
+    let table = HTML_Table({cellsText: [["A", "B"], ["C", "D"], ["E","F"]]})
+    table.mySetHeaders(["H-1", "H-2"])
+    table = mergeRows(table,1,0)
+    myTest.Equal(table.outerHTML,tableStr.trimPlus([' <']), arguments.callee.name)
+    table = unmergeRows(table,1,0)
+    myTest.Equal(table.outerHTML,tableStr2.trimPlus([' <']), arguments.callee.name)
+}
+
 // #############################################################################################################
 // # Prototype tests                                                                                           #
 // #############################################################################################################

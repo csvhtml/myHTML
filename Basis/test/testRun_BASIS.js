@@ -30,6 +30,8 @@ function test_BASIS(divID, myTest) {
 	test_HTMLTable_SetCells(myTest)
 	test_HTMLTable_Table_Config(myTest)
 	test_HTMLTable_Table_Config_2(myTest)
+	test_HTMLTable_Table_Merge00(myTest)
+	test_HTMLTable_Table_Merge10(myTest)
 	proto_listCount(myTest)
 	proto_listRemoveX(myTest)
 	proto_listRemoveAll(myTest)

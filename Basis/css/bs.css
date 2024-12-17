@@ -135,8 +135,10 @@
 }
 
 .lh-5 {
-    line-height: 5;
-}
+    line-height: 5;}
+    
+.lh-22 {
+    line-height: 2.2;}
 
 textarea {
     display: block;

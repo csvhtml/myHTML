@@ -283,3 +283,44 @@ function _DOM_Tags(DOM, id="", clas="", style="") {
 
     return DOM
 }
+
+
+// ############################################################################
+// region Merge                                                               #
+// ############################################################################
+
+function mergeRows(table, r, c) {
+    if (_hasHeaderRow(table)) r += 1
+    let row = table.rows[r];
+    let rowBelow = table.rows[r+1];let cellBelow = null
+    let cell = row.cells[c];
+    if (rowBelow) cellBelow = rowBelow.cells[c]
+  
+    if (cellBelow) {
+        cell.rowSpan += cellBelow.rowSpan;
+        rowBelow.removeChild(cellBelow);
+    }
+
+    return table
+}
+
+function unmergeRows(table, r, c) {
+    if (_hasHeaderRow(table)) r += 1
+    let row = table.rows[r]; let rowBelow = table.rows[r+1]
+    let cell = row.cells[c];
+    let cellNew = document.createElement('td')
+    let cellBelow = rowBelow.cells[c];
+  
+    if (cell.rowSpan > 1) {
+        cell.rowSpan = 1
+        rowBelow.insertBefore(cellNew, cellBelow)
+    }
+
+    return table
+}
+
+function _hasHeaderRow(table) {
+    let firstRow = table.rows[0];
+    let allCellsAreTH = Array.from(firstRow.cells).every(cell => cell.tagName === 'TH');
+    return allCellsAreTH;
+}

@@ -61,7 +61,7 @@ class clsXCSV_Selectionhandler {
 
     unset() {
         if (this.SelectedID == '') return
-        if (this.SelectedID == this.parent.XNames.IDs._namebox(0)) return   // per default, the min selection is the first namebox is kept.
+        if (this.parent.XItems.length == 1) return   // if there's only one item, i can not be unselected
 
         if (document.getElementById(this.SelectedID)) {
             // in case edit is active

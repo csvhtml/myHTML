@@ -246,7 +246,25 @@ table.table {
 .sidebar-button {
   position: fixed;
   top: 50pt;
-  left: 155pt
+  left: 155pt;
+  padding-block: 3px 
+}
+
+nav > drop:hover downH {
+  display: block;
+}
+
+.flexDown {
+  display: none;
+}
+
+.flexDrop:hover .flexDown {
+  display: flex;
+}
+
+.flexDrop:hover {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 #id-content {

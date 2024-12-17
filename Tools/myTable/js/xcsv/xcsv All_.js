@@ -843,18 +843,21 @@ class clsFormatHTML {
 
     SidebarItem(idx) {
         let ret = document.createElement('DIV')
-        let name = this.parent.XItems[idx].name
+        let name = shortenString(this.parent.XItems[idx].name,24)
         ret.id = this.parent.XNames.IDs._sidebarItem(idx)
-        ret.innerHTML = name
-        ret.className = "flex-container"
+        ret.innerHTML = String(idx+1) + '. ' + name
+        ret.className = "flex-container flexDrop"
 
-        if (idx == 0) return ret
-        let buttonWrapper = NewDiv({id:'id-button-Wrapper'+ name, class:'flex-container', innerHTML:''})
+        if (idx == 0) {
+            ret.style.marginTop = "40px"
+            return ret}
+        let buttonWrapper = NewDiv({id:'id-button-Wrapper'+ name, class:'flex-container flexDown', innerHTML:''})
         let buttonUp = NewDiv({type:'a', id:'id-buttonUp-' + name, innerHTML: '&#8613;', class:'p-0-3 btn'})
         buttonUp.setAttribute('onclick', "MoveUp('" + idx + "')")
         let buttonDown = NewDiv({type:'a', id:'id-buttonDown-' + name, innerHTML: '&#8615;', class:'p-0-3 ml-5 btn'})
         buttonDown.setAttribute('onclick', "MoveDown('" + idx + "')")
         buttonWrapper.appendChild(buttonUp).appendChild(buttonDown)
+        // buttonWrapper.style.display = 'none'
         ret.appendChild(buttonWrapper)
         return ret
     }
@@ -1241,7 +1244,7 @@ class clsXCSV_Selectionhandler {
 
     unset() {
         if (this.SelectedID == '') return
-        if (this.SelectedID == this.parent.XNames.IDs._namebox(0)) return   // per default, the min selection is the first namebox is kept.
+        if (this.parent.XItems.length == 1) return   // if there's only one item, i can not be unselected
 
         if (document.getElementById(this.SelectedID)) {
             // in case edit is active
