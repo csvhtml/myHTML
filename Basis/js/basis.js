@@ -1,15 +1,3 @@
-// ################################################################
-// Assert                                                         #
-// ################################################################
-
-function assert(condition, message) {
-    if (!condition) {
-        if (IsString1(message)) {
-            throw new Error(message);
-        } else {
-            throw new Error}
-    }
-}
 
 // ################################################################
 // Useful functions                                               #
@@ -34,28 +22,6 @@ function NumberX(text) {
     return text
 }
 
-function byVal(data) {
-    // Creates a hard copy of a variable (instead of just createing a reference in case of list and dictioaries). 
-    // It mimics the 'byVal' operater in VBA, hence the name
-    
-    if ( ["bool", "str", "int"].indexOf(typOf(data)) >-1) {
-        return data} // as they are 'hard copied' by default
-
-    if (typOf(data) == "list") {
-        let ret = []
-        for (let element of data) {
-            ret.push(byVal(element))}
-        return ret}
-    
-    if (typOf(data) == "dict") { 
-        let ret = { }
-        let keys= Object.keys(data)
-        for (let key of keys) {
-            ret[key] = byVal(data[key])}
-        return ret}
-
-    return data
-}
 
 function ValidChars(validChars, text) {
     for (char of text) {
@@ -75,27 +41,6 @@ function shortenString(str, maxChars) {
   
     return shortenedStr;
   }
-
-function typOf(variable, extendedInfo = false) {
-    if (Array.isArray(variable)) {
-        if (extendedInfo) {
-            return 'list' + '-' + String(ListDepth(variable)) + 'D'}
-        return 'list'} // javascript 'Array'
-    if (typeof variable === 'object' && variable !== null) {
-        return 'dict'} // javascript 'Object'
-    if (typeof variable === 'string') {
-        return 'str'}
-    if (typeof variable === 'number') {
-        return 'int'}
-    if (typeof variable === 'boolean') {
-        return 'bool'}
-    if (variable === null) {
-        return 'null'}
-    if (variable === undefined) {
-        return 'undefined'}
-
-    assert(false, String(variable))
-}
 
 function ListDepth(ListVariable) {
     if (typOf(ListVariable) != 'list') {return 0}

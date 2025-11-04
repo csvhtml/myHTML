@@ -35,7 +35,7 @@ function MyMarkDowntoHTML(markupText) {
     assert(typOf(markupText) == 'str')
 
     let pats3 = PatternsInText(markupText, ["[", "::", "]"])
-    let pats2 = PatternsInText(markupText, ["[", "]"]); pats2.removeItems(pats3)
+    let pats2 = PatternsInText(markupText, ["[", "]"]); pats2.removeAll(pats3)
 
     htmlText = _MyMarkDown_FeaturesWithoutBrackets_Apply(markupText)
 

@@ -1,161 +1,167 @@
 class clsFormatHTML {
     constructor(parent) {
         this.parent = parent
+        this.Item = new clsFormatHTML_Item(this.parent)
     }
-
     
     Print() {
-        this.parent.OrderItems()
-        document.getElementById(this.parent.config["EgoID"]).innerHTML = this.PrintContent()
+        let _PRINT = new _clsPrintHTML(this.parent)
+        _PRINT.ClearContent()
+
+        let contentDiv = _PRINT.XItemsAsContentDiv("id-main")
+        document.getElementById(this.parent.config["EgoID"]).appendChild(contentDiv)
+        document.title = "XSV: "  + this.parent.title
+        this.parent.XSelection.Indicate()
+
+        PROXY.EDITABLE()
         
-        this.PrintSidebar()
-        
-        this.parent.XSelection.unset() 
+        PROXY.USERCLICK_Init()
+
+        document.getElementById("id-main").firstElementChild.addEventListener('scroll', CheckDivVisibility);
         
         this.parent.XHISTORY.ShowBars()
     }
-    
-    PrintContent(prefix = '') {
-        let ret = prefix
-        let wrapper = null
-        for (let i = 0; i < this.parent.XItems.length; i++) {
-            wrapper = this.Wrapper(i)
-            wrapper.appendChild(this.HeaderBox(i))
-            wrapper.appendChild(this.DataAsDivTable(i))
 
-            // ret += this.HeaderBox(i).outerHTML
-            // ret += this.PrintItems(i)
-            ret += wrapper.outerHTML
+    _SidebarData() {
+        let ret = []
+        for (let i = 0; i < this.parent.XItems.length; i++) {
+            ret.push(this.parent.XItems[i].Name_ChildrenNames())
         }
-        // return wrapper.outerHTML
         return ret
     }
 
-    PrintSidebar() {
-        if (this.parent.config["SidebarID"] == null) return
+ 
 
-        let ret = ''
+    SetViewMode(typ) {
+        assert(['tables', 'wiki', 'table', 'items'].includes(typ))
+        XCSV_CONFIG['ContentStyle'] = typ
+        this.Print()
+    }
+
+
+}
+
+
+
+
+// region Print
+
+class _clsPrintHTML {
+    //collection of functions to print HTML
+    constructor(parent) {
+        this.parent = parent
+    }
+
+    ClearContent() {
+        document.getElementById(this.parent.config["EgoID"]).innerHTML = ''
+    }
+
+    XItemsAsContentDiv(targetID) {
+        let retNode = document.createElement('div')
+        if (targetID != undefined) retNode.id = targetID
+        let wrapper = null; let appender = null
+        let style = XCSV_CONFIG['ContentStyle']
         for (let i = 0; i < this.parent.XItems.length; i++) {
-            ret += this.SidebarItem(i).outerHTML
+            if (style == 'tables') appender = this._DataAsDivTable(i)
+            if (style == 'wiki') appender = this._DataAsWiki(i)
+                
+            wrapper = this._Wrapper(i)
+            wrapper.appendChild(this._HeaderBox(i))
+            wrapper.appendChild(appender)
+
+            retNode.appendChild(wrapper)
         }
 
-        // cant set on elevel higher, since sidebar might not exist
-        document.getElementById(this.parent.config["SidebarID"]).innerHTML =  ret
-        return 
+        this._MarkupToHTML(retNode)
+        return retNode
     }
 
-    PrintItems(idx) {
-        if (this.parent.XItems[idx].Type() == 'table') {
-            // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.DataAsHTML("", idx)
-            return this.DataAsHTML("", idx)}
-        
-        if (this.parent.XItems[idx].Type() == 'gallery') {
-            // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.Gallery(idx)
-            return this.Gallery(idx)}
-
-        if (this.parent.XItems[idx].Type() == 'text') {
-            // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.Text(idx)
-            return this.Text(idx)}
-     
-    }
-
-    Wrapper(idx) {
+    _Wrapper(idx) {
         let ret = document.createElement('DIV')
         ret.id = this.parent.XNames.IDs._wrapper(idx)
         ret.innerHTML = ''
-        ret.className = 'pl-8'
-        // ret.style = "min-width:" + XCSV_CONFIG['min-width']+';'
-
+        ret.className = 'ContentWrapper pl-8 mb-30 js-event'
+        // UIN.addEventListeners(ret)
         return ret
     }
 
-    HeaderBox(idx) {
+    _HeaderBox(idx) {
         let ret = document.createElement('DIV')
         ret.id = this.parent.XNames.IDs._namebox(idx)
-        ret.innerHTML = this.parent.XItems[idx].name
-        ret.className = "NameBox"
+        ret.innerHTML = this.parent.XItems[idx].myName
+        ret.className = "js-event js-edit NameBox py-12 px-15"
         ret.style = "min-width:" + XCSV_CONFIG['min-width']+';'
-
+        // UIN.addEventListeners(ret)
         return ret
     }
 
-    SidebarItem(idx) {
-        let ret = document.createElement('DIV')
-        let name = shortenString(this.parent.XItems[idx].name,24)
-        ret.id = this.parent.XNames.IDs._sidebarItem(idx)
-        ret.innerHTML = String(idx+1) + '. ' + name
-        ret.className = "flex-container flexDrop"
 
-        if (idx == 0) {
-            ret.style.marginTop = "40px"
-            return ret}
-        let buttonWrapper = NewDiv({id:'id-button-Wrapper'+ name, class:'flex-container flexDown', innerHTML:''})
-        let buttonUp = NewDiv({type:'a', id:'id-buttonUp-' + name, innerHTML: '&#8613;', class:'p-0-3 btn'})
-        buttonUp.setAttribute('onclick', "MoveUp('" + idx + "')")
-        let buttonDown = NewDiv({type:'a', id:'id-buttonDown-' + name, innerHTML: '&#8615;', class:'p-0-3 ml-5 btn'})
-        buttonDown.setAttribute('onclick', "MoveDown('" + idx + "')")
-        buttonWrapper.appendChild(buttonUp).appendChild(buttonDown)
-        // buttonWrapper.style.display = 'none'
-        ret.appendChild(buttonWrapper)
-        return ret
-    }
+    _DataAsDivTable(ItemsIndex) {
+        let data = this.parent.XItems[ItemsIndex].data
+        // let table = HTML_Table({cellsText:this._MarkupToX(ItemsIndex)})
 
-    _MarkupToX(ItemsIndex) {
-        let ret = []
-        for (let row of this.parent.XItems[ItemsIndex].data) {
-            let tmp = []
-            for (let cell of row) {
-                let value = cell
-                value = MyMarkDowntoHTML(value)
-                tmp.push(value)}
-            ret.push(tmp)}
-        return ret
-    }
-
-    Gallery(ItemsIndex) {
-        assert(this.parent.XItems[ItemsIndex].Type() == 'gallery')
-        let ret = ''
-        ret +=  '<b>' + String(this.parent.XItems[ItemsIndex].headers[0]) + '</b><br/>\n' 
-        ret += '<div class="image-gallery">'
-        for (let item of this.parent.XItems[ItemsIndex].data) {
-            ret += '<a href="' + item + '" target = "_blank"><img src="' + item + '"></a>'}
-        ret += '</div>'
-        return ret
-    }
-
-    Text(ItemsIndex) {
-        assert(this.parent.XItems[ItemsIndex].Type() == 'text')
-
-        return '' +
-            HTMLTable_FromConfig({
-            tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
-            tableClass: "table xcsv",
-            tableStyle: "min-width:" + XCSV_CONFIG['min-width']+';',
-            thsText: [this.parent.XItems[ItemsIndex].headers[0].after('[text]')],
-            thsID: this.parent.XNames.IDs.headers(ItemsIndex),
-            rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
-            cellsText: this._MarkupToX(ItemsIndex),
-            cellsID: this.parent.XNames.IDs.cells(ItemsIndex),
-        })
-    }
-
-    DataAsHTML(pre = "", ItemsIndex) {
-        let table = this.DataAsDivTable(ItemsIndex)
-        return pre + table.outerHTML
-    }
-
-    DataAsDivTable(ItemsIndex) {
-        let table = HTML_Table({cellsText:this._MarkupToX(ItemsIndex)})
-        table.id = "id-table-" + this.parent.XItems[ItemsIndex].name
-        table.className = "table"
+        let table = HTML_Table({cellsText:data})
+        table.id = this.parent.XNames.IDs.table(ItemsIndex)
+        table.className = "tableStyle-01 ItemsTable"
         table.style = "min-width:" + XCSV_CONFIG['min-width']+';'
         
-        table.mySetHeaders(this.parent.XItems[ItemsIndex].headers)
-        table.mySetHeadersID(this.parent.XNames.IDs.headers(ItemsIndex))
-        // table.mySetHeadersClass() 
-        table.mySetRowsID(this.parent.XNames.IDs.rows(ItemsIndex))
-        table.mySetCellsID(this.parent.XNames.IDs.cells(ItemsIndex))
+        table.bSetHeaders(this.parent.XItems[ItemsIndex].headers)
+        table.bSetHeadersID(this.parent.XNames.IDs.headers(ItemsIndex))
+       
+        table.bSetRowsID(this.parent.XNames.IDs.rows(ItemsIndex))
+        table.bSetCellsID(this.parent.XNames.IDs.cells(ItemsIndex))
+
+        table.bAddClassToCells('cell js-edit js-event', true);
+
+        if (cSITE["colorTheme"] == 'dark')  table.bSetRowsClass('dark-2') 
         return table
     }
 
+    // takes only the data of the header 'name' and 'description' and creates a 
+    // div with the name as h2 and the description as p
+    _DataAsWiki(ItemsIndex) {
+        let ret = document.createElement('div')
+        let table = this._DataAsDivTable(ItemsIndex)
+        let nameIndex = table.b_HeaderIndex("name");
+        let descriptionIndex = table.b_HeaderIndex("description");
+        for (let i = 1; i < table.rows.length; i++) {
+            let row = table.rows[i]
+            
+            let divName = document.createElement('div')
+            divName.innerHTML = row.cells[nameIndex].innerHTML
+            divName.id = this.parent.XNames.IDs.wikiName(ItemsIndex, i-1)
+            divName.className = 'h3-m0 wiki-name cell js-edit js-event px-12 py-6'
+            // divName.innerHTML += new MyMarkDown().toHTML('## ' + row.cells[nameIndex].innerText + '\n')
+            // divName.innerHTML = divName.innerHTML.until('<br'); divName.className = 'wiki-name'
+            
+            let divDescription = document.createElement('div')
+            divDescription.innerHTML += row.cells[descriptionIndex].innerHTML;
+            divDescription.id = this.parent.XNames.IDs.wikiDescription(ItemsIndex, i-1)
+            divDescription.className = 'wiki-description cell js-edit js-event px-12 py-6'
+
+            let divhorizontal = document.createElement('hr')
+            divhorizontal.className = 'fade-grey mb-12'
+
+            let divNameDescription = document.createElement('div')
+
+            // ret.appendChild(divName)
+            // ret.appendChild(divDescription)
+            // ret.appendChild(divhorizontal)
+            divNameDescription.appendChild(divName)
+            divNameDescription.appendChild(divDescription)
+            ret.appendChild(divNameDescription)
+            ret.appendChild(divhorizontal)
+        }
+        return ret
+    }
+
+    _MarkupToHTML(div)  {
+        let cells = div.querySelectorAll('.cell');
+        for (let cell of cells) {
+            cell.innerHTML = clsMarkDown.toHTML(cell.innerHTML);
+        }
+        return div;
+    }
+
 }
+

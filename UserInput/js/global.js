@@ -33,3 +33,12 @@ function outLeave ()  {
     }
 
 }
+
+function sidebarClick(event) {
+    let li= null
+    if (event instanceof PointerEvent) li = event.target;
+    if (event instanceof HTMLElement) li = event;
+    if (event instanceof TouchEvent) li = event.target;
+
+    console.log(li.innerHTML)
+}

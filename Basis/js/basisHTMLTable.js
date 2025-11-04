@@ -37,7 +37,7 @@ function HTML_Table(config) {
     if (!IsUndefined([config])) {
         // if defined, then cellsText must be defined
         table = _HTML_Table_Skeleton(config['cellsText'].Shape()[0], config['cellsText'].Shape()[1])
-        table.mySetCells(config['cellsText'])}
+        table.bSetCells(config['cellsText'])}
 
 
     // if (!IsUndefined([config])) {

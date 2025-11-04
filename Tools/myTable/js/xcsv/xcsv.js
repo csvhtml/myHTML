@@ -5,24 +5,24 @@
 class clsXCSV {
         constructor(config) {   
             this.config = this.__config(config)
-            this.title = XCSV_DATA_ITEMS['title']
+            this.title = XCSV_DATA_ITEMS['filename']
 
             this.XAssert = new clsXCSV_assert(this)
-            this.XFormat = new clsFormatFile(this)
+            this.XFormat = new clsReadFile(this)
+            this.XItemsD = new clsDataD(this)
             this.XItems = []
             this.XItems_Baseline = []
             this.XHTML = new clsFormatHTML(this)
             this.XNames = new clsXCSV_Names(this) 
             this.XClick = new clsXCSV_Clickhandler(this)
             this.XSelection = new clsXCSV_Selectionhandler(this)
-            this.XSIndicator = new clsXCSV_SelectionIndicator(this)
+            this.XAsText = new clsSiteAsText(this)
             this.XInfo = new clsXCSV_Infohandler(this)
             this.XHISTORY = new clsXCSV_ChangeHandler(this)
 
 
             // Apply
             this.XFormat.Read(XCSV_DATA_ITEMS['table'].trimPlus([' |'])) 
-            // this.Activate()
         }
 
         __config(config) {
@@ -35,8 +35,22 @@ class clsXCSV {
             return ret
         }
 
+        Migration() {
+            for (let XItem of this.XItems) {
+                for (let item of XItem.dicts) {
+                    this.XItemsD.add(item)
+                }
+            }
+        }
+
+        ItemsByName(name) {
+            assert(typOf(name) == 'str')
+            let idx = this.ItemsNamesList().indexOf(name)
+            return this.XItems[idx]
+        }
+
         ItemsNamesList() {
-            return this.XItems.map(item => item.name)}
+            return this.XItems.map(item => item.myName)}
 
         ItemsNamesExist(name) {
             if (this.ItemsNamesList().includes(name)) return true
@@ -45,7 +59,7 @@ class clsXCSV {
 
         ItemNameAvailable(proposal) {
             while (this.ItemsNamesExist(proposal)) {
-                proposal += '-copy'
+                proposal += ' copy'
             }
             return proposal
         }
@@ -62,48 +76,32 @@ class clsXCSV {
                 this.config[k] = cfg[k]} // set config
         }
 
-        Activate(name) {
-            document.title = this.title
-
-            if (IsUndefined([name])) {
-                this.XData = this.XItems[0]; 
-                this.XSelection.Activate(0)
-                return }
-            
-            //else
-            assert(this.XItems.map(item => item.name).includes(name))
-            
-            let ItemsIndex = this.XItems.map(item => item.name).indexOf(name)
-            this.XSelection.Activate(name)      // this.XSelection.Activate(ItemsIndex) would also work
-            this.XData = this.XItems[ItemsIndex]
+        Reset() {
+            this.XItems = []
+            this.XSelection.SetToDefault()
+            this.XFormat.Read(XCSV_DATA_ITEMS['table'].trimPlus([' |'])) 
+            XCSV.Config({})
+            XCSV.XHTML.Print()
         }
 
-        ActiveIndex() {
-            if (this.XSelection.SelectedID == '') return 0
+        Activate(divID) {
+            this.XSelection.Activate(divID)
+        }
 
-            let ItemsIndex1 = -2; let ItemsIndex2 = -2
-            // Option 1
-            ItemsIndex1 = this.XItems.map(item => item.name).indexOf(this.XSelection.ActiveItemsName())
-
-
-            // Option 2
-            for (let i = 0; i < this.XItems.length; i++) {
-                if (this.XItems[i] === this.XData) ItemsIndex2 = i}
-
-            assert(ItemsIndex1 == ItemsIndex2)
-            return ItemsIndex1
+        SetViewMode(mode) {
+            this.XHTML.SetViewMode(mode)
         }
 
         Title(newTitle) {
             if (newTitle == undefined) return this.title
             this.title = newTitle
-            this.Activate()
         }
 
         Add(headers, data, name) {  // when headers, data are defined, then also gallery and text are added here
             if (IsPartlyUndefined[headers, data, name]) return false       // either compeltey defined or not
             this.xAdd(headers, data, name)
             this.XHTML.Print()
+            PROXY.CreateSidebar(this.XHTML._SidebarData())
         }
 
         Add_Text() {
@@ -122,12 +120,11 @@ class clsXCSV {
         }
 
         Remove(ItemsIndex) {
-            if (IsUndefined([ItemsIndex])) ItemsIndex = this.ActiveIndex()
-            let flag = false
-            if (this.XData === this.XItems[ItemsIndex]) flag = true
+            if (IsUndefined([ItemsIndex])) ItemsIndex = this.XSelection.ActiveItemsIndex()
             this.XItems.splice(ItemsIndex,1)
-            if (flag) this.Activate()
+            this.XSelection.SetToDefault()
             this.XHTML.Print()
+            PROXY.CreateSidebar(this.XHTML._SidebarData())
         }
 
         xAdd(headers, data, name, index) {
@@ -139,18 +136,20 @@ class clsXCSV {
 
             if (IsUndefined([index])) index = this.XItems.length
             this.XItems.splice(index, 0, x)
+            this.XSelection.Activate(index)
         }
         
         AddRow() {
-            this.XHISTORY.Shift(1,0)
-            this.XData.AddRow()
+            let selected = this.XSelection.ActiveItemsIndex()
+            // this.XHISTORY.Shift(1,0)
+            this.XItems[selected].AddRow()
             this.XHTML.Print()
         }
 
         AddCol() {
             let lastHeaderName = this.XData.headers[this.XData.headers.length-1]
-            this.XHISTORY.Shift(0,1)
-            this.XData.AddCol(lastHeaderName + '-copy')
+            // this.XHISTORY.Shift(0,1)
+            this.XData.AddCol(lastHeaderName + ' copy')
             this.XHTML.Print()
         }
 
@@ -180,38 +179,33 @@ class clsXCSV {
             this.XHTML.Print()
         }
 
-        _OVERWRTIE_XItem(idx, newItem) {
-            this.XItems[idx] = newItem
+        SetValue(name, row, col, value) {
+            assert(typOf(name) == 'str' && typOf(row) == 'int' && typOf(col) == 'int')
+            assert(this.XItems.map(item => item.myName).includes(name))
+   
+            let idx = this.ItemsNamesList().indexOf(name)
+            this.XItems[idx].SetValue(row, col, value)
+
+            return clsMarkDown.toHTML(value)
         }
 
-        OrderItems() {
-            if (!this.Config('Items Numbering')) return 
-            
-            // 1a) numbered in one basket, unnumberd in the otehr 
-            let retNumberd_Name = []; let retNot_Name = []
-            for (let i = 0; i< this.XItems.length; i++) {
-                if (this.OrderItems_IsNumbered(this.XItems[i].name)) {
-                    retNumberd_Name.push(this.XItems[i].name)
-                } else {
-                    retNot_Name.push(this.XItems[i].name)
-                }
+        SetHeader(name, col, value) {
+            assert(typOf(name) == 'str' && typOf(col) == 'int' && typOf(value) == 'str')
+            assert(this.XItems.map(item => item.myName).includes(name))
+            let idx = this.ItemsNamesList().indexOf(name)
+
+            for (let colDefined of ['name', 'description']) {
+                if (this.XItems[idx].headers[col] == colDefined  && value != colDefined ) {
+                    popup('Warning', 'header "' + colDefined + '" is a pre-defined header and cannot be changed')
+                    return colDefined}
             }
 
-            // prepare new index order
-            let sorted_Name = sortByLeadingNumber(retNumberd_Name).concat(retNot_Name)
-            let sortedIndexx = []
-            
-            for (let ItemsName of sorted_Name) {
-                sortedIndexx.push(this.XNames.IDs.ItemsIndexFromName(ItemsName))}
-            let idx = 0; let XItemsRefCopy = []
-            for (let i = 0; i< this.XItems.length; i++) {
-                XItemsRefCopy.push(this.XItems[i])}
-            
-            // actual sorting
-            for (let sortedIndex of sortedIndexx) {
-                this.XItems[idx] = XItemsRefCopy[sortedIndex]    
-                idx += 1
-            }
+            this.XItems[idx].ChangeColName(this.XItems[idx].headers[col], value)
+            return value
+        }
+
+        _OVERWRTIE_XItem(idx, newItem) {
+            this.XItems[idx] = newItem
         }
 
 
@@ -251,7 +245,15 @@ const CLSXCSV_NAMES = {
         "row":{
             "prefix":'row-',
             "postfix": ''
-        }
+        },
+        "wikiName": {
+            "prefix":'wikiName-',
+            "postfix": ''
+        },
+        "wikiDescription": {
+            "prefix":'wikiDescription-',
+            "postfix": ''
+        },
     }
 }
 
@@ -260,15 +262,16 @@ const CLSXCSV_NAMES = {
 // ################################################################
 
 const XCSV_DATA_ITEMS = {
-    'title': null,
+    'filename': 'new file.xsv',
 
-    'table': '\
-                ||||New\n\
-                ||A|B|C\n\
-                ||Bug: When being in a textfield and then going to another in another items (e. g. to copy past), then the other item is active. When i now want to save the ego textfield. >error|2|3\n\
-                ||5     Leerzeichen|Neue\nZeile|[(200x100)test/pic2.png]\n\
-                ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
-    ',
+    'table': `
+                ||||new table
+                ||name|description
+                ||Neue
+                Zeile|[(200x100)test/pic2.png]
+                ||[ ] leere Checkbox
+                [x] leere Checkbox|[Link::URL]
+    `,
     'text':     '\
                 ||||Default Text\n\
                 ||[text]Summary\n\
@@ -284,6 +287,7 @@ const XCSV_DATA_ITEMS = {
 const XCSV_CONFIG = {
     'EgoID': null,
     'SidebarID': null,
+    'CurrentID': null,
     'InfoIDs': [null,null,null],
 
     'default value': '..',
@@ -291,6 +295,13 @@ const XCSV_CONFIG = {
     'SidebarVisible': true,
     'Items Numbering': false,
     'Indicate Selections':true,
+    'ContentStyle': 'tables',   // items, table
 }
 
 const XCSV_DATA_DEFAULT_VALUE = '..'
+
+
+                // ||MOHI: Sicherstellen, dass alle daten mindestens die zwei attribute name und description haben. wenn nicht kommt es zur user fehlermeldung (html)|2|3
+                // ||1)konflikt mit dem data attibute name auflösen->identifier| |
+                // ||2)Funktion in data die die integritiaet prüft, also name und description| |
+                // ||3) Beim einlesen der datei, dann prüfen| |

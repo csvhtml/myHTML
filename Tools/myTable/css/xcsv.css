@@ -1,36 +1,130 @@
-/* Base table styling */
-.xcsv {
-    /* min-width: 600pt; */
+/*  item */
+.itemD-container .itemD:first-child{
+    border-top: none
 }
 
-@media print {
-  #navbar {
-    display: none;
-  }
-
-  #id-sidebar {
-    display: none;
-  }
-
-  #id-button-sidebar{
-    display: none;
-  }
-
-  #id-content {
-    margin-left: 30pt;
-    width: 900pt;
+.itemD {
+    font-size: 0;   /* // to avoid spaces between inline block elements */
+    width: 100%;
+    white-space: nowrap;
+    border-top: 1px solid #666666;
 }
+
+.itemD-left, .itemD-middle, .itemD-right {
+    font-size: 16px;
+    display: inline-block;
+    vertical-align: top;
+   /* min-height: 86px;  name (22px) + 2*5px padding + descriptiom (40) + 2*5px padding + 4xborder*/ 
+    /* border: 1px solid #000; */
+    box-sizing: border-box; /* width of divs include the border */
 }
+
+.itemD-left {
+    width: 5%; /* Adjust width as needed */
+    text-align: center;
+    padding-top: 5px;
+}
+
+.itemD-middle {
+    width: 70%; /* Adjust width as needed */
+}
+
+.itemD-right {
+    width: 25%; /* Adjust width as needed */
+    padding: 5px;
+}
+
+.itemD-name, .itemD-description {
+    padding: 5px;
+}
+
+.itemD-name {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.itemD-description {
+    font-size: 16px;
+    min-height: 40px;
+    line-height: 20px;
+    text-wrap: balance
+}
+
+
+
+/* 
+###############################################################
+region layout                                                 #
+############################################################### 
+
+*/
+
+body {
+    margin: 0px;
+    background-color: aqua;
+}
+
+
+#id-sidebar, #id-content {
+    box-sizing: border-box; /* Include padding and border in width calculation */
+    overflow: auto;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: #fafafa;
+  }
+
+#id-content {
+    min-height: 800px;
+  }
+  
+.sidebar-button {
+    position: fixed;
+    top: 50pt;
+    left: 155pt;
+    padding-block: 3px 
+  }
+  
+  nav > drop:hover downH {
+    display: block;
+  }
+  
+  .flexDown {
+    display: none;
+  }
+  
+  .flexDrop:hover .flexDown {
+    display: flex;
+  }
+  
+  .flexDrop:hover {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+  }
+
+
+/* #region nameBox */
 
 .NameBox {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
   margin-bottom: 10px;
   text-align: left;
   display: table;
+  position: sticky;
+  top: -1vh;
+  z-index: 1;
+  background-color: #fafafa;
 }
 
-table.table {
+
+
+/* ###############################################################
+region tableStyle                                                #
+############################################################### */
+
+
+
+table.tableStyle-01 {
     /* margin-top: 40px; */
     margin-bottom: 20px;
     /* width: 100%; */
@@ -44,32 +138,31 @@ table.table {
     overflow-wrap: break-word;
 }
 
-/* Table header styling */
-.table th, td {
+table.tableStyle-01 th, td {
     padding: 12px 15px;
     border: 1px solid #ddd;
     word-wrap: break-word;
 }
 
 /* Table header specific styling */
-.table th {
+table.tableStyle-01 th {
     background-color: #f2f2f2;
     color: #333;
 }
 
-.table tr {
+table.tableStyle-01 tr {
     background-color: #fafafa;
 }
 
-.table tr:nth-child(even) {
-    background-color: #f5fcff;
+table.tableStyle-01 tr:nth-child(even) {
+    background-color: #f5fcff;    
 }
 
-.table .vertical-bar-blue{
+table.tableStyle-01 .vertical-bar-blue{
   position: relative;
 }
 
-.table .vertical-bar-blue::before{
+table.tableStyle-01 .vertical-bar-blue::before{
   content: "";
   position: absolute;
   left: 0;
@@ -79,199 +172,15 @@ table.table {
   background-color: rgb(17, 125, 42);
 }
 
-/* tr:hover {
-    background-color: #f1f1f1;
-} */
-
-/* Table caption styling */
-/* caption {
-    caption-side: bottom;
-    padding: 10px;
-    font-style: italic;
-    color: #777;
-} */
-
-.table th:first-child {
-    border-top-left-radius: 8px;
-}
-
-.table th:last-child {
-    border-top-right-radius: 8px;
-}
-
-.table td:first-child {
-    border-bottom-left-radius: 8px;
-}
-
-.table td:last-child {
-    border-bottom-right-radius: 8px;
+/* Sticky header for tables */
+.tableStyle-01 thead th {
+  position: sticky;
+  top: 4vh;
+  z-index: 2;
 }
 
 
-  /* Uncomment for Sticky Table */
+/* ###############################################################
+region Document style                                            #
+############################################################### */
 
-  .table th {
-    font-weight: bold;
-    background-color: lightgray 
-  }
-
-  /* Sticky Table */
-  
-/* position: sticky does not work (properly) on <thead> or <tr>. Sticky defers to relevtive and relative does not appy to thead and tr */
-  .table th {
-    position: sticky;
-    top: 60px;  
-
-  }
-
-  /* bigger line height, except for new lines */
-  .table td:not(p > br + *) {
-
-    line-height: 1.5;
-  
-  }
-
-    /* 
-  ###########################################################################
-  # Gallery Items                                                           #
-  ########################################################################### 
-  */
-
-  .image-gallery {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-  }
-
-  .image-gallery img {
-    height: 200px;
-    object-fit: cover;
-    margin: 10px;
-    border: 1px solid #ccc;
-  }
-
-      /* 
-  ###########################################################################
-  # Text Items                                                              #
-  ########################################################################### 
-  */
-
-  .xcsv-text {
-    border: 1px solid #ccc;
-  }
-
-  .xcsv-text-summary {
-    border: 1px solid #ccc;
-  }
-
-  .xcsv-text-description {
-    border: 1px solid #ccc;
-  }
-
-  /* 
-  ###########################################################################
-  # Responsive                                                              #
-  ########################################################################### 
-  */
-
-/* table {max-height: 500pt;}  will be overwritten  */
-
-@media (max-height: 799px) {
-    table.table {max-height: 600px;}
-}
-
-/* For screens with height between 800px and 1000px */
-@media (min-height: 800px) and (max-height: 999px) {
-    table.table {max-height: 700px;}
-}
-
-/* For screens with height greater than 1000px */
-@media (min-height: 1000px) {
-    table.table {max-height: 900px;}
-}
-
-
-  /* 
-  ###########################################################################
-  # Areas                                                           #
-  ########################################################################### 
-  */
-
-.footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  background-color: #ccc;
-  text-align: center;
-}
-
-.left, .right {
-  flex: 0 0 15%;
-}
-
-.left {
-  /* position: fixed; */
-
-}
-
-.middle {
-  flex: 0 0 83%;
-  padding-left: 5pt;
-  /* overflow-x: scroll; */
-}
-
-.container {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.flex-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-
-.sidebar {
-  position: fixed !important;
-  width:190pt;
-  height: 75%;
-  overflow: auto;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  background-color: #fafafa;
-}
-
-.sidebar-button {
-  position: fixed;
-  top: 50pt;
-  left: 155pt;
-  padding-block: 3px 
-}
-
-nav > drop:hover downH {
-  display: block;
-}
-
-.flexDown {
-  display: none;
-}
-
-.flexDrop:hover .flexDown {
-  display: flex;
-}
-
-.flexDrop:hover {
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-}
-
-#id-content {
-  width: 1200pt;
-  min-height: 1000pt;
-}
-
-#id-main {
-  width: 900pt;
-}

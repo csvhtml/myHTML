@@ -1,20 +1,43 @@
 class clsData {
     constructor(parent) {
         this.parent = parent
-        this.name = null
+        this.myName = null
         this.headers = null
         this.data = null
         this.dicts = null
     }
 
     Init(headers, data, name) {
-        this.name = name
+        this.myName = name
         this.InitHeaders(headers)
         this.InitData(data)
         this.InitDictionary()
         this.assertIntegrity()
     }
 
+    Name_ChildrenNames() {
+        let ret = {}
+        // this is the name of the dataset (header of each table)
+        ret["name"] = this.myName
+        let childs = []
+        for (let dict of this.dicts) {
+            // this is the col/ key "name"
+            // This will return the value of the key "name"/"Name" in the dictionary
+            childs.push({"name": dict[this._keyIgnoreCase("name")]})}
+
+        ret["children"] = childs
+        return ret
+    }
+
+    // returns the key in the dictionary, based on the input key in Lowercase
+    _keyIgnoreCase(key) {
+        assert(key.isLowerCase(), "clsData - Key must be a string with only lowercase letters");
+        let keys = this.headers.filter(h => h.toLowerCase() === key);
+        if (keys.length === 1) return keys[0]
+
+        assert (false, "clsData - No name found")
+    }
+    
     Type() {
         this.assertIntegrity()
         let type = ['table', 'gallery', 'text']
@@ -63,13 +86,11 @@ class clsData {
     }
 
     AddRow(newRow = []) {
-        let atPosition = this.parent.XSelection.Row()       // -1 in case no row is selected
-        this.xAddRow(atPosition, newRow)
+        let selectedRow = this.parent.XSelection.SelectedRowIndex
+        this.xAddRow(selectedRow, newRow)
     }
 
     xAddRow(atPosition = -1, newRow = []) {
-            this.parent.XAssert.AddRow(atPosition, newRow)
-
             let targetPosition = wenn(atPosition == -1, this.data.length, atPosition)
             let targetRow = wenn(IsEqual(newRow, []), this._DefaultRow(), newRow)
             this.data.splice(targetPosition, 0, targetRow)               
@@ -87,7 +108,7 @@ class clsData {
     }
 
     DelRow(index) {
-        if (IsUndefined([index])) index = this.parent.XSelection.Row()
+        if (IsUndefined([index])) index = this.parent.XSelection.SelectedRowIndex
         if (index == -1) index = this.data.length - 1
         this.data.splice(index, 1)
     }
@@ -111,12 +132,20 @@ class clsData {
         this.headers[idx] = newColname
     }
 
-    _DefaultRow() {
-        return XCSV_CONFIG['default value'].AsList(this.headers.length)
+    SetValue(row, col, value) {
+        assert (typOf(row) == 'int' && typOf(col) == 'int' && typOf(value) == 'str')
+        assert (row < this.data.length && col < this.headers.length)
+        this.data[row][col] = value
+        // this.dicts[row][this.headers[col]] = value
+        // this.parent.XHISTORY.MarkAsChanged(row, col)
     }
 
-    _DefaultCol() {     
-        return XCSV_CONFIG['default value'].AsList(this.data.length)
+    _DefaultRow() {
+        return new Array(this.headers.length).fill(XCSV_CONFIG['default value'])
+    }
+
+    _DefaultCol() {    
+        return new Array(this.data.length).fill(XCSV_CONFIG['default value']) 
     }
 
     _UpdateNumberCol() {
@@ -140,10 +169,10 @@ class clsData {
 
 
     assertIntegrity() {
-            assert(typOf(this.headers, true) == 'list-1D')
-            assert(typOf(this.data, true) == 'list-2D')
-            assert(typOf(this.name) == 'str')
-        }
+        assert(typOf(this.headers) == 'list' && this.headers.depth() == 1)
+        assert(typOf(this.data) == 'list' && this.data.depth() == 2)
+        assert(typOf(this.myName) == 'str')
+    }
 
     assertType(type) {
         // verify via headers

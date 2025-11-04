@@ -20,10 +20,6 @@ class clsXCSV_assert {
         assert(ListDepth(data) == 2)
     }
 
-    AddRow(atPosition, newRow) {
-        assert(-2 < atPosition  && atPosition < this.parent.XData.data.length+1)
-        assert(newRow.length == this.parent.XData.headers.length || newRow.length == 0, "values length not equal to data length")}
-
     AddCol(atPosition, colName, newCol) {
         assert(-2 < atPosition  && atPosition < this.parent.XData.headers.length+1)
         assert(typOf(colName) == "str")

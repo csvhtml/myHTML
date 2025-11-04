@@ -5,24 +5,24 @@
 class clsXCSV {
         constructor(config) {   
             this.config = this.__config(config)
-            this.title = XCSV_DATA_ITEMS['title']
+            this.title = XCSV_DATA_ITEMS['filename']
 
             this.XAssert = new clsXCSV_assert(this)
-            this.XFormat = new clsFormatFile(this)
+            this.XFormat = new clsReadFile(this)
+            this.XItemsD = new clsDataD(this)
             this.XItems = []
             this.XItems_Baseline = []
             this.XHTML = new clsFormatHTML(this)
             this.XNames = new clsXCSV_Names(this) 
             this.XClick = new clsXCSV_Clickhandler(this)
             this.XSelection = new clsXCSV_Selectionhandler(this)
-            this.XSIndicator = new clsXCSV_SelectionIndicator(this)
+            this.XAsText = new clsSiteAsText(this)
             this.XInfo = new clsXCSV_Infohandler(this)
             this.XHISTORY = new clsXCSV_ChangeHandler(this)
 
 
             // Apply
             this.XFormat.Read(XCSV_DATA_ITEMS['table'].trimPlus([' |'])) 
-            // this.Activate()
         }
 
         __config(config) {
@@ -35,8 +35,22 @@ class clsXCSV {
             return ret
         }
 
+        Migration() {
+            for (let XItem of this.XItems) {
+                for (let item of XItem.dicts) {
+                    this.XItemsD.add(item)
+                }
+            }
+        }
+
+        ItemsByName(name) {
+            assert(typOf(name) == 'str')
+            let idx = this.ItemsNamesList().indexOf(name)
+            return this.XItems[idx]
+        }
+
         ItemsNamesList() {
-            return this.XItems.map(item => item.name)}
+            return this.XItems.map(item => item.myName)}
 
         ItemsNamesExist(name) {
             if (this.ItemsNamesList().includes(name)) return true
@@ -45,7 +59,7 @@ class clsXCSV {
 
         ItemNameAvailable(proposal) {
             while (this.ItemsNamesExist(proposal)) {
-                proposal += '-copy'
+                proposal += ' copy'
             }
             return proposal
         }
@@ -62,48 +76,32 @@ class clsXCSV {
                 this.config[k] = cfg[k]} // set config
         }
 
-        Activate(name) {
-            document.title = this.title
-
-            if (IsUndefined([name])) {
-                this.XData = this.XItems[0]; 
-                this.XSelection.Activate(0)
-                return }
-            
-            //else
-            assert(this.XItems.map(item => item.name).includes(name))
-            
-            let ItemsIndex = this.XItems.map(item => item.name).indexOf(name)
-            this.XSelection.Activate(name)      // this.XSelection.Activate(ItemsIndex) would also work
-            this.XData = this.XItems[ItemsIndex]
+        Reset() {
+            this.XItems = []
+            this.XSelection.SetToDefault()
+            this.XFormat.Read(XCSV_DATA_ITEMS['table'].trimPlus([' |'])) 
+            XCSV.Config({})
+            XCSV.XHTML.Print()
         }
 
-        ActiveIndex() {
-            if (this.XSelection.SelectedID == '') return 0
+        Activate(divID) {
+            this.XSelection.Activate(divID)
+        }
 
-            let ItemsIndex1 = -2; let ItemsIndex2 = -2
-            // Option 1
-            ItemsIndex1 = this.XItems.map(item => item.name).indexOf(this.XSelection.ActiveItemsName())
-
-
-            // Option 2
-            for (let i = 0; i < this.XItems.length; i++) {
-                if (this.XItems[i] === this.XData) ItemsIndex2 = i}
-
-            assert(ItemsIndex1 == ItemsIndex2)
-            return ItemsIndex1
+        SetViewMode(mode) {
+            this.XHTML.SetViewMode(mode)
         }
 
         Title(newTitle) {
             if (newTitle == undefined) return this.title
             this.title = newTitle
-            this.Activate()
         }
 
         Add(headers, data, name) {  // when headers, data are defined, then also gallery and text are added here
             if (IsPartlyUndefined[headers, data, name]) return false       // either compeltey defined or not
             this.xAdd(headers, data, name)
             this.XHTML.Print()
+            PROXY.CreateSidebar(this.XHTML._SidebarData())
         }
 
         Add_Text() {
@@ -122,12 +120,11 @@ class clsXCSV {
         }
 
         Remove(ItemsIndex) {
-            if (IsUndefined([ItemsIndex])) ItemsIndex = this.ActiveIndex()
-            let flag = false
-            if (this.XData === this.XItems[ItemsIndex]) flag = true
+            if (IsUndefined([ItemsIndex])) ItemsIndex = this.XSelection.ActiveItemsIndex()
             this.XItems.splice(ItemsIndex,1)
-            if (flag) this.Activate()
+            this.XSelection.SetToDefault()
             this.XHTML.Print()
+            PROXY.CreateSidebar(this.XHTML._SidebarData())
         }
 
         xAdd(headers, data, name, index) {
@@ -139,18 +136,20 @@ class clsXCSV {
 
             if (IsUndefined([index])) index = this.XItems.length
             this.XItems.splice(index, 0, x)
+            this.XSelection.Activate(index)
         }
         
         AddRow() {
-            this.XHISTORY.Shift(1,0)
-            this.XData.AddRow()
+            let selected = this.XSelection.ActiveItemsIndex()
+            // this.XHISTORY.Shift(1,0)
+            this.XItems[selected].AddRow()
             this.XHTML.Print()
         }
 
         AddCol() {
             let lastHeaderName = this.XData.headers[this.XData.headers.length-1]
-            this.XHISTORY.Shift(0,1)
-            this.XData.AddCol(lastHeaderName + '-copy')
+            // this.XHISTORY.Shift(0,1)
+            this.XData.AddCol(lastHeaderName + ' copy')
             this.XHTML.Print()
         }
 
@@ -180,38 +179,33 @@ class clsXCSV {
             this.XHTML.Print()
         }
 
-        _OVERWRTIE_XItem(idx, newItem) {
-            this.XItems[idx] = newItem
+        SetValue(name, row, col, value) {
+            assert(typOf(name) == 'str' && typOf(row) == 'int' && typOf(col) == 'int')
+            assert(this.XItems.map(item => item.myName).includes(name))
+   
+            let idx = this.ItemsNamesList().indexOf(name)
+            this.XItems[idx].SetValue(row, col, value)
+
+            return clsMarkDown.toHTML(value)
         }
 
-        OrderItems() {
-            if (!this.Config('Items Numbering')) return 
-            
-            // 1a) numbered in one basket, unnumberd in the otehr 
-            let retNumberd_Name = []; let retNot_Name = []
-            for (let i = 0; i< this.XItems.length; i++) {
-                if (this.OrderItems_IsNumbered(this.XItems[i].name)) {
-                    retNumberd_Name.push(this.XItems[i].name)
-                } else {
-                    retNot_Name.push(this.XItems[i].name)
-                }
+        SetHeader(name, col, value) {
+            assert(typOf(name) == 'str' && typOf(col) == 'int' && typOf(value) == 'str')
+            assert(this.XItems.map(item => item.myName).includes(name))
+            let idx = this.ItemsNamesList().indexOf(name)
+
+            for (let colDefined of ['name', 'description']) {
+                if (this.XItems[idx].headers[col] == colDefined  && value != colDefined ) {
+                    popup('Warning', 'header "' + colDefined + '" is a pre-defined header and cannot be changed')
+                    return colDefined}
             }
 
-            // prepare new index order
-            let sorted_Name = sortByLeadingNumber(retNumberd_Name).concat(retNot_Name)
-            let sortedIndexx = []
-            
-            for (let ItemsName of sorted_Name) {
-                sortedIndexx.push(this.XNames.IDs.ItemsIndexFromName(ItemsName))}
-            let idx = 0; let XItemsRefCopy = []
-            for (let i = 0; i< this.XItems.length; i++) {
-                XItemsRefCopy.push(this.XItems[i])}
-            
-            // actual sorting
-            for (let sortedIndex of sortedIndexx) {
-                this.XItems[idx] = XItemsRefCopy[sortedIndex]    
-                idx += 1
-            }
+            this.XItems[idx].ChangeColName(this.XItems[idx].headers[col], value)
+            return value
+        }
+
+        _OVERWRTIE_XItem(idx, newItem) {
+            this.XItems[idx] = newItem
         }
 
 
@@ -251,7 +245,15 @@ const CLSXCSV_NAMES = {
         "row":{
             "prefix":'row-',
             "postfix": ''
-        }
+        },
+        "wikiName": {
+            "prefix":'wikiName-',
+            "postfix": ''
+        },
+        "wikiDescription": {
+            "prefix":'wikiDescription-',
+            "postfix": ''
+        },
     }
 }
 
@@ -260,15 +262,16 @@ const CLSXCSV_NAMES = {
 // ################################################################
 
 const XCSV_DATA_ITEMS = {
-    'title': null,
+    'filename': 'new file.xsv',
 
-    'table': '\
-                ||||New\n\
-                ||A|B|C\n\
-                ||Bug: When being in a textfield and then going to another in another items (e. g. to copy past), then the other item is active. When i now want to save the ego textfield. >error|2|3\n\
-                ||5     Leerzeichen|Neue\nZeile|[(200x100)test/pic2.png]\n\
-                ||[ ] leere Checkbox|[x] leere Checkbox|[Link::URL]\n\
-    ',
+    'table': `
+                ||||new table
+                ||name|description
+                ||Neue
+                Zeile|[(200x100)test/pic2.png]
+                ||[ ] leere Checkbox
+                [x] leere Checkbox|[Link::URL]
+    `,
     'text':     '\
                 ||||Default Text\n\
                 ||[text]Summary\n\
@@ -284,6 +287,7 @@ const XCSV_DATA_ITEMS = {
 const XCSV_CONFIG = {
     'EgoID': null,
     'SidebarID': null,
+    'CurrentID': null,
     'InfoIDs': [null,null,null],
 
     'default value': '..',
@@ -291,10 +295,16 @@ const XCSV_CONFIG = {
     'SidebarVisible': true,
     'Items Numbering': false,
     'Indicate Selections':true,
+    'ContentStyle': 'tables',   // items, table
 }
 
 const XCSV_DATA_DEFAULT_VALUE = '..'
 
+
+                // ||MOHI: Sicherstellen, dass alle daten mindestens die zwei attribute name und description haben. wenn nicht kommt es zur user fehlermeldung (html)|2|3
+                // ||1)konflikt mit dem data attibute name auflösen->identifier| |
+                // ||2)Funktion in data die die integritiaet prüft, also name und description| |
+                // ||3) Beim einlesen der datei, dann prüfen| |
 // ###################################################
 // asserts the init parameters (egoDivID and config) 
 // makes assert functions available (central handling)
@@ -316,10 +326,6 @@ class clsXCSV_assert {
         // assert(IsListEqualDepth(data, [[1,1],[1,1]]), "DataIs2D failed")
         assert(ListDepth(data) == 2)
     }
-
-    AddRow(atPosition, newRow) {
-        assert(-2 < atPosition  && atPosition < this.parent.XData.data.length+1)
-        assert(newRow.length == this.parent.XData.headers.length || newRow.length == 0, "values length not equal to data length")}
 
     AddCol(atPosition, colName, newCol) {
         assert(-2 < atPosition  && atPosition < this.parent.XData.headers.length+1)
@@ -390,7 +396,10 @@ class clsXCSV_Clickhandler {
         }
 
     ClickEvent(div) {
-        if (this._IsOuterItemArea(div)) this.parent.XSelection.unsetAll()
+        if (div.id == undefined) {
+            console.log("WARNING: Click Event to div with no id!")
+            return
+        }
 
         let divID = div.GetParentWithID().id
         if(!this.parent.XNames.IDs.IsItems(divID)) return
@@ -414,16 +423,42 @@ class clsXCSV_Clickhandler {
         if (this.parent.XNames.IDs.IsCell(divID)){
             this._Cell(divID)
             return}
+
+        if (this.parent.XNames.IDs.IsWikiName(divID) || this.parent.XNames.IDs.IsWikiDescription(divID)) {
+            this._WikiItem(divID)
+            return}
+    }
+
+    SidebarClickEvent(li) {
+        let itemIndex = -1
+        let targetWrapperID = ""; let targetnameboxID = "" 
+
+        if (this._IsTopSidebarLevel(li)) {
+            let itemName = li.dataset["name"]  // dependent on nav.js
+            itemIndex = this.parent.XNames.IDs.ItemsIndexFromName(itemName)
+            targetnameboxID = this.parent.XNames.IDs._namebox(itemIndex)
+        } else {
+            let itemName = li.parentElement.previousElementSibling.dataset["name"]  // dependent on nav.js
+            itemIndex = this.parent.XNames.IDs.ItemsIndexFromName(itemName)
+    
+            let rowName = li.dataset["name"];  // dependent on nav.js
+            let rowIndex = this.parent.XItems[itemIndex].dicts.map(item => item["name"]).indexOf(rowName)
+            
+            
+            targetnameboxID = this.parent.XNames.IDs._row(rowIndex, itemIndex)
+        }
+        targetWrapperID = this.parent.XNames.IDs._wrapper(itemIndex)
+
+        this.parent.XSelection.Activate(targetWrapperID)
+        this.parent.XSelection.ScrollToitem(targetnameboxID)
+    }
+
+    _IsTopSidebarLevel(li) {
+        return li.parentElement.parentElement.tagName.toLowerCase() == 'ul'
     }
 
     _HeaderCell(divID) {
-        if (this._AlreadyInFocus(divID)) {
-            this.parent.XSelection.unset()
-            this.parent.XSelection.set(divID)
-            this.parent.XSelection.edit(divID)} 
-        else {
-            this.parent.XSelection.unset()
-            this.parent.XSelection.set(divID)} 
+        _SelectTableElement(divID)
     }
 
     _Cell(divID) {
@@ -438,13 +473,25 @@ class clsXCSV_Clickhandler {
     }
 
     _Namebox(divID) {
+        _SelectTableElement(divID)
+    }
+
+    _SelectTableElement(divID) {
         if (this._AlreadyInFocus(divID)) {
             this.parent.XSelection.unset()
             this.parent.XSelection.set(divID)
             this.parent.XSelection.edit(divID)}
         else {
             this.parent.XSelection.unset(divID)
-            this.parent.XSelection.set(divID)}  
+            this.parent.XSelection.set(divID)}
+    }
+
+    _WikiItem(divID) {
+        _SelectTableElement(divID)
+    }
+
+    _AlreadyInFocus(divID) {
+        return (this.parent.XSelection.currentSelection() == divID)
     }
 
     _SidebarItem(divID) {
@@ -454,10 +501,6 @@ class clsXCSV_Clickhandler {
 
         this.parent.XSelection.unset(targetnameboxID)
         this.parent.XSelection.set(targetnameboxID)
-    }
-
-    _AlreadyInFocus(divID) {
-        return (this.parent.XSelection.currentSelection() == divID)
     }
 
 // ####################################################################################
@@ -471,20 +514,43 @@ class clsXCSV_Clickhandler {
 class clsData {
     constructor(parent) {
         this.parent = parent
-        this.name = null
+        this.myName = null
         this.headers = null
         this.data = null
         this.dicts = null
     }
 
     Init(headers, data, name) {
-        this.name = name
+        this.myName = name
         this.InitHeaders(headers)
         this.InitData(data)
         this.InitDictionary()
         this.assertIntegrity()
     }
 
+    Name_ChildrenNames() {
+        let ret = {}
+        // this is the name of the dataset (header of each table)
+        ret["name"] = this.myName
+        let childs = []
+        for (let dict of this.dicts) {
+            // this is the col/ key "name"
+            // This will return the value of the key "name"/"Name" in the dictionary
+            childs.push({"name": dict[this._keyIgnoreCase("name")]})}
+
+        ret["children"] = childs
+        return ret
+    }
+
+    // returns the key in the dictionary, based on the input key in Lowercase
+    _keyIgnoreCase(key) {
+        assert(key.isLowerCase(), "clsData - Key must be a string with only lowercase letters");
+        let keys = this.headers.filter(h => h.toLowerCase() === key);
+        if (keys.length === 1) return keys[0]
+
+        assert (false, "clsData - No name found")
+    }
+    
     Type() {
         this.assertIntegrity()
         let type = ['table', 'gallery', 'text']
@@ -533,13 +599,11 @@ class clsData {
     }
 
     AddRow(newRow = []) {
-        let atPosition = this.parent.XSelection.Row()       // -1 in case no row is selected
-        this.xAddRow(atPosition, newRow)
+        let selectedRow = this.parent.XSelection.SelectedRowIndex
+        this.xAddRow(selectedRow, newRow)
     }
 
     xAddRow(atPosition = -1, newRow = []) {
-            this.parent.XAssert.AddRow(atPosition, newRow)
-
             let targetPosition = wenn(atPosition == -1, this.data.length, atPosition)
             let targetRow = wenn(IsEqual(newRow, []), this._DefaultRow(), newRow)
             this.data.splice(targetPosition, 0, targetRow)               
@@ -557,7 +621,7 @@ class clsData {
     }
 
     DelRow(index) {
-        if (IsUndefined([index])) index = this.parent.XSelection.Row()
+        if (IsUndefined([index])) index = this.parent.XSelection.SelectedRowIndex
         if (index == -1) index = this.data.length - 1
         this.data.splice(index, 1)
     }
@@ -581,12 +645,20 @@ class clsData {
         this.headers[idx] = newColname
     }
 
-    _DefaultRow() {
-        return XCSV_CONFIG['default value'].AsList(this.headers.length)
+    SetValue(row, col, value) {
+        assert (typOf(row) == 'int' && typOf(col) == 'int' && typOf(value) == 'str')
+        assert (row < this.data.length && col < this.headers.length)
+        this.data[row][col] = value
+        // this.dicts[row][this.headers[col]] = value
+        // this.parent.XHISTORY.MarkAsChanged(row, col)
     }
 
-    _DefaultCol() {     
-        return XCSV_CONFIG['default value'].AsList(this.data.length)
+    _DefaultRow() {
+        return new Array(this.headers.length).fill(XCSV_CONFIG['default value'])
+    }
+
+    _DefaultCol() {    
+        return new Array(this.data.length).fill(XCSV_CONFIG['default value']) 
     }
 
     _UpdateNumberCol() {
@@ -610,10 +682,10 @@ class clsData {
 
 
     assertIntegrity() {
-            assert(typOf(this.headers, true) == 'list-1D')
-            assert(typOf(this.data, true) == 'list-2D')
-            assert(typOf(this.name) == 'str')
-        }
+        assert(typOf(this.headers) == 'list' && this.headers.depth() == 1)
+        assert(typOf(this.data) == 'list' && this.data.depth() == 2)
+        assert(typOf(this.myName) == 'str')
+    }
 
     assertType(type) {
         // verify via headers
@@ -631,7 +703,647 @@ class clsData {
             if (this.data[0].length > 1) assert(type == 'table')   }     
     }
 }
-class clsFormatFile {
+var clsDataD_mandatoryKeys = ['id', 'name', 'description', 'status', 'parent', 'successor'];
+
+class clsDataD {
+    constructor(parent) {
+        this.parent = parent
+        this.name = null
+        this.items = []
+    }
+
+    validate(item) {
+        if (item != undefined) return this._validateItem(item)
+
+        this.items.forEach(this._validateItem);
+
+        return true
+    }
+
+    _validateItem(item) {
+        if (typOf(item) !== 'dict') throw new Error('clsDataD - item must be a dictionary')
+        for (let key of clsDataD_mandatoryKeys) {
+            if (!(key in item))                 throw new Error(`clsDataD - Missing mandatory key: ${key}`);
+            if (typeof item[key] !== 'string')  throw new Error(`clsDataD - Value for key ${key} must be a string`);}
+        
+        return true
+    }
+
+    add(item) {
+        for (let key of clsDataD_mandatoryKeys) {
+            if (!(key in item)) {
+                item[key] = ''
+                if (key === 'id')       item['id'] = this._generateID();
+                if (key === 'status')   item['status'] = 'new';
+            }
+        }
+        this._validateItem(item)
+        this.items.push(item)
+    }
+
+    _generateID() {
+        // if a random id was not founter after n iterations, the function will return 0 indicating unsuccessful generation
+        let newId = 0; let Iterations = 10**4;
+
+        for (let i = 0; i < Iterations; i++) {
+            newId = Math.floor(100000 + Math.random() * 900000).toString();
+            if (!this.items.some(dataItem => dataItem.id === newId)) break;}
+        return newId;
+    }
+}
+
+class clsFormatHTML {
+    constructor(parent) {
+        this.parent = parent
+        this.Item = new clsFormatHTML_Item(this.parent)
+    }
+    
+    Print() {
+        let _PRINT = new _clsPrintHTML(this.parent)
+        _PRINT.ClearContent()
+
+        let contentDiv = _PRINT.XItemsAsContentDiv("id-main")
+        document.getElementById(this.parent.config["EgoID"]).appendChild(contentDiv)
+        document.title = "XSV: "  + this.parent.title
+        this.parent.XSelection.Indicate()
+
+        PROXY.EDITABLE()
+        
+        PROXY.USERCLICK_Init()
+
+        document.getElementById("id-main").firstElementChild.addEventListener('scroll', CheckDivVisibility);
+        
+        this.parent.XHISTORY.ShowBars()
+    }
+
+    _SidebarData() {
+        let ret = []
+        for (let i = 0; i < this.parent.XItems.length; i++) {
+            ret.push(this.parent.XItems[i].Name_ChildrenNames())
+        }
+        return ret
+    }
+
+ 
+
+    SetViewMode(typ) {
+        assert(['tables', 'wiki', 'table', 'items'].includes(typ))
+        XCSV_CONFIG['ContentStyle'] = typ
+        this.Print()
+    }
+
+
+}
+
+
+
+
+// region Print
+
+class _clsPrintHTML {
+    //collection of functions to print HTML
+    constructor(parent) {
+        this.parent = parent
+    }
+
+    ClearContent() {
+        document.getElementById(this.parent.config["EgoID"]).innerHTML = ''
+    }
+
+    XItemsAsContentDiv(targetID) {
+        let retNode = document.createElement('div')
+        if (targetID != undefined) retNode.id = targetID
+        let wrapper = null; let appender = null
+        let style = XCSV_CONFIG['ContentStyle']
+        for (let i = 0; i < this.parent.XItems.length; i++) {
+            if (style == 'tables') appender = this._DataAsDivTable(i)
+            if (style == 'wiki') appender = this._DataAsWiki(i)
+                
+            wrapper = this._Wrapper(i)
+            wrapper.appendChild(this._HeaderBox(i))
+            wrapper.appendChild(appender)
+
+            retNode.appendChild(wrapper)
+        }
+
+        this._MarkupToHTML(retNode)
+        return retNode
+    }
+
+    _Wrapper(idx) {
+        let ret = document.createElement('DIV')
+        ret.id = this.parent.XNames.IDs._wrapper(idx)
+        ret.innerHTML = ''
+        ret.className = 'ContentWrapper pl-8 mb-30 js-event'
+        // UIN.addEventListeners(ret)
+        return ret
+    }
+
+    _HeaderBox(idx) {
+        let ret = document.createElement('DIV')
+        ret.id = this.parent.XNames.IDs._namebox(idx)
+        ret.innerHTML = this.parent.XItems[idx].myName
+        ret.className = "js-event js-edit NameBox py-12 px-15"
+        ret.style = "min-width:" + XCSV_CONFIG['min-width']+';'
+        // UIN.addEventListeners(ret)
+        return ret
+    }
+
+
+    _DataAsDivTable(ItemsIndex) {
+        let data = this.parent.XItems[ItemsIndex].data
+        // let table = HTML_Table({cellsText:this._MarkupToX(ItemsIndex)})
+
+        let table = HTML_Table({cellsText:data})
+        table.id = this.parent.XNames.IDs.table(ItemsIndex)
+        table.className = "tableStyle-01 ItemsTable"
+        table.style = "min-width:" + XCSV_CONFIG['min-width']+';'
+        
+        table.bSetHeaders(this.parent.XItems[ItemsIndex].headers)
+        table.bSetHeadersID(this.parent.XNames.IDs.headers(ItemsIndex))
+       
+        table.bSetRowsID(this.parent.XNames.IDs.rows(ItemsIndex))
+        table.bSetCellsID(this.parent.XNames.IDs.cells(ItemsIndex))
+
+        table.bAddClassToCells('cell js-edit js-event', true);
+
+        if (cSITE["colorTheme"] == 'dark')  table.bSetRowsClass('dark-2') 
+        return table
+    }
+
+    // takes only the data of the header 'name' and 'description' and creates a 
+    // div with the name as h2 and the description as p
+    _DataAsWiki(ItemsIndex) {
+        let ret = document.createElement('div')
+        let table = this._DataAsDivTable(ItemsIndex)
+        let nameIndex = table.b_HeaderIndex("name");
+        let descriptionIndex = table.b_HeaderIndex("description");
+        for (let i = 1; i < table.rows.length; i++) {
+            let row = table.rows[i]
+            
+            let divName = document.createElement('div')
+            divName.innerHTML = row.cells[nameIndex].innerHTML
+            divName.id = this.parent.XNames.IDs.wikiName(ItemsIndex, i-1)
+            divName.className = 'h3-m0 wiki-name cell js-edit js-event px-12 py-6'
+            // divName.innerHTML += new MyMarkDown().toHTML('## ' + row.cells[nameIndex].innerText + '\n')
+            // divName.innerHTML = divName.innerHTML.until('<br'); divName.className = 'wiki-name'
+            
+            let divDescription = document.createElement('div')
+            divDescription.innerHTML += row.cells[descriptionIndex].innerHTML;
+            divDescription.id = this.parent.XNames.IDs.wikiDescription(ItemsIndex, i-1)
+            divDescription.className = 'wiki-description cell js-edit js-event px-12 py-6'
+
+            let divhorizontal = document.createElement('hr')
+            divhorizontal.className = 'fade-grey mb-12'
+
+            let divNameDescription = document.createElement('div')
+
+            // ret.appendChild(divName)
+            // ret.appendChild(divDescription)
+            // ret.appendChild(divhorizontal)
+            divNameDescription.appendChild(divName)
+            divNameDescription.appendChild(divDescription)
+            ret.appendChild(divNameDescription)
+            ret.appendChild(divhorizontal)
+        }
+        return ret
+    }
+
+    _MarkupToHTML(div)  {
+        let cells = div.querySelectorAll('.cell');
+        for (let cell of cells) {
+            cell.innerHTML = clsMarkDown.toHTML(cell.innerHTML);
+        }
+        return div;
+    }
+
+}
+
+
+
+class clsFormatHTML_Item {
+    constructor(parent) {
+        this.parent = parent
+        this.external = {
+            'icons' : b_svg([12,18,24,36,48])
+        }
+    }
+    
+    Print() {
+        let ret = document.createElement('div');
+        ret.classList.add('itemD-container');
+        for (let item of this.parent.XItemsD.items) {
+            // ret += String(item.id) + '. ' + item.name + ': ' + item.description +  '<br/><br/>'
+            ret.appendChild(this._Content_Item(item))
+        }
+        return ret.outerHTML;
+    }
+
+    _Content_Item(item) {
+            let itemContainer = document.createElement('div');
+            itemContainer.id = 'itemD-' + item.id
+            itemContainer.classList.add('itemD', 'inline-block', 'mb-5', 'js-edit-node');
+            itemContainer.appendChild(this._Content_Item_Left(item))
+            itemContainer.appendChild(this._Content_Item_Center(item))
+            itemContainer.appendChild(this._Content_Item_Right(item))
+            return itemContainer
+          }
+
+    _Content_Item_Left(item) {
+        // see 
+        let left = document.createElement('div');
+        left.classList.add('itemD-left');
+        // left.appendChild(EditableDiv_TemplateButton('id-name-' + item.id))
+        left.appendChild(EditableDiv_TemplateButtons('id-description-' + item.id))
+        return left
+        }
+
+    _Content_Item_Center(item) {
+        let center = document.createElement('div');
+        center.classList.add('itemD-middle', 'pr-40');
+        center.appendChild(this._Content_Item_name(item))
+        center.appendChild(this._Content_Item_description(item))
+        return center
+    }
+
+    _Content_Item_Right(item) {
+        let right = document.createElement('div');
+        right.classList.add('itemD-right');
+        right.appendChild(EditableDiv_TemplateDiscard())
+        right.appendChild(this._Content_Item_tags(item))
+        return right
+    }
+
+
+    _Content_Item_name(item) {
+        let name = document.createElement('div');
+        name.innerHTML = item.name;
+        name.id = 'id-name-' + item.id;
+        name.classList.add('itemD-name', 'js-edit-div', 'w-100');
+        return name;
+    }      
+
+    _Content_Item_description(item) {
+        let description = document.createElement('div');
+        description.id = 'id-description-' + item.id
+        description.innerHTML = item.description
+        description.classList.add('itemD-description', 'js-edit-div', 'w-100');
+        // let description = EditableDiv_TemplateDiv('id-description-' + item.id, item.description, ['itemD-description', 'inline-block', 'w-100', 'js-edit-force-height'])
+        // description.classList.add(, 'w-100', 'border');
+        // description.appendChild(EditableDiv_TemplateDiv('id-description-' + item.id, item.description, ['w-100', 'p-2']))
+        return description;
+    }
+
+    _Content_Item_tags(item) {
+        let tags = document.createElement('div');
+        tags.classList.add('itemD-right');
+        for (let key of ['id', 'status', 'parent', 'successor']) {    // MOHI: -> refer to clsDataD_mandatoryKeys
+            if (key in item) {
+                tags.innerHTML += `<strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${item[key]}`+  '<br/>';
+            }
+        }
+        return tags;  
+    }
+}
+class clsXCSV_Infohandler {
+    constructor(parent) {
+        this.parent = parent
+    }
+
+    Level1(msg) {
+        if (this.parent.config['InfoIDs'][0] != null) {
+            document.getElementById(this.parent.config['InfoIDs'][0]).innerHTML = msg}
+        
+    }
+
+    Level2(msg) {
+        if (this.parent.config['InfoIDs'][1] != null) {
+            document.getElementById(this.parent.config['InfoIDs'][1]).innerHTML = msg}
+    }
+
+    Level3(msg) {
+        if (this.parent.config['InfoIDs'][2] != null) {
+            document.getElementById(this.parent.config['InfoIDs'][2]).innerHTML = msg}
+    }
+}
+// ################################################################
+// Layout Naming Functions and Config                             #
+// ################################################################
+// IDs
+
+class clsXCSV_Names {
+    constructor(parent) {
+        this.parent = parent
+        this.IDs = new clsXCSV_Names_ID(parent)
+    }
+
+    IsHeader (divID) {
+        if (this.IDs.IsHeader(divID)) {
+            return true}
+        return false
+    }
+
+    IsRow (divID) {
+        if (this.IDs.IsRow(divID)) {
+            return true}
+        return false
+    }
+
+    IsCell (divID) {
+        if (this.IDs.IsCell(divID)) {
+            return true}
+        return false
+    }
+
+    IsNameBox(divID) {
+        if (this.IDs.IsNameBox(divID)) {
+            return true}
+        return false
+    }
+
+    }
+
+class clsXCSV_Names_ID {
+    constructor(parent) {
+        this.parent = parent
+    }
+
+    ItemsName(divID) {
+        let name = divID.between("[", "]")
+        assert(this.parent.XItems.map(item => item.myName).includes(name))
+        return name
+    }
+
+    ItemsIndex(divID) {
+        return this.parent.XItems.map(item => item.myName).indexOf(this.ItemsName(divID))
+    }
+    
+    ItemsIndexFromName(ItemsName) {
+        return this.parent.XItems.map(item => item.myName).indexOf(ItemsName)
+    }
+
+    headers(ItemsIndex) {
+        if (IsUndefined([ItemsIndex])) ItemsIndex = this.parent.XSelection.ActiveItemsIndex()
+        let ret = []
+        for (let header of this.parent.XItems[ItemsIndex].headers) {
+            ret.push(this._header(header, ItemsIndex))}
+        return ret
+    }
+
+    rows(ItemsIndex) {
+        if (IsUndefined([ItemsIndex])) ItemsIndex = this.parent.ActiveIndex()
+        let ret = []; let r = 0
+        for (let row of this.parent.XItems[ItemsIndex].data) {
+            ret.push(this._row(String(r), ItemsIndex))
+            r +=1}
+        return ret
+    }
+
+    cells(ItemsIndex) {
+        if (IsUndefined([ItemsIndex])) ItemsIndex = this.parent.ActiveIndex()
+        let headers = this.parent.XItems[ItemsIndex].headers
+        let ret = []; let tmp = []; let r = 0; let c = 0
+        for (let row of this.parent.XItems[ItemsIndex].data) {
+            tmp = []
+            c = 0
+            for (let cell of row) {
+                tmp.push(this._cell(r,c,headers[c], ItemsIndex))
+                c +=1}
+            ret.push(tmp)
+            r +=1}
+
+        return ret
+    }
+
+    RowfromCellID (divID) {
+        if (this.IsRow(divID)) {
+            return divID}
+        let X = CLSXCSV_NAMES["id"]["cell"]
+        let r = RetStringBetween(divID, X["r"], X["c"])
+        let ItemsIndex = this.ItemsIndex(divID)
+        return this._row(r, ItemsIndex)}
+
+// ################################################################
+// region Single Names                                            #
+// ################################################################
+
+    // MOHI: header name logic to be reworked
+    _header(header, ItemsIndex) {
+        let idxHeader = this.parent.XItems[ItemsIndex].headers.indexOf(header)
+        let X = CLSXCSV_NAMES["id"]["header"]
+        return this._egoprefix(ItemsIndex) + X["prefix"] + idxHeader + X["postfix"]
+        // return this._egoprefix(ItemsIndex) + X["prefix"] + header + X["postfix"]
+    }
+
+    table(ItemsIndexOrName) {
+        return this._egoprefix(ItemsIndexOrName) + 'table'
+    }
+
+    _cell(r,c,header, ItemsIndex) {
+        let X = CLSXCSV_NAMES["id"]["cell"]
+        return this._egoprefix(ItemsIndex) + X["r"] + r + X["c"] + c
+        // return this._egoprefix(ItemsIndex) + X["r"] + r + X["c"] + c + X["h"] + header 
+    }
+
+    _row(r, ItemsIndexOrName) {
+        let X = CLSXCSV_NAMES["id"]["row"]
+        return this._egoprefix(ItemsIndexOrName) + X["prefix"] + r + X["postfix"]
+    }
+
+    _wrapper(ItemsIndexOrName) {
+        return this._egoprefix(ItemsIndexOrName) + 'Wrapper'
+    }
+
+    _namebox(ItemsIndexOrName) {
+        return this._egoprefix(ItemsIndexOrName) + 'Namebox'
+    }
+
+    _currentbox(ItemsIndexOrName) {
+        return this._egoprefix(ItemsIndexOrName) + 'Currentbox'
+    }
+
+    _sidebarItem(ItemsIndexOrName) {
+        return this._egoprefix(ItemsIndexOrName) + 'SidebarItem'
+    }
+
+    wikiName(ItemsIndexOrName, r) {
+        let X = CLSXCSV_NAMES["id"]["wikiName"]
+        return this._egoprefix(ItemsIndexOrName) + X["prefix"] + r + X["postfix"]
+    }
+
+    wikiDescription(ItemsIndexOrName, r) {
+        let X = CLSXCSV_NAMES["id"]["wikiDescription"]
+        return this._egoprefix(ItemsIndexOrName) + X["prefix"] + r + X["postfix"]
+    }
+
+
+    _egoprefix(ItemsIndexOrName) {
+        assert(!IsUndefined([ItemsIndexOrName]))
+        ItemsIndexOrName= NumberX(ItemsIndexOrName) 
+
+        let name = ''
+        if (typOf(ItemsIndexOrName) == 'int') name = this.parent.XItems[ItemsIndexOrName].myName
+        if (typOf(ItemsIndexOrName) == 'str') name = ItemsIndexOrName
+        
+        return '[' + name + '] '
+    }
+
+
+// ################################################################
+// region Is                                                      #
+// ################################################################
+
+    IsItems(divID) {
+        let name = divID.between("[", "]")
+        let condition1 = this.parent.XItems.map(item => item.myName).includes(name)    // is there a XItems dictionary with the name of the divID
+        let condition2 = divID.startsWith("[" + name + "]")
+
+        return condition1 && condition2
+    }
+
+    IsHeader(headerID) {
+        let ItemsIndex = this.ItemsIndex(headerID)
+        if (this.headers(ItemsIndex).includes(headerID)) {
+            return true}
+        return false
+    }
+
+    IsCell(cellID) {
+        let ItemsIndex = this.ItemsIndex(cellID)
+        if (ElementInArrayN(this.cells(ItemsIndex),cellID)) {
+            return true}
+        return false
+    }
+
+    IsRow(ID) {
+        let ItemsIndex = this.ItemsIndex(ID)
+        if (this.rows(ItemsIndex).includes(ID)) {
+            return true}
+        return false
+    }
+
+    IsNameBox(ID) {
+        for (let i = 0; i< this.parent.XItems.length; i++) {
+            if (ID == this._namebox(i))  return true}
+        
+            return false
+    }
+
+    IsCurrentBox(ID) {
+        for (let i = 0; i< this.parent.XItems.length; i++) {
+            if (ID == this._currentbox(i))  return true}
+        
+            return false
+    }
+
+    IsSidebarItem(ID) {
+        for (let i = 0; i< this.parent.XItems.length; i++) {
+            if (ID == this._sidebarItem(i))  return true}
+        
+            return false 
+    }
+
+    IsWikiName(ID) {
+        for (let i = 0; i< this.parent.XItems.length; i++) {
+            for (let r = 0; r < this.parent.XItems[i].data.length; r++) {
+                if (ID == this.wikiName(i, r))  return true
+            }
+        }
+        return false
+    }
+
+    IsWikiDescription(ID) {
+        for (let i = 0; i< this.parent.XItems.length; i++) {
+            for (let r = 0; r < this.parent.XItems[i].data.length; r++) {
+                if (ID == this.wikiDescription(i, r))  return true
+            }
+        }
+        return false
+    }
+
+
+// ################################################################
+// region Ret Index                                               #
+// ################################################################
+
+    RC_fromID(divID) {
+        assert(this.IsCell(divID) || this.IsRow(divID) || this.IsHeader(divID))
+
+        if (divID.includes(CLSXCSV_NAMES["id"]["header"]["prefix"])) {
+            return [-1, this.C_fromHeaderID(divID)]}
+
+        if (divID.includes(CLSXCSV_NAMES["id"]["row"]["prefix"])) {
+            return [this.R_fromRowID(divID), -1]}
+
+        return this._RC_fromID(divID)
+    }
+
+    _RC_fromID(divID, FirstIndexisOne = false) {
+        assert(this.IsCell(divID))
+
+        let X = CLSXCSV_NAMES["id"]["cell"]
+        let r = Number(RetStringBetween(divID, X["r"], X["c"]))
+        let c = Number(RetStringBetween(divID, X["c"], ''))
+        // let c = Number(RetStringBetween(divID, X["c"], X["h"]))
+        if (FirstIndexisOne) {
+            return [r+1, c+1]}
+        return [r, c]
+    }
+
+    R_fromRowID(divID, FirstIndexisOne = false) {
+        if (!this.IsRow(divID)) {return -1}
+
+        let X = CLSXCSV_NAMES["id"]["row"]
+        let ret = Number(RetStringBetween(divID, X["prefix"], X["postfix"])) 
+        if (FirstIndexisOne) {
+            return ret+1}
+        return  ret
+    }
+
+    C_fromHeaderID(divID) {
+        if (!this.IsHeader(divID)) return -1
+
+        let X = CLSXCSV_NAMES["id"]["header"]
+        return Number(RetStringBetween(divID, X["prefix"], X["postfix"]))
+    }
+
+    R_fromWikiNameOrDescription(ID) {
+        if (!this.IsWikiName(ID) && !this.IsWikiDescription(ID)) return -1
+        let X = null
+        if (this.IsWikiName(ID)) X = CLSXCSV_NAMES["id"]["wikiName"]
+        if (this.IsWikiDescription(ID)) X = CLSXCSV_NAMES["id"]["wikiDescription"]
+        
+        return Number(RetStringBetween(ID, X["prefix"], X["postfix"]))
+    }
+
+
+// ################################################################
+// region parent ID                                               #
+// ################################################################
+
+    WrapperID_FromChildID(divID) {
+        let idx = this.ItemsIndex(divID)
+        return this._wrapper(idx)
+    }
+
+    NameBoxID_FromChildID(divID) {
+        let idx = this.ItemsIndex(divID)
+        return this._namebox(idx)
+    }
+
+    NameFromID(divID) {
+        return divID.between("[", "]")
+    }
+
+    RowID_CellID(divID) {
+        let ItemIdx = this.ItemsIndex(divID)
+        let RowIdx = Math.max(this.R_fromRowID(divID),0)
+        let rowID = this._row(RowIdx, ItemIdx)
+        return rowID
+    }
+
+}
+class clsReadFile {
     constructor(parent, config) {
         this.parent = parent
         this.config = {
@@ -657,8 +1369,6 @@ class clsFormatFile {
         }
         
         if (title != undefined) this.parent.title = title
-
-        this.parent.Activate()
     }
 
     DataAsCSV() {
@@ -690,7 +1400,7 @@ class clsFormatFile {
         let n = this.config["line-end"]
 
         if (IsUndefined([ItemsIndex])) ItemsIndex = 0
-        return llll + this.parent.XItems[ItemsIndex].name + n
+        return llll + this.parent.XItems[ItemsIndex].myName + n
     }
 
     _AsCSV_HeaderLine(ItemsIndex) {
@@ -760,530 +1470,229 @@ class clsFormatFile {
         return [headers, data]
     }
 }
-class clsFormatHTML {
+class clsSiteAsText {
     constructor(parent) {
         this.parent = parent
     }
 
-    
-    Print() {
-        this.parent.OrderItems()
-        document.getElementById(this.parent.config["EgoID"]).innerHTML = this.PrintContent()
-        
-        this.PrintSidebar()
-        
-        this.parent.XSelection.unset() 
-        
-        this.parent.XHISTORY.ShowBars()
-    }
-    
-    PrintContent(prefix = '') {
-        let ret = prefix
-        let wrapper = null
-        for (let i = 0; i < this.parent.XItems.length; i++) {
-            wrapper = this.Wrapper(i)
-            wrapper.appendChild(this.HeaderBox(i))
-            wrapper.appendChild(this.DataAsDivTable(i))
-
-            // ret += this.HeaderBox(i).outerHTML
-            // ret += this.PrintItems(i)
-            ret += wrapper.outerHTML
-        }
-        // return wrapper.outerHTML
-        return ret
+    style01() {
+        return '' + 
+        "<style>" + 
+        "table {width: 100%;table-layout: fixed;border-collapse: collapse;margin: 20px 0;font-size: 18px;text-align: left;table-layout: auto;}" + 
+        "th, td {padding: 12px 15px;border: 1px solid #ddd;word-wrap: break-word;}" + 
+        "th {background-color: #f2f2f2;color: #333;}" + 
+        "tr:hover {background-color: #f1f1f1;}" +
+        "th {font-weight: bold;background-color: lightgray !important;position: sticky;top: 0px;z-index: 2;}" + 
+        "</style>"
     }
 
-    PrintSidebar() {
-        if (this.parent.config["SidebarID"] == null) return
-
-        let ret = ''
-        for (let i = 0; i < this.parent.XItems.length; i++) {
-            ret += this.SidebarItem(i).outerHTML
-        }
-
-        // cant set on elevel higher, since sidebar might not exist
-        document.getElementById(this.parent.config["SidebarID"]).innerHTML =  ret
-        return 
+    AsHTML() {
+        return this.style01() + this.parent.XHTML.PrintContent().outerHTML
     }
-
-    PrintItems(idx) {
-        if (this.parent.XItems[idx].Type() == 'table') {
-            // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.DataAsHTML("", idx)
-            return this.DataAsHTML("", idx)}
-        
-        if (this.parent.XItems[idx].Type() == 'gallery') {
-            // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.Gallery(idx)
-            return this.Gallery(idx)}
-
-        if (this.parent.XItems[idx].Type() == 'text') {
-            // document.getElementById(this.parent.config["Ego Div ID"]).innerHTML += this.Text(idx)
-            return this.Text(idx)}
-     
-    }
-
-    Wrapper(idx) {
-        let ret = document.createElement('DIV')
-        ret.id = this.parent.XNames.IDs._wrapper(idx)
-        ret.innerHTML = ''
-        ret.className = 'pl-8'
-        // ret.style = "min-width:" + XCSV_CONFIG['min-width']+';'
-
-        return ret
-    }
-
-    HeaderBox(idx) {
-        let ret = document.createElement('DIV')
-        ret.id = this.parent.XNames.IDs._namebox(idx)
-        ret.innerHTML = this.parent.XItems[idx].name
-        ret.className = "NameBox"
-        ret.style = "min-width:" + XCSV_CONFIG['min-width']+';'
-
-        return ret
-    }
-
-    SidebarItem(idx) {
-        let ret = document.createElement('DIV')
-        let name = shortenString(this.parent.XItems[idx].name,24)
-        ret.id = this.parent.XNames.IDs._sidebarItem(idx)
-        ret.innerHTML = String(idx+1) + '. ' + name
-        ret.className = "flex-container flexDrop"
-
-        if (idx == 0) {
-            ret.style.marginTop = "40px"
-            return ret}
-        let buttonWrapper = NewDiv({id:'id-button-Wrapper'+ name, class:'flex-container flexDown', innerHTML:''})
-        let buttonUp = NewDiv({type:'a', id:'id-buttonUp-' + name, innerHTML: '&#8613;', class:'p-0-3 btn'})
-        buttonUp.setAttribute('onclick', "MoveUp('" + idx + "')")
-        let buttonDown = NewDiv({type:'a', id:'id-buttonDown-' + name, innerHTML: '&#8615;', class:'p-0-3 ml-5 btn'})
-        buttonDown.setAttribute('onclick', "MoveDown('" + idx + "')")
-        buttonWrapper.appendChild(buttonUp).appendChild(buttonDown)
-        // buttonWrapper.style.display = 'none'
-        ret.appendChild(buttonWrapper)
-        return ret
-    }
-
-    _MarkupToX(ItemsIndex) {
-        let ret = []
-        for (let row of this.parent.XItems[ItemsIndex].data) {
-            let tmp = []
-            for (let cell of row) {
-                let value = cell
-                value = MyMarkDowntoHTML(value)
-                tmp.push(value)}
-            ret.push(tmp)}
-        return ret
-    }
-
-    Gallery(ItemsIndex) {
-        assert(this.parent.XItems[ItemsIndex].Type() == 'gallery')
-        let ret = ''
-        ret +=  '<b>' + String(this.parent.XItems[ItemsIndex].headers[0]) + '</b><br/>\n' 
-        ret += '<div class="image-gallery">'
-        for (let item of this.parent.XItems[ItemsIndex].data) {
-            ret += '<a href="' + item + '" target = "_blank"><img src="' + item + '"></a>'}
-        ret += '</div>'
-        return ret
-    }
-
-    Text(ItemsIndex) {
-        assert(this.parent.XItems[ItemsIndex].Type() == 'text')
-
-        return '' +
-            HTMLTable_FromConfig({
-            tableID: "id-table-" + this.parent.XItems[ItemsIndex].name,
-            tableClass: "table xcsv",
-            tableStyle: "min-width:" + XCSV_CONFIG['min-width']+';',
-            thsText: [this.parent.XItems[ItemsIndex].headers[0].after('[text]')],
-            thsID: this.parent.XNames.IDs.headers(ItemsIndex),
-            rowsID: this.parent.XNames.IDs.rows(ItemsIndex),
-            cellsText: this._MarkupToX(ItemsIndex),
-            cellsID: this.parent.XNames.IDs.cells(ItemsIndex),
-        })
-    }
-
-    DataAsHTML(pre = "", ItemsIndex) {
-        let table = this.DataAsDivTable(ItemsIndex)
-        return pre + table.outerHTML
-    }
-
-    DataAsDivTable(ItemsIndex) {
-        let table = HTML_Table({cellsText:this._MarkupToX(ItemsIndex)})
-        table.id = "id-table-" + this.parent.XItems[ItemsIndex].name
-        table.className = "table"
-        table.style = "min-width:" + XCSV_CONFIG['min-width']+';'
-        
-        table.mySetHeaders(this.parent.XItems[ItemsIndex].headers)
-        table.mySetHeadersID(this.parent.XNames.IDs.headers(ItemsIndex))
-        // table.mySetHeadersClass() 
-        table.mySetRowsID(this.parent.XNames.IDs.rows(ItemsIndex))
-        table.mySetCellsID(this.parent.XNames.IDs.cells(ItemsIndex))
-        return table
-    }
-
-}
-class clsXCSV_Infohandler {
-    constructor(parent) {
-        this.parent = parent
-    }
-
-    Level1(msg) {
-        if (this.parent.config['InfoIDs'][0] != null) {
-            document.getElementById(this.parent.config['InfoIDs'][0]).innerHTML = msg}
-        
-    }
-
-    Level2(msg) {
-        if (this.parent.config['InfoIDs'][1] != null) {
-            document.getElementById(this.parent.config['InfoIDs'][1]).innerHTML = msg}
-    }
-
-    Level3(msg) {
-        if (this.parent.config['InfoIDs'][2] != null) {
-            document.getElementById(this.parent.config['InfoIDs'][2]).innerHTML = msg}
-    }
-}
-// ################################################################
-// Layout Naming Functions and Config                             #
-// ################################################################
-// IDs
-
-class clsXCSV_Names {
-    constructor(parent) {
-        this.parent = parent
-        this.IDs = new clsXCSV_Names_ID(parent)
-    }
-
-    IsHeader (divID) {
-        if (this.IDs.IsHeader(divID)) {
-            return true}
-        return false
-    }
-
-    IsRow (divID) {
-        if (this.IDs.IsRow(divID)) {
-            return true}
-        return false
-    }
-
-    IsCell (divID) {
-        if (this.IDs.IsCell(divID)) {
-            return true}
-        return false
-    }
-
-    IsNameBox(divID) {
-        if (this.IDs.IsNameBox(divID)) {
-            return true}
-        return false
-    }
-
-    }
-
-class clsXCSV_Names_ID {
-    constructor(parent) {
-        this.parent = parent
-    }
-
-    ItemsName(divID) {
-        assert(this.IsItems(divID))
-        return RetStringBetween(divID, "[", "]")
-    }
-
-    ItemsIndex(divID) {
-        assert(this.IsItems(divID))
-
-        return this.parent.XItems.map(item => item.name).indexOf(this.ItemsName(divID))
-    }
-    
-    ItemsIndexFromName(ItemsName) {
-        return this.parent.XItems.map(item => item.name).indexOf(ItemsName)
-    }
-
-    headers(ItemsIndex) {
-        if (IsUndefined([ItemsIndex])) ItemsIndex = this.parent.ActiveIndex()
-        let ret = []
-        for (let header of this.parent.XItems[ItemsIndex].headers) {
-            ret.push(this._header(header, ItemsIndex))}
-        return ret
-    }
-
-    rows(ItemsIndex) {
-        if (IsUndefined([ItemsIndex])) ItemsIndex = this.parent.ActiveIndex()
-        let ret = []; let r = 0
-        for (let row of this.parent.XItems[ItemsIndex].data) {
-            ret.push(this._row(String(r), ItemsIndex))
-            r +=1}
-        return ret
-    }
-
-    cells(ItemsIndex) {
-        if (IsUndefined([ItemsIndex])) ItemsIndex = this.parent.ActiveIndex()
-        let headers = this.parent.XItems[ItemsIndex].headers
-        let ret = []; let tmp = []; let r = 0; let c = 0
-        for (let row of this.parent.XItems[ItemsIndex].data) {
-            tmp = []
-            c = 0
-            for (let cell of row) {
-                tmp.push(this._cell(r,c,headers[c], ItemsIndex))
-                c +=1}
-            ret.push(tmp)
-            r +=1}
-
-        return ret
-    }
-
-    RowfromCellID (divID) {
-        if (this.IsRow(divID)) {
-            return divID}
-        let X = CLSXCSV_NAMES["id"]["cell"]
-        let r = RetStringBetween(divID, X["r"], X["c"])
-        let ItemsIndex = this.ItemsIndex(divID)
-        return this._row(r, ItemsIndex)}
-
-// ################################################################
-// region Single Names                                            #
-// ################################################################
-
-    _header(header, ItemsIndex) {
-        let idxHeader = this.parent.XItems[ItemsIndex].headers.indexOf(header)
-        let X = CLSXCSV_NAMES["id"]["header"]
-        return this._egoprefix(ItemsIndex) + X["prefix"] + idxHeader + X["postfix"]
-        // return this._egoprefix(ItemsIndex) + X["prefix"] + header + X["postfix"]
-    }
-
-    _cell(r,c,header, ItemsIndex) {
-        let X = CLSXCSV_NAMES["id"]["cell"]
-        return this._egoprefix(ItemsIndex) + X["r"] + r + X["c"] + c
-        // return this._egoprefix(ItemsIndex) + X["r"] + r + X["c"] + c + X["h"] + header 
-    }
-
-    _row(r, ItemsIndexOrName) {
-        let X = CLSXCSV_NAMES["id"]["row"]
-        return this._egoprefix(ItemsIndexOrName) + X["prefix"] + r + X["postfix"]
-    }
-
-    _wrapper(ItemsIndexOrName) {
-        return this._egoprefix(ItemsIndexOrName) + 'Wrapper'
-    }
-
-    _namebox(ItemsIndexOrName) {
-        return this._egoprefix(ItemsIndexOrName) + 'Namebox'
-    }
-
-    _sidebarItem(ItemsIndexOrName) {
-        return this._egoprefix(ItemsIndexOrName) + 'SidebarItem'
-    }
-
-
-    _egoprefix(ItemsIndexOrName) {
-        assert(!IsUndefined([ItemsIndexOrName]))
-        ItemsIndexOrName= NumberX(ItemsIndexOrName) 
-
-        let name = ''
-        if (typOf(ItemsIndexOrName) == 'int') name = this.parent.XItems[ItemsIndexOrName].name
-        if (typOf(ItemsIndexOrName) == 'str') name = ItemsIndexOrName
-        
-        return '[' + name + '] '
-    }
-
-
-// ################################################################
-// region Is                                                      #
-// ################################################################
-
-    IsItems(divID) {
-        let name = RetStringBetween(divID, "[", "]")
-        let condition1 = this.parent.XItems.map(item => item.name).includes(name)    // is there a XItems dictionary with the name of the divID
-        let condition2 = divID.startsWith("[" + name + "]")
-
-        return condition1 && condition2
-    }
-
-    IsHeader(headerID) {
-        if (this.headers().includes(headerID)) {
-            return true}
-        return false
-    }
-
-    IsCell(cellID) {
-        let ItemsIndex = this.ItemsIndex(cellID)
-        if (ElementInArrayN(this.cells(ItemsIndex),cellID)) {
-            return true}
-        return false
-    }
-
-    IsRow(ID) {
-        if (this.rows().includes(ID)) {
-            return true}
-        return false
-    }
-
-    IsNameBox(ID) {
-        for (let i = 0; i< this.parent.XItems.length; i++) {
-            if (ID == this._namebox(i))  return true}
-        
-            return false
-    }
-
-    IsSidebarItem(ID) {
-        for (let i = 0; i< this.parent.XItems.length; i++) {
-            if (ID == this._sidebarItem(i))  return true}
-        
-            return false 
-    }
-
-// ################################################################
-// region Ret Index                                               #
-// ################################################################
-
-    RC_fromID(divID, FirstIndexisOne = false) {
-        if (!this.IsCell(divID)) {assert(false)}
-
-        let X = CLSXCSV_NAMES["id"]["cell"]
-        let r = Number(RetStringBetween(divID, X["r"], X["c"]))
-        let c = Number(RetStringBetween(divID, X["c"], ''))
-        // let c = Number(RetStringBetween(divID, X["c"], X["h"]))
-        if (FirstIndexisOne) {
-            return [r+1, c+1]}
-        return [r, c]
-    }
-
-    R_fromRowID(divID, FirstIndexisOne = false) {
-        if (!this.IsRow(divID)) {return -1}
-
-        let X = CLSXCSV_NAMES["id"]["row"]
-        let ret = Number(RetStringBetween(divID, X["prefix"], X["postfix"])) 
-        if (FirstIndexisOne) {
-            return ret+1}
-        return  ret
-    }
-
-    C_fromHeaderID(divID) {
-        if (!this.IsHeader(divID)) return -1
-
-        let X = CLSXCSV_NAMES["id"]["header"]
-        return Number(RetStringBetween(divID, X["prefix"], X["postfix"]))
-    }
-
-
-// ################################################################
-// region parent ID                                               #
-// ################################################################
-
-    WrapperID_FromChildID(divID) {
-        let idx = this.ItemsIndex(divID)
-        return this._wrapper(idx)
-    }
-
-    NameBoxID_FromChildID(divID) {
-        let idx = this.ItemsIndex(divID)
-        return this._namebox(idx)
-    }
-
 }
 class clsXCSV_Selectionhandler {
     constructor(parent) {
             this.parent = parent
-            this.SelectedID = ""
-            // this.ActiveItemsName = ""
+            this.default = {
+                'SelectedCell': "",
+                'SelectedWrapperName': "",
+                'SelectedRowIndex': -1,
+                'SelectedHeaderCell': '',
+                'SelectedWikiName': '',
+                'SelectedWikiDescription': '',
+            }
+            
+            this.SelectedCell = this.default['SelectedCell']
+            this.SelectedWrapperName = this.default['SelectedWrapperName']
+            this.SelectedRowIndex = this.default['SelectedRowIndex']
+            this.SelectedHeaderCell = this.default['SelectedHeaderCell']
+            this.SelectedWikiName = this.default['SelectedWikiName']
+            this.SelectedWikiDescription = this.default['SelectedWikiDescription']
         }
 
+    Activate(anything) {
+        this.SetToDefault()
+        if (anything == undefined) {
+
+            }
+
+        if (typOf(anything) == 'str') {
+            if (this.parent.XNames.IDs.IsNameBox(anything) || this.parent.XNames.IDs.IsItems(anything)) {
+                this.setSelectedWrapperName(this.parent.XNames.IDs.ItemsName(anything))
+            }
+
+            if (XCSV_CONFIG['ContentStyle'] == 'tables') {
+                if (this.parent.XNames.IDs.IsCell(anything)) {
+                    this.setSelectedCell(anything)
+                    this.setSelectedWrapperName(this.parent.XNames.IDs.ItemsName(anything))
+                    this.setSelectedRowIndex(this.parent.XNames.IDs.RC_fromID(anything)[0])
+                    }
+                
+                if (this.parent.XNames.IDs.IsHeader(anything)) {
+                    this.setSelectedHeaderCell(anything)
+                    this.setSelectedWrapperName(this.parent.XNames.IDs.ItemsName(anything))
+                    }
+                }
+            if (XCSV_CONFIG['ContentStyle'] == 'wiki') {
+                if (this.parent.XNames.IDs.IsWikiName(anything) || this.parent.XNames.IDs.IsWikiDescription(anything)) {
+                    let name = this.parent.XNames.IDs.ItemsName(anything)
+                    let r = this.parent.XNames.IDs.R_fromWikiNameOrDescription(anything)
+                    this.setSelectedWikiName(this.parent.XNames.IDs.wikiName(name, r))
+                    this.setSelectedWikiDescription(this.parent.XNames.IDs.wikiDescription(name, r))
+                    }
+                }
+            }
+
+        if (typOf(anything) == 'int') {
+            this.activateXitems(anything)
+            return}
+
+        this.Indicate()
+    }
+
+    GetDefault() {
+        return this.default}
+
+    setSelectedCell(id) {
+        if (id == undefined) id = this.default['SelectedCell'] 
+        this.SelectedCell = id;
+    }
+
+    setSelectedWrapperName(name) {
+        if (name == undefined) name= this.default['SelectedWrapperName']
+        this.SelectedWrapperName = name;
+    }
+
+    setSelectedRowIndex(index) {
+        if (index == undefined) index = this.default['SelectedRowIndex']
+        this.SelectedRowIndex = index;
+    }
+
+    setSelectedHeaderCell(id) {
+        if (id == undefined) id = this.default['SelectedHeaderCell'] 
+        this.SelectedHeaderCell = id;
+    }
+
+    setSelectedWikiName(id) {
+        if (id == undefined) id = this.default['SelectedWikiName']
+        this.SelectedWikiName = id;
+    }
+
+    setSelectedWikiDescription(id) {
+        if (id == undefined) id = this.default['SelectedWikiDescription']
+        this.SelectedWikiDescription = id;
+    }
+
+    activateXitems(ItemsNameIndex) {
+        if (ItemsNameIndex == undefined) ItemsNameIndex = 0
+        if (typOf(ItemsNameIndex) == 'str') ItemsNameIndex = this.parent.XNames.IDs.ItemsIndexFromName(ItemsNameIndex)
+
+        this.SelectedCell = this.default['SelectedCell'] 
+        this.SelectedWrapperName = this.parent.XItems[ItemsNameIndex].myName
+        this.SelectedRowIndex = this.default['SelectedRowIndex']
+    }
+
+    activateRow(ItemsNameIndex, rowIndex) {
+        if (ItemsNameIndex == undefined) ItemsNameIndex = 0
+        if (typOf(ItemsNameIndex) == 'str') ItemsNameIndex = this.parent.XNames.IDs.ItemsIndexFromName(ItemsNameIndex)
+        if (rowIndex == undefined) rowIndex = 0
+
+        this.SelectedCell = this.default['SelectedCell'] 
+        this.SelectedWrapperName = this.parent.XItems[ItemsNameIndex].myName
+        this.SelectedRowIndex = rowIndex;
+    }
+
+    SetToDefault() {
+        this.setSelectedCell()
+        this.setSelectedWrapperName()
+        this.setSelectedRowIndex()
+        this.setSelectedHeaderCell()
+        this.setSelectedWikiName()
+        this.setSelectedWikiDescription()
+    }
+
     ActiveItemsName() {
-        return this.parent.XNames.IDs.ItemsName(this.SelectedID)
+        if (this.SelectedWrapperName == "") this.SelectedWrapperName = this.parent.XItems[0].myName
+        assert(this.SelectedWrapperName != "" && !this.SelectedWrapperName.includes(["[", "]"]))
+        return this.SelectedWrapperName
     }
 
-    Activate(ItemsIndexOrName) {
-        // only if no ID is selected, then by default the namebox is selected
-        if (this.SelectedID != '') return 
-
-        let NameBoxID = this.parent.XNames.IDs._namebox(ItemsIndexOrName)
-        this.SelectedID = NameBoxID
-        if(document.getElementById(NameBoxID)) this.set(NameBoxID) 
+    ActiveItemsIndex() {
+        return this.parent.XNames.IDs.ItemsIndexFromName(this.ActiveItemsName())
     }
 
-    set(divID) {
-        this.unsetAll()
-        let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
-        // set content
-        this.SelectedID = divID
-        this.parent.XData = this.parent.XItems[ItemsIndex]
 
-        if (this.parent.config['Indicate Selections']) this.parent.XSIndicator.set(ItemsIndex, divID)
+    Indicate() {
+       this.SelectedWrapperName = this.ActiveItemsName()
         
-        // // set content style ( actually this should be part of print, as it handles dom layout)
-        // let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(divID)
-        // document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")   
-        // document.getElementById(wrapperID).classList.add("bg-lblue-light")
+        this.unindicate()
+        if (this.parent.config['Indicate Selections']) {
+            if (this.SelectedWrapperName != '') this._indicateSelectedWrapper()
+            if (this.SelectedRowIndex != -1) this._indicateSelectedRow()
+            if (this.SelectedHeaderCell != '') this._indicateSelectedHeaderCell()
+            if (this.SelectedWikiName != '') this._indicateSelectedWikiName()
+            if (this.SelectedWikiDescription != '') this._indicateSelectedWikiDescription()
+            
+        }
         
-        // // set sidebar style 
-        // let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
-        // document.getElementById(targetSidebarItemID).classList.add("xcsv-focus","bg-lblue")
-        
-        // messages
-        let X = this.parent.XNames.IDs; let msg = ''
-        if (X.IsRow(divID)) {
-            msg = "Selected Row: " + String(this.parent.XNames.IDs.R_fromRowID(this.SelectedID, true))
-            this.parent.XInfo.Level3(msg); return}
-        if (X.IsCell(divID)) {
-            msg = "Selected Cell: " + String(this.parent.XNames.IDs.RC_fromID(this.SelectedID, true))
-            this.parent.XInfo.Level3(msg); return}
-        if (X.IsHeader(divID)) {
-            let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
-            msg = "Selected Header: " + this.parent.XItems[ItemsIndex].headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]
-            this.parent.XInfo.Level3(msg); return}
-        if (X.IsNameBox(divID)) {
-            let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(divID)
-            msg = "Selected Namebox: " + this.parent.XItems[ItemsIndex].headers[this.parent.XNames.IDs.C_fromHeaderID(this.SelectedID)]
-            this.parent.XInfo.Level3(msg); return}
     }
 
-    unsetAll() {
-        this.unset()
-        // this.ActiveItemsName = ""
+    _indicateSelectedWrapper() {
+        if (this.SelectedWrapperName == this.default['SelectedWrapperName']) return
+        if (XCSV_CONFIG['ContentStyle'] == 'tables' || XCSV_CONFIG['ContentStyle'] == 'wiki') {
+            let wrapperID = this.parent.XNames.IDs._wrapper(this.SelectedWrapperName)
+            // let wrapperID = this.parent.XNames.IDs._wrapper(this.ActiveItemsIndex()) also possible
+            let nameboxID = this.parent.XNames.IDs._namebox(this.SelectedWrapperName)    
+
+            document.getElementById(wrapperID).classList.add("bg-lblue-light")
+            document.getElementById(nameboxID).classList.add("bg-lblue-light")
+        }
+                      
+    }
+
+    _indicateSelectedRow() {
+        if (this.SelectedRowIndex < 0 ) return
+
+        if (XCSV_CONFIG['ContentStyle'] == 'tables') {
+            let rowID = this.parent.XNames.IDs._row(this.SelectedRowIndex, this.SelectedWrapperName)
+            document.getElementById(rowID).classList.add("bg-lyellow-important")}
+    }
+
+    _indicateSelectedHeaderCell() {
+        if (this.SelectedHeaderCell == this.default['SelectedHeaderCell']) return
+
+        if (XCSV_CONFIG['ContentStyle'] == 'tables') {
+            document.getElementById(this.SelectedHeaderCell).classList.add("bg-grey-important")
+        }
+    }
+
+    _indicateSelectedWikiName() {
+        if (this.SelectedWikiName == this.default['SelectedWikiName']) return
+        if (XCSV_CONFIG['ContentStyle'] == 'wiki') {
+            document.getElementById(this.SelectedWikiName).parentElement.classList.add("bg-lyellow-important")
+        }
+    }
+
+    _indicateSelectedWikiDescription() {
+        if (this.SelectedWikiDescription == this.default['SelectedWikiDescription']) return
+        if (XCSV_CONFIG['ContentStyle'] == 'wiki') {
+            document.getElementById(this.SelectedWikiDescription).parentElement.classList.add("bg-lyellow-important") // same parent as wikiName (duplicate)
+        }      
     }
 
     unset() {
-        if (this.SelectedID == '') return
-        if (this.parent.XItems.length == 1) return   // if there's only one item, i can not be unselected
-
-        if (document.getElementById(this.SelectedID)) {
-            // in case edit is active
-            EDIT.Init_Undo()
-
-            //content
-            document.getElementById(this.SelectedID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
-            let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(this.SelectedID)
-            document.getElementById(wrapperID).classList.remove("bg-lblue-light")
-
-            // sidebar
-            let ItemsIndex = this.parent.XNames.IDs.ItemsIndex(this.SelectedID)
-            let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
-            document.getElementById(targetSidebarItemID).classList.remove("xcsv-focus", "bg-lblue", "myEdit")
-        }
-        this.SelectedID = ""
-        this.parent.XInfo.Level3(this.SelectedID)
+        this.SelectedCell = this.default['SelectedCell']
+        this.SelectedWrapperName = this.default['SelectedWrapperName']
+        this.SelectedRowIndex = this.default['SelectedRowIndex']
+        this.SelectedHeaderCell = this.default['SelectedHeaderCell']
+        this.parent.XInfo.Level3(this.SelectedCell)
     }
 
-    edit(divID) {
-        this.SelectedID = divID
-        document.getElementById(divID).classList.add("myEdit")
-        EDIT.Init()
-    }
-
-    currentSelection() {
-        return this.SelectedID
-    }
-    
-    Row() {
-        let X = this.parent.XNames.IDs
-        let id = this.currentSelection()
-        return wenn(X.IsRow(id), X.R_fromRowID(id), -1)
-    }
-
-    Col() {
-        let X = this.parent.XNames.IDs
-        let id = this.currentSelection()
-        return wenn(X.IsHeader(id), X.C_fromHeaderID(id), -1)
+    unindicate() {
+        DOM_RemoveClassFromAll(".bg-lblue")
+        DOM_RemoveClassFromAll(".bg-lblue-light")     
+        DOM_RemoveClassFromAll(".bg-lyellow-important")
+        DOM_RemoveClassFromAll(".bg-grey-important")
     }
 
     ScrollToitem(targetID) {
@@ -1295,22 +1704,3 @@ class clsXCSV_Selectionhandler {
     }
 
 }
-class clsXCSV_SelectionIndicator {
-    constructor(parent) {
-            this.parent = parent
-        }
-
-        set(ItemsIndex, divID) {
-            if (this.parent.config['Indicate Selections']) {
-                // set content style
-                let wrapperID = this.parent.XNames.IDs.WrapperID_FromChildID(divID)
-                document.getElementById(divID).classList.add("xcsv-focus","bg-lblue")   
-                document.getElementById(wrapperID).classList.add("bg-lblue-light")
-                        
-                // set sidebar style 
-                let targetSidebarItemID = this.parent.XNames.IDs._sidebarItem(ItemsIndex)
-                document.getElementById(targetSidebarItemID).classList.add("xcsv-focus","bg-lblue")     
-            }
-
-        }
-    }

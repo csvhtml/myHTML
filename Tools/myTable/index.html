@@ -3,96 +3,195 @@
 <html>
 
 <head>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
+    <style>        
+    body {font-family: Arial, sans-serif;}
+        :root       {
+            --light-bg: #f0f0f0;--light-col: #444;
+            --dark-bg:  #38444d;   --dark-col:  #ddd; --dark-bgActive: red;
         }
+
+        nav                       {background-color: var(--dark-bg)}
+        nav > drop > down         {background-color: var(--dark-bg)}
+        nav a:hover               {background-color: var(--dark-bgActive);}
+        nav a                     {color: var(--dark-col)}
+        nav > info                {color: var(--dark-col)}
+    
+        
         </style>
     <title>-</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="../../Basis/css/bs.css">
     <link rel="stylesheet" href="../../DropDown/css/DropDown All_.css">
     <link rel="stylesheet" href="../../Edit/css/style.css">
     <link rel="stylesheet" href="css/xcsv.css">
+    <link rel="stylesheet" href="../../../mo-hi.github.io/navbar/css/nav.css">
+    <link rel="stylesheet" href="../../../mo-hi.github.io/basis/css/b.css">
 </head>
 
 <body>
-<navbar id="navbar" class="nav bg-light justify-content-between" onclick="EDIT.CloseAll()">
-    <nav id="navLeft" class="nav">
-        <a id="nav-Start" class="nav-link preventDefault" href="#">Start</a>
-        <a id="nav-Table" class="nav-link preventDefault" href="#">Table</a>
-        <a id="nav-Gallery" class="nav-link preventDefault" href="#">Gallery</a>
-        <a id="nav-Text" class="nav-link preventDefault" href="#">Text</a>
-        <a id="nav-List" class="nav-link preventDefault" href="#">List</a>
-        <a id="id-button-test" class="btn mx-2 my-2 ">Test</a>
+<div id="id-navbar" class="fixed w-100 flex top-0 h-6vh">
+    <nav class="w-40">^
+        <a onclick="ToggleSidebar()">Sidebar</a>
+        <drop>
+            <a onclick="_nav_toggleDown(this)">Start</a>
+            <down>
+                <a onclick="XCSV.Add()">Add Table</a>
+                <a onclick="XCSV.Remove()">Remove Table</a>
+                <a onclick="DownloadHTML()">Save as HTML</a>
+                <a onclick="colorTheme('dark')">Dark Mode</a>
+                <a onclick="colorTheme()">Light Mode</a>
+            </down>
+        </drop>
+        <drop>
+            <a onclick="_nav_toggleDown(this)">Table</a>
+            <down>
+                <a onclick="XCSV.AddRow()">Add Row</a>
+                <a onclick="XCSV.AddCol()">Add Column</a>
+                <a onclick="XCSV.DelRow()">Remove Row</a>
+                <a onclick="XCSV.DelCol()">Remove Column</a>
+            </down>
+        </drop>
+        <drop>
+            <a onclick="_nav_toggleDown(this)">View</a>
+            <down>
+                <a onclick="XCSV.SetViewMode('tables')">Tables</a>
+                <a onclick="XCSV.SetViewMode('wiki')">Wiki</a>
+                <!-- <a onclick="ToggleSidebar()">Sidebar</a> -->
+            </down>
+        </drop>
+        <a onclick="ToggleSidebar()" class="hidden">Edit</a>
     </nav>
-
-    <nav id="navMiddle" class="nav">
-        <div id="id-infoblock">
-            <div id="id-infoblock-l" class="infoblock">
-                
+    <nav class="w-35">
+        <info>
+            <div id="id-infoblock-l" class="inline-block">
             </div>
-            <div id="id-infoblock-m" class="infoblock">
-                
+            <div id="id-infoblock-m" class="inline-block">
+            
             </div>
-            <div id="id-infoblock-r" class="infoblock">
-                
+            <div id="id-infoblock-r" class="inline-block">
+            
             </div>
-        </div>
+        </info>
     </nav>
-
-    <nav id="navRight" class="nav">
-        <form id="form-csv" class="form-inline mx-5">
-            <input id="nav-input" type="file" class="" accept=".csv" onchange="UploadFile(event)">
-            <label for="nav-input" class="btn my-2">Select CSV</label>
-        </form>
-
-        <form class="form-inline mr-15" id="forminput">
-            <a id="nav-download-csv" class="btn my-2" type="submit" onclick="DownloadCSV()"> 
-                Save CSV
-            </a>
-        </form>
+    <nav class="w-25">
+        <div class="btn blue mt-6i" onclick="UploadFile(event)">Select XSV</div>
+        <div class="btn blue mt-6i" onclick="DownloadFile()">Save XSV</div>
     </nav>
-
-</navbar>
-
-<div id="id-sidebar" class="sidebar pb-100 lh-22">
 </div>
-<a id="id-button-sidebar" class="btn mx-2 my-2 sidebar-button">X</a>
 
-<div id="id-content" class="mt-50 mb-50 ml-200x">
-    <div id="id-main" class="pb-50 pr-50"> </div>
+<ul id="id-sidebar" class="sidebar fixed left-0 top-6vh w-18vw h-94vh p-8 js-fill">
+</ul>
+
+<!-- <div id="id-content" class="ml-18vw w-80vw"></div> -->
+<div id="id-content" class="fixed left-18vw top-6vh w-80vw h-94vh p-8">
 </div>
 
-<div class="footer">
-    <p>Footer</p>
+<div id = "id-footer" >
+    <div class="inline-block">
+    <a href="test/test_xcsv.html" class="">test</a>
+    </div>
 </div>
 
 </body>
+<!-- global variables -->
+<script src="../../../mo-hi.github.io/basis/js/b.js"></script>
+<script src="../../../mo-hi.github.io/navbar/js/nav.js"></script>
+<script src="../../../mo-hi.github.io/mouseHandler/js/mouseHandler.js"> </script> 
 <script src="../../Basis/js/Basis All_.js"></script>
+<script src="../../../mo-hi.github.io/editable HTML/js/editableHTML.js"></script>
+<script src="../../../mo-hi.github.io/htmlPage/MyMarkDown.js"></script>
 <script src="js/Config.js"></script>
 <script src="js/global.js"></script>
 
-<!--// DropDowns -->
-<script src="../../DropDown/js/libDropDown.js"></script>
-<script src="../../DropDown/js/global.js"></script>
-
-
-
-
 <script src="../../Files/js/global.js"></script>
 
-<!--// User Input -->
-<script src="../../UserInput/js/libUserInput.js"></script>
-
-
-<script src="../../Edit/js/libEdit.js"></script>
-
 <script src="js/xcsv/xcsv All_.js"></script>
-<script src="js/Default.js"></script>
-<!-- <script src="js/Config.js"></script> -->
 <script src="js/show.js"></script>
 <script src="js/main.js"></script>
+
+<!-- global variables -->
+<script>
+    const ID_NAVBAR = "id-navbar";
+    const ID_SIDEBAR = "id-sidebar";
+    const ID_CONTENT = "id-content";
+    const ID_FOOTER = "id-footer";
+
+    const XCSV = new clsXCSV({
+        EgoID: "id-content", 
+        SidebarID: "id-sidebar", 
+        CurrentID: "id-current",
+        InfoIDs:['id-infoblock-l', 'id-infoblock-m', 'id-infoblock-r']
+    });
+    // new functions_editableHTML().Init('id-01');
+    const PROXY = new proxyFunctions({EgoID: "id-content", SidebarID: "id-sidebar"})
+</script>
+
+<!-- global event listeners -->
+<script>
+    document.addEventListener('keydown', User_Keybord_Handler)
+</script>
+
+<script>
+    XCSV.Config({})
+    // XCSV.Title('new CSV'); 
+    document.title = XCSV.Title()
+    XCSV.XHTML.Print()
+    PROXY.CreateSidebar(XCSV.XHTML._SidebarData())
+    PROXY.NavbarAlwaysOnTop()
+    XCSV.XInfo.Level1("New")
+</script>
+
+<!-- ###############################################################################################################
+# region Testing                                                                                                   #
+####################################################################################################################
+-->
+<script src="../../../mo-hi.github.io/testJS/clsTest.js"></script>
+<script src="test/clstestHelper.js"></script>
+<script src="test/testCases_Navbar.js"></script>
+<script src="test/testCases.js"></script>
+
+
+
+<script>
+    function test_prepare() {
+        let tables = document.querySelectorAll('table.table');
+        for (let table of tables) {
+            let cells = table.querySelectorAll('td, th');
+            for (let cell of cells) {
+                assert (cell.dataset.editOnlyWhenControlPressed == "true")
+                cell.dataset.editOnlyWhenControlPressed = "false"
+            }
+        }
+    }
+
+    function test(viaShortcut = false, haltMode = false) {
+        if (document.getElementById("id-test-table") !== null) {
+            document.getElementById("id-test-table").remove()
+            return}
+        
+        let style = document.createElement('style');
+        style.innerHTML = `
+            td.failed {
+            background-color: #CC0000;
+            }`;
+        document.head.appendChild(style);
+        
+        let myTest = new clsTest()
+        if (haltMode) myTest.SetHaltOnFail()
+        RunTestCases(myTest, viaShortcut)
+        myTest.PrintToPopUp()
+    }
+
+    document.addEventListener("keydown", function(event) {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "q") {
+        event.preventDefault(); // optional: prevents browser default action
+        test(true);
+    }
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "y") {
+        event.preventDefault(); // optional: prevents browser default action
+        test(true, true);
+    }
+    });
+</script>
 
 </html>
